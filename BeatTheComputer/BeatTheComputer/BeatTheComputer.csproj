@@ -130,16 +130,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Empty.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\ConnectFourHole.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ConnectFourHoleRed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ConnectFourHoleYellow.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TicTacToeEmpty.png" />
@@ -149,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TicTacToeX.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ConnectFourHoleYellow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

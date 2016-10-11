@@ -114,11 +114,10 @@ namespace BeatTheComputer
                 Point coord = (Point) square.Tag;
                 int row = coord.Y;
                 int col = coord.X;
-                if (row < context.Board.GetLength(0)) {
+                if (context.Board[row, col] == PlayerID.NONE) {
                     executeAction(new TicTacToeAction(row, col, humanPlayerID));
+                    computerTurn();
                 }
-
-                computerTurn();
             }
         }
     }

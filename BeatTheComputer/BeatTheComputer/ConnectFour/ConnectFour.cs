@@ -47,7 +47,7 @@ namespace BeatTheComputer.ConnectFour
             }
 
             ConnectFourPlayer human = new ConnectFourPlayer(new DummyBehavior());
-            ConnectFourPlayer computer = new ConnectFourPlayer(new MixedMCTS(new PlayRandom(), 10000));
+            ConnectFourPlayer computer = new ConnectFourPlayer(new MixedMCTS(new PlayRandom(), 100000));
 
             if (humanPlayerID == 0) {
                 context = new ConnectFourContext(human, computer, rows, cols);
@@ -64,7 +64,7 @@ namespace BeatTheComputer.ConnectFour
         {
             PictureBox hole = new PictureBox();
             hole.Location = position;
-            hole.Tag = new Point(col, row);
+            hole.Tag = col;
             hole.Size = new Size(holeLength, holeLength);
             hole.SizeMode = PictureBoxSizeMode.StretchImage;
             hole.Image = emptyImg;
@@ -110,14 +110,12 @@ namespace BeatTheComputer.ConnectFour
         {
             if (context.getActivePlayerID() == humanPlayerID && !context.gameDecided()) {
                 PictureBox hole = (PictureBox) sender;
-                Point coord = (Point) hole.Tag;
-                int row = coord.Y;
-                int col = coord.X;
-                if (row < context.Board.GetLength(0)) {
-                    executeAction(new ConnectFourAction(col, humanPlayerID, context));
+                int col = (int) hole.Tag;
+                ConnectFourAction action = new ConnectFourAction(col, humanPlayerID, context);
+                if (action.isValid(context)) {
+                    executeAction(action);
+                    computerTurn();
                 }
-
-                computerTurn();
             }
         }
     }

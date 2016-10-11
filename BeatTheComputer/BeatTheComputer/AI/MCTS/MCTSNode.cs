@@ -13,6 +13,7 @@ namespace BeatTheComputer.AI.MCTS
         private double p1Wins;
         private double visits;
         private IList<MCTSNode> children;
+        private PlayerID activePlayer;
 
         private IGameContext context;
         private IBehavior rolloutBehavior;
@@ -27,8 +28,9 @@ namespace BeatTheComputer.AI.MCTS
             p1Wins = 0;
             visits = 0;
             children = null;
+            activePlayer = context.getActivePlayerID();
 
-            this.context = context.clone();
+            this.context = context;
             this.rolloutBehavior = rolloutBehavior;
             this.exploreFactor = exploreFactor;
             this.action = action;
@@ -59,7 +61,7 @@ namespace BeatTheComputer.AI.MCTS
             double rolloutResult = Double.NaN;
             switch (cur.context.gameOutcome()) {
                 case GameOutcome.UNDECIDED:
-                    rolloutResult = 0.5 * (double) cur.context.simulate(rolloutBehavior.clone(), rolloutBehavior.clone());
+                    rolloutResult = 0.5 * (double) cur.context.simulate(cur.rolloutBehavior.clone(), cur.rolloutBehavior.clone());
                     break;
                 case GameOutcome.LOSS:
                     rolloutResult = 0;
@@ -72,6 +74,10 @@ namespace BeatTheComputer.AI.MCTS
                 case GameOutcome.TIE:
                     rolloutResult = 0.5;
                     break;
+            }
+
+            if (!cur.IsLeaf) {
+                cur.deactivate(); //micro-optimization??
             }
 
             for (int i = 0; i < visited.Count; i++) {
@@ -87,15 +93,21 @@ namespace BeatTheComputer.AI.MCTS
             if (!context.gameDecided()) {
                 List<IAction> validActions = context.getValidActions();
                 foreach (IAction action in validActions) {
-                    IGameContext clone = context.clone();
-                    clone.applyAction(action);
+                    IGameContext successor = context.clone();
+                    successor.applyAction(action);
 
-                    MCTSNode child = new MCTSNode(clone, rolloutBehavior.clone(), exploreFactor, action);
+                    MCTSNode child = new MCTSNode(successor, rolloutBehavior.clone(), exploreFactor, action);
                     child.action = action;
 
                     children.Add(child);
                 }
             }
+        }
+
+        private void deactivate()
+        {
+            context = null;
+            rolloutBehavior = null;
         }
 
         public MCTSNode select()
@@ -106,7 +118,7 @@ namespace BeatTheComputer.AI.MCTS
 
             MCTSNode best = children[0];
             for (int i = 1; i < children.Count; i++) {
-                if (children[i].getUCT(visits, context.getActivePlayerID()) > best.getUCT(visits, context.getActivePlayerID())) {
+                if (children[i].getUCT(visits, activePlayer) > best.getUCT(visits, activePlayer)) {
                     best = children[i];
                 }
             }

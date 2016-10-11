@@ -1,5 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 
+using System;
+
 namespace BeatTheComputer.ConnectFour
 {
     class ConnectFourAction : IAction
@@ -15,7 +17,7 @@ namespace BeatTheComputer.ConnectFour
             this.playerID = playerID;
         }
 
-        public int nextRow(ConnectFourContext context, int col)
+        private int nextRow(ConnectFourContext context, int col)
         {
             //binary search
             int bottom = 0;
@@ -29,6 +31,11 @@ namespace BeatTheComputer.ConnectFour
                 }
             }
             return top + 1;
+        }
+
+        public bool isValid(ConnectFourContext context)
+        {
+            return row >= 0 && row < context.Board.GetLength(0);
         }
 
         public bool Equals(IAction other)

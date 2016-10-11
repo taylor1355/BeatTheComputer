@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
+using System;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.ConnectFour
@@ -31,7 +32,7 @@ namespace BeatTheComputer.ConnectFour
             List<IAction> validActions = new List<IAction>();
             for (int col = 0; col < board.GetLength(1); col++) {
                 ConnectFourAction action = new ConnectFourAction(col, turn, this);
-                if (action.Row < board.GetLength(0)) {
+                if (action.isValid(this)) {
                     validActions.Add(action);
                 }
             }
@@ -69,6 +70,8 @@ namespace BeatTheComputer.ConnectFour
         {
             if (!gameDecided()) {
                 ConnectFourAction c4Action = (ConnectFourAction) action;
+                if (!c4Action.isValid(this)) throw new ArgumentException("Can't apply invalid action", "action");
+
                 board[c4Action.Row, c4Action.Col] = c4Action.PlayerID;
                 turn = 1 - turn;
                 moves++;
