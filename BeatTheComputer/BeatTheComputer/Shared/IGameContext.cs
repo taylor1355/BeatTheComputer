@@ -1,14 +1,14 @@
 ﻿using BeatTheComputer.AI;
 
+using System;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.Shared
 {
-    interface IGameContext
+    interface IGameContext : IEquatable<IGameContext>
     {
         List<IAction> getValidActions();
         void applyAction(IAction action);
-        GameOutcome simulate();
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2);
 
         bool gameDecided();
@@ -16,7 +16,7 @@ namespace BeatTheComputer.Shared
 
         PlayerID getActivePlayerID();
         PlayerID getWinningPlayerID();
-        IPlayer getPlayer(PlayerID id);
+        int getMoves();
 
         IGameContext clone();
     }

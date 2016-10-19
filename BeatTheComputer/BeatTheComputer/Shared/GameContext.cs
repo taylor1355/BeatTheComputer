@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.AI;
 
 using System.Collections.Generic;
+using System;
 
 namespace BeatTheComputer.Shared
 {
@@ -9,28 +10,22 @@ namespace BeatTheComputer.Shared
         protected PlayerID turn;
         protected PlayerID winner;
 
-        protected IPlayer player1;
-        protected IPlayer player2;
-
         public abstract List<IAction> getValidActions();
 
         public abstract void applyAction(IAction action);
 
-        public GameOutcome simulate()
-        {
-            return simulate(player1.getBehavior().clone(), player2.getBehavior().clone());
-        }
-
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
             IGameContext simulation = clone();
+            IAction lastAction = null;
 
             while (!simulation.gameDecided()) {
                 if (simulation.getActivePlayerID() == 0) {
-                    simulation.applyAction(behavior1.requestAction(simulation));
+                    lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
-                    simulation.applyAction(behavior2.requestAction(simulation));
+                    lastAction = behavior2.requestAction(simulation, lastAction);
                 }
+                simulation.applyAction(lastAction);
             }
 
             return simulation.gameOutcome();
@@ -55,15 +50,14 @@ namespace BeatTheComputer.Shared
 
         public PlayerID getWinningPlayerID() { return winner; }
 
-        public IPlayer getPlayer(PlayerID id)
+        public abstract int getMoves();
+
+        public bool Equals(IGameContext context) { return equalTo(context); }
+        public override bool Equals(object obj) { return equalTo(obj); }
+        public abstract bool equalTo(object obj);
+        public override int GetHashCode()
         {
-            if (id == PlayerID.ONE) {
-                return player1;
-            } else if (id == PlayerID.TWO) {
-                return player2;
-            } else {
-                return null;
-            }
+            throw new NotImplementedException();
         }
 
         public abstract IGameContext clone();

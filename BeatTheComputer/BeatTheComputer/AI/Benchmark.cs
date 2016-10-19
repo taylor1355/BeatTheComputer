@@ -20,10 +20,10 @@ namespace BeatTheComputer.AI
                 Parallel.For(0, trials, i => {
                     if (i < trials / 2) {
                         //behavior1 goes first
-                        scores[i] = getGameScore(behavior1, behavior2, context, GameOutcome.WIN);
+                        scores[i] = getGameScore(behavior1.clone(), behavior2.clone(), context.clone(), GameOutcome.WIN);
                     } else {
                         //behavior1 goes second
-                        scores[i] = getGameScore(behavior2, behavior1, context, GameOutcome.LOSS);
+                        scores[i] = getGameScore(behavior2.clone(), behavior1.clone(), context.clone(), GameOutcome.LOSS);
                     }
                 });
 

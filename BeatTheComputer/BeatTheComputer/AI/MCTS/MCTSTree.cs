@@ -1,29 +1,56 @@
 ﻿using BeatTheComputer.Shared;
 
-using System.Collections.Generic;
 using System;
-
+using System.Diagnostics;
 
 namespace BeatTheComputer.AI.MCTS
 {
     class MCTSTree
     {
         private MCTSNode root;
-        private IGameContext rootContext;
 
-        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, double exploreFactor)
+        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor)
         {
-            root = new MCTSNode(rootContext, rolloutBehavior, exploreFactor);
-            this.rootContext = rootContext;
+            root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor);
         }
 
-        public IDictionary<IAction, double> run(int iterations)
+        public IAction run(double maxTime, int maxIterations, IGameContext context, IAction opponentAction)
         {
-            for (int i = 0; i < iterations; i++) {
-                root.step();
+            IAction bestAction = null;
+            if (!root.IsTerminal) {
+                Stopwatch timer = Stopwatch.StartNew();
+
+                if (context.getMoves() > root.Context.getMoves()) {
+                    if (root.IsLeaf) {
+                        root.step();
+                    }
+                    advanceRoot(opponentAction);
+
+                    if (!root.Context.Equals(context)) {
+                        throw new InvalidOperationException("Game states passed to MCTS out of order");
+                    }
+                }
+
+                int iterations = 0;
+                while (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations) {
+                    root.step();
+                    iterations++;
+                };
+
+                bestAction = root.bestAction();
+
+                advanceRoot(bestAction);
             }
-            IDictionary<IAction, double> actionValues = root.getActionValues(rootContext.getActivePlayerID());
-            return root.getActionValues(rootContext.getActivePlayerID());
+            return bestAction;
+        }
+
+        private void advanceRoot(IAction action)
+        {
+            if (root.Children.ContainsKey(action)) {
+                root = root.Children[action];
+            } else {
+                throw new ArgumentException("Action is not valid from the current game state");
+            }
         }
     }
 }

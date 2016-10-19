@@ -9,12 +9,16 @@ namespace BeatTheComputer.AI
     {
         private Random rand;
 
-        public PlayRandom()
+        public PlayRandom(Random rand = null)
         {
-            rand = new Random();
+            if (rand == null) {
+                this.rand = new Random();
+            } else {
+                this.rand = rand;
+            }
         }
 
-        public IAction requestAction(IGameContext context)
+        public IAction requestAction(IGameContext context, IAction opponentAction = null)
         {
             List<IAction> validActions = context.getValidActions();
             return validActions[rand.Next(validActions.Count)];

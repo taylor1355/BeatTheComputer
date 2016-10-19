@@ -1,40 +1,41 @@
 ﻿using BeatTheComputer.Shared;
 
-using System.Collections.Generic;
-
 namespace BeatTheComputer.AI.MCTS
 {
     class MCTS : IBehavior
     {
-        private const double EXPLORE_FACTOR = 1.4;
+        private double EXPLORE_FACTOR = 1.41;
 
         private IBehavior rolloutBehavior;
-        private int numIterations;
+        private int rolloutsPerNode;
+        private double timeLimit;
+        private int iterationLimit;
 
-        public MCTS(IBehavior rolloutBehavior, int numIterations)
+        private MCTSTree tree;
+
+        public MCTS(IBehavior rolloutBehavior, int rolloutsPerNode, double timeLimit, int iterationLimit = int.MaxValue)
         {
             this.rolloutBehavior = rolloutBehavior;
-            this.numIterations = numIterations;
+            this.rolloutsPerNode = rolloutsPerNode;
+            this.timeLimit = timeLimit;
+            this.iterationLimit = iterationLimit;
+
+            tree = null;
         }
 
-        public IAction requestAction(IGameContext context)
+        public IAction requestAction(IGameContext context, IAction opponentAction)
         {
-            MCTSTree tree = new MCTSTree(context, rolloutBehavior, EXPLORE_FACTOR);
-            IDictionary<IAction, double> actionValues = tree.run(numIterations);
-
-            IAction bestAction = null;
-            foreach (IAction action in actionValues.Keys) {
-                if (bestAction == null || actionValues[action] > actionValues[bestAction]) {
-                    bestAction = action;
-                }
+            if (tree == null) {
+                tree = new MCTSTree(context.clone(), rolloutBehavior.clone(), rolloutsPerNode, EXPLORE_FACTOR);
             }
 
-            return bestAction;
+            return tree.run(timeLimit, iterationLimit, context, opponentAction);
         }
 
+        //does not save game tree
         public IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), numIterations);
+            return new MCTS(rolloutBehavior.clone(), rolloutsPerNode, timeLimit, iterationLimit);
         }
     }
 }

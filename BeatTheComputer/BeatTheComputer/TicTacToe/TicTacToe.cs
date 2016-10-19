@@ -22,7 +22,9 @@ namespace BeatTheComputer
         private int squareLength;
 
         private TicTacToeContext context;
+        private IAction previousAction;
         private PlayerID humanPlayerID;
+        IBehavior computer;
 
         public TicTacToe()
         {
@@ -47,14 +49,10 @@ namespace BeatTheComputer
                 humanPlayerID = PlayerID.TWO;
             }
 
-            TicTacToePlayer human = new TicTacToePlayer(new DummyBehavior());
-            TicTacToePlayer computer = new TicTacToePlayer(new MixedMCTS(new PlayRandom(), 15000));
+            computer = new MCTS(new PlayRandom(), 2, 1000);
+            context = new TicTacToeContext();
 
-            if (humanPlayerID == 0) {
-                context = new TicTacToeContext(human, computer);
-            } else {
-                context = new TicTacToeContext(computer, human);
-            }
+            previousAction = null;
 
             if (context.getActivePlayerID() != humanPlayerID) {
                 computerTurn();
@@ -75,6 +73,8 @@ namespace BeatTheComputer
 
         private void executeAction(TicTacToeAction action)
         {
+            previousAction = action;
+
             context.applyAction(action);
 
             PictureBox square = squares[action.Row, action.Col];
@@ -102,7 +102,7 @@ namespace BeatTheComputer
         private void computerTurn()
         {
             if (context.getActivePlayerID() != humanPlayerID && !context.gameDecided()) {
-                TicTacToeAction action = (TicTacToeAction) context.getPlayer(1 - humanPlayerID).getBehavior().requestAction(context);
+                TicTacToeAction action = (TicTacToeAction) computer.requestAction(context, previousAction);
                 executeAction(action);
             }
         }

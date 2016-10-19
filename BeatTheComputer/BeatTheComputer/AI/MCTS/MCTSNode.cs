@@ -2,53 +2,50 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace BeatTheComputer.AI.MCTS
 {
     class MCTSNode
     {
-        private Random rand;
-        private double epsilon;
-
-        private double p1Wins;
-        private double visits;
-        private IList<MCTSNode> children;
-        private PlayerID activePlayer;
+        private const double epsilon = 1e-5;
+        //private Random rand = new Random();
+        private double exploreFactor;
 
         private IGameContext context;
         private IBehavior rolloutBehavior;
-        private double exploreFactor;
-        private IAction action;
+        private int rolloutsPerNode;
 
-        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, double exploreFactor, IAction action = null)
+        private double p1Wins;
+        private double visits;
+        private Dictionary<IAction, MCTSNode> children;
+
+        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor)
         {
-            rand = new Random();
-            epsilon = 1e-5;
-
-            p1Wins = 0;
-            visits = 0;
-            children = null;
-            activePlayer = context.getActivePlayerID();
+            this.exploreFactor = exploreFactor;
 
             this.context = context;
             this.rolloutBehavior = rolloutBehavior;
-            this.exploreFactor = exploreFactor;
-            this.action = action;
-        }
+            this.rolloutsPerNode = rolloutsPerNode;
 
-        public IDictionary<IAction, double> getActionValues(PlayerID id)
-        {
-            Dictionary<IAction, double> actionValues = new Dictionary<IAction, double>();
-            foreach (MCTSNode child in children) {
-                actionValues.Add(child.action, child.getWins(id) / child.Visits);
+            if (context.gameOutcome() == GameOutcome.WIN) {
+                p1Wins = Double.PositiveInfinity;
+            } else if (context.gameOutcome() == GameOutcome.LOSS) {
+                p1Wins = Double.NegativeInfinity;
+            } else {
+                p1Wins = 0;
             }
-            return actionValues;
+            visits = 0;
+            children = null;
         }
 
         public void step()
         {
-            IList<MCTSNode> visited = new List<MCTSNode>();
+            List<MCTSNode> visited = new List<MCTSNode>();
 
+            //selection
             MCTSNode cur = this;
             visited.Add(cur);
             while (!cur.IsLeaf) {
@@ -56,105 +53,129 @@ namespace BeatTheComputer.AI.MCTS
                 visited.Add(cur);
             }
 
+            //expansion
             cur.expand();
 
-            double rolloutResult = Double.NaN;
-            switch (cur.context.gameOutcome()) {
-                case GameOutcome.UNDECIDED:
-                    rolloutResult = 0.5 * (double) cur.context.simulate(cur.rolloutBehavior.clone(), cur.rolloutBehavior.clone());
-                    break;
-                case GameOutcome.LOSS:
-                    rolloutResult = 0;
-                    cur.p1Wins = Double.NegativeInfinity;
-                    break;
-                case GameOutcome.WIN:
-                    rolloutResult = 1;
-                    cur.p1Wins = Double.PositiveInfinity;
-                    break;
-                case GameOutcome.TIE:
-                    rolloutResult = 0.5;
-                    break;
-            }
+            //simulation
+            double rolloutResult = cur.simulate();
 
-            if (!cur.IsLeaf) {
-                cur.deactivate(); //micro-optimization??
-            }
-
-            for (int i = 0; i < visited.Count; i++) {
-                visited[i].p1Wins += rolloutResult;
-                visited[i].visits++;
-            }
+            //backpropagation
+            cur.backPropagate(rolloutResult, visited);
         }
 
-        public void expand()
+        private MCTSNode select()
         {
-            children = new List<MCTSNode>();
+            MCTSNode bestChild = null;
+            PlayerID activePlayer = context.getActivePlayerID();
+            foreach (MCTSNode child in children.Values) {
+                if (bestChild == null || child.uct(visits, activePlayer) > bestChild.uct(visits, activePlayer)) {
+                    bestChild = child;
+                }
+            }
+            return bestChild;
+        }
 
-            if (!context.gameDecided()) {
+        private void expand()
+        {
+            if (!IsTerminal) {
+                children = new Dictionary<IAction, MCTSNode>();
                 List<IAction> validActions = context.getValidActions();
                 foreach (IAction action in validActions) {
                     IGameContext successor = context.clone();
                     successor.applyAction(action);
-
-                    MCTSNode child = new MCTSNode(successor, rolloutBehavior.clone(), exploreFactor, action);
-                    child.action = action;
-
-                    children.Add(child);
+                    children.Add(action, new MCTSNode(successor, rolloutBehavior, rolloutsPerNode, exploreFactor));
                 }
             }
         }
 
-        private void deactivate()
+        private double simulate()
         {
-            context = null;
-            rolloutBehavior = null;
-        }
-
-        public MCTSNode select()
-        {
-            if (IsLeaf) {
-                return null;
+            if (context.gameDecided()) {
+                return 0.5 * (double) context.gameOutcome();
             }
 
-            MCTSNode best = children[0];
-            for (int i = 1; i < children.Count; i++) {
-                if (children[i].getUCT(visits, activePlayer) > best.getUCT(visits, activePlayer)) {
-                    best = children[i];
+            double[] rolloutResults = new double[rolloutsPerNode];
+            /*for (int i = 0; i < rolloutResults.Length; i++) {
+                rolloutResults[i] = 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
+            }*/
+            Parallel.For(0, rolloutResults.Length, i => {
+                rolloutResults[i] = 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
+            });
+            return rolloutResults.Average();
+        }
+
+        private void backPropagate(double rolloutResult, List<MCTSNode> visited)
+        {
+            foreach (MCTSNode node in visited) {
+                node.update(rolloutResult);
+            }
+        }
+
+        public IAction bestAction()
+        {
+            if (children == null) {
+                throw new InvalidOperationException("Node has no children to compare");
+            }
+
+            IAction bestAction = null;
+            foreach (IAction action in children.Keys) {
+                if (bestAction == null || children[action].Score > children[bestAction].Score) {
+                    bestAction = action;
                 }
             }
-            return best;
+            return bestAction;
         }
 
-        public bool IsLeaf {
-            get { return children == null || children.Count == 0; }
-        }
-
-        public double getUCT(double totalVisits, PlayerID id)
+        public void update(double rolloutResult)
         {
-            return getExploit(id) + getExplore(totalVisits) + rand.NextDouble() * epsilon;
+            p1Wins += rolloutResult;
+            visits++;
         }
 
-        public double getExploit(PlayerID id)
+        private double uct(double totalVisits, PlayerID player)
         {
-            return getWins(id) / (visits + epsilon);
+            return exploit(player) + explore(totalVisits) + epsilon;// * rand.NextDouble();
         }
 
-        public double getExplore(double totalVisits)
+        private double exploit(PlayerID player)
+        {
+            return wins(player) / (visits + epsilon);
+        }
+
+        private double explore(double totalVisits)
         {
             return exploreFactor * Math.Sqrt(Math.Log(totalVisits + epsilon) / (visits + epsilon));
         }
 
-        public double getWins(PlayerID id)
+        private double wins(PlayerID player)
         {
-            if (id == 0) {
+            if (player == PlayerID.ONE) {
                 return p1Wins;
-            } else {
+            } else if (player == PlayerID.TWO) {
                 return visits - p1Wins;
+            } else {
+                throw new ArgumentException("Can't get wins of " + player.ToString());
             }
         }
 
-        public double Visits {
-            get { return visits; }
+        public double Score {
+            get { return wins(1 - context.getActivePlayerID()) / (visits + epsilon); }
+        }
+
+        public Dictionary<IAction, MCTSNode> Children {
+            get { return children; }
+        }
+
+        public IGameContext Context {
+            get { return context; }
+        }
+
+        public bool IsLeaf {
+            get { return children == null; }
+        }
+
+        public bool IsTerminal {
+            get { return context.gameDecided(); }
         }
     }
 }

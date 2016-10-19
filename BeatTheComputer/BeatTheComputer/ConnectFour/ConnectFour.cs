@@ -20,8 +20,10 @@ namespace BeatTheComputer.ConnectFour
         private PictureBox[,] holes;
         private int holeLength;
 
-        ConnectFourContext context;
+        private ConnectFourContext context;
+        private IAction previousAction;
         private PlayerID humanPlayerID;
+        private IBehavior computer;
 
         public ConnectFour()
         {
@@ -46,14 +48,15 @@ namespace BeatTheComputer.ConnectFour
                 humanPlayerID = PlayerID.TWO;
             }
 
-            ConnectFourPlayer human = new ConnectFourPlayer(new DummyBehavior());
-            ConnectFourPlayer computer = new ConnectFourPlayer(new MixedMCTS(new PlayRandom(), 100000));
+            computer = new MCTS(new PlayRandom(), 2, 10000);
 
             if (humanPlayerID == 0) {
-                context = new ConnectFourContext(human, computer, rows, cols);
+                context = new ConnectFourContext(rows, cols);
             } else {
-                context = new ConnectFourContext(computer, human, rows, cols);
+                context = new ConnectFourContext(rows, cols);
             }
+
+            previousAction = null;
 
             if (context.getActivePlayerID() != humanPlayerID) {
                 computerTurn();
@@ -74,6 +77,8 @@ namespace BeatTheComputer.ConnectFour
 
         private void executeAction(ConnectFourAction action)
         {
+            previousAction = action;
+
             context.applyAction(action);
 
             PictureBox hole = holes[action.Row, action.Col];
@@ -101,7 +106,7 @@ namespace BeatTheComputer.ConnectFour
         private void computerTurn()
         {
             if (context.getActivePlayerID() != humanPlayerID && !context.gameDecided()) {
-                ConnectFourAction action = (ConnectFourAction) context.getPlayer(1 - humanPlayerID).getBehavior().requestAction(context);
+                ConnectFourAction action = (ConnectFourAction) computer.requestAction(context, previousAction);
                 executeAction(action);
             }
         }

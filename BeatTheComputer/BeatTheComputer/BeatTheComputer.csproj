@@ -51,7 +51,6 @@
     <Compile Include="AI\MCTS\MCTS.cs" />
     <Compile Include="AI\MCTS\MCTSNode.cs" />
     <Compile Include="AI\MCTS\MCTSTree.cs" />
-    <Compile Include="AI\MCTS\MixedMCTS.cs" />
     <Compile Include="AI\PlayRandom.cs" />
     <Compile Include="AI\PlayMostlyRandom.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
@@ -62,7 +61,6 @@
     </Compile>
     <Compile Include="ConnectFour\ConnectFourAction.cs" />
     <Compile Include="ConnectFour\ConnectFourContext.cs" />
-    <Compile Include="ConnectFour\ConnectFourPlayer.cs" />
     <Compile Include="MainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,7 +92,6 @@
     </Compile>
     <Compile Include="TicTacToe\TicTacToeAction.cs" />
     <Compile Include="TicTacToe\TicTacToeContext.cs" />
-    <Compile Include="TicTacToe\TicTacToePlayer.cs" />
     <Compile Include="Utils\BoardUtils.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <EmbeddedResource Include="ConnectFour\ConnectFour.resx">
