@@ -70,7 +70,7 @@ namespace BeatTheComputer.ConnectFour
                 ConnectFourAction c4Action = (ConnectFourAction) action;
                 if (!c4Action.isValid(this)) throw new ArgumentException("Can't apply invalid action", "action");
 
-                board[c4Action.Row, c4Action.Col] = c4Action.PlayerID;
+                board[c4Action.Row, c4Action.Col] = c4Action.Player;
                 turn = 1 - turn;
                 moves++;
                 if (moves >= 7) {

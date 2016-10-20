@@ -1,6 +1,6 @@
 ﻿namespace BeatTheComputer.Shared
 {
-    enum Player
+    public enum Player
     {
         NONE = -1,
         ONE = 0,

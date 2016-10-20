@@ -1,6 +1,6 @@
 ﻿namespace BeatTheComputer.Shared
 {
-    enum GameOutcome
+    public enum GameOutcome
     {
         UNDECIDED = -1,
         LOSS = 0,

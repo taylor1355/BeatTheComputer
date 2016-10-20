@@ -1,4 +1,5 @@
 ﻿using BeatTheComputer.Shared;
+using BeatTheComputer.Utils;
 
 namespace BeatTheComputer.TicTacToeGame
 {
@@ -6,13 +7,21 @@ namespace BeatTheComputer.TicTacToeGame
     {
         private int row;
         private int col;
-        private Player playerID;
+        private Player player;
 
-        public TicTacToeAction(int row, int col, Player playerID)
+        public TicTacToeAction(int row, int col, Player player)
         {
             this.row = row;
             this.col = col;
-            this.playerID = playerID;
+            this.player = player;
+        }
+
+        public bool isValid(IGameContext context)
+        {
+            TicTacToeContext tttContext = context as TicTacToeContext;
+            return BoardUtils.inBounds(tttContext.Board, row, col)
+                && tttContext.Board[row, col] == Player.NONE
+                && player == context.getActivePlayer();
         }
 
         public bool Equals(IAction other)
@@ -31,19 +40,19 @@ namespace BeatTheComputer.TicTacToeGame
             if (other == null) {
                 return false;
             }
-            return row == other.row && col == other.col && playerID == other.playerID;
+            return row == other.row && col == other.col && player == other.player;
         }
 
         public override int GetHashCode()
         {
             const int PRIME1 = 19;
             const int PRIME2 = 37;
-            return PlayerUtils.valueOf(playerID) + row * PRIME1 + col * PRIME2;
+            return PlayerUtils.valueOf(player) + row * PRIME1 + col * PRIME2;
         }
 
         public IAction clone()
         {
-            return new TicTacToeAction(row, col, playerID);
+            return new TicTacToeAction(row, col, player);
         }
 
         public int Row {
@@ -54,8 +63,8 @@ namespace BeatTheComputer.TicTacToeGame
             get { return col; }
         }
 
-        public Player PlayerID {
-            get { return playerID; }
+        public Player Player {
+            get { return player; }
         }
     }
 }

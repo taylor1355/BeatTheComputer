@@ -18,45 +18,58 @@ namespace BeatTheComputer.ConnectFour
         private PictureBox[,] holes;
         private int holeLength;
 
-        private ConnectFourContext context;
-        private IAction previousAction;
-        private Player humanPlayerID;
-        private IBehavior computer;
+        private GameController controller;
 
-        public ConnectFour()
+        public ConnectFour(GameController controller)
         {
             InitializeComponent();
+
+            this.controller = controller;
+            this.controller.setUpdateViewMethod(new GameController.UpdateView(updateGraphics));
         }
 
-        private void ConnectFour_Load(object sender, EventArgs e)
+        private void ConnectFour_Shown(object sender, EventArgs e)
         {
+            initGraphics(controller.Context);
+            controller.tryComputerTurn();
+        }
+
+        private void initGraphics(IGameContext context)
+        {
+            ConnectFourContext c4Context = (ConnectFourContext) context;
+
             int padding = 10;
-            int rows = 6;
-            int cols = 7;
+            int rows = c4Context.Board.GetLength(0);
+            int cols = c4Context.Board.GetLength(1);
             holes = new PictureBox[rows, cols];
             holeLength = 100;
 
             FormUtils.ControlFactory factory = new FormUtils.ControlFactory(holeFactory);
             FormUtils.createControlGrid(factory, this, holes, padding);
 
-            DialogResult goFirst = MessageBox.Show("Select \"Yes\" to go first or \"No\" to go second", "Player Selection", MessageBoxButtons.YesNo);
-            if (goFirst == DialogResult.Yes) {
-                humanPlayerID = Player.ONE;
-            } else {
-                humanPlayerID = Player.TWO;
+            this.Refresh();
+        }
+
+        private void updateGraphics(IGameContext context)
+        {
+            ConnectFourContext c4Context = (ConnectFourContext) context;
+            for (int row = 0; row < holes.GetLength(0); row++) {
+                for (int col = 0; col < holes.GetLength(1); col++) {
+                    Bitmap correctImage = imageOf(row, col, c4Context);
+                    if (holes[row, col].Image != correctImage) {
+                        holes[row, col].Image = correctImage;
+                        holes[row, col].Refresh();
+                    }
+                }
             }
 
-            context = new ConnectFourContext(rows, cols);
-            previousAction = null;
-
-            computer = new MCTS(new PlayRandom(), 4, 1, 2500);
-
-            /*MCTS control = new MCTS(new PlayRandom(), 1, 1, 100);
-            double newScore = Benchmark.compare(computer, control, context, 10, true);
-            MessageBox.Show("Multi-Tree Score: " + newScore);*/
-
-            if (context.getActivePlayer() != humanPlayerID) {
-                computerTurn();
+            if (context.gameDecided()) {
+                Player winner = context.getWinningPlayer();
+                if (context.getWinningPlayer() != Player.NONE) {
+                    MessageBox.Show("Player " + winner + " wins!");
+                } else {
+                    MessageBox.Show("Tie");
+                }
             }
         }
 
@@ -67,58 +80,29 @@ namespace BeatTheComputer.ConnectFour
             hole.Tag = col;
             hole.Size = new Size(holeLength, holeLength);
             hole.SizeMode = PictureBoxSizeMode.StretchImage;
-            hole.Image = emptyImg;
+            hole.Image = imageOf(row, col, (ConnectFourContext) controller.Context);
             hole.Click += new EventHandler(hole_Clicked);
             return hole;
         }
 
-        private void executeAction(ConnectFourAction action)
+        private Bitmap imageOf(int row, int col, ConnectFourContext context)
         {
-            previousAction = action;
-
-            context.applyAction(action);
-
-            PictureBox hole = holes[action.Row, action.Col];
-            if (action.PlayerID == 0) {
-                hole.Image = p1Img;
+            if (context.Board[row, col] == Player.ONE) {
+                return p1Img;
+            } else if (context.Board[row, col] == Player.TWO) {
+                return p2Img;
             } else {
-                hole.Image = p2Img;
-            }
-            hole.Refresh();
-
-            if (context.gameDecided()) {
-                Player winner = context.getWinningPlayer();
-                if (winner == humanPlayerID) {
-                    MessageBox.Show("Human Wins!");
-                } else if (winner == 1 - humanPlayerID) {
-                    MessageBox.Show("Computer Wins!");
-                } else {
-                    MessageBox.Show("Tie");
-                }
-
-                this.Close();
-            }
-        }
-
-        private void computerTurn()
-        {
-            if (context.getActivePlayer() != humanPlayerID && !context.gameDecided()) {
-                ConnectFourAction action = (ConnectFourAction) computer.requestAction(context, previousAction);
-                executeAction(action);
+                return emptyImg;
             }
         }
 
         private void hole_Clicked(object sender, EventArgs e)
         {
-            if (context.getActivePlayer() == humanPlayerID && !context.gameDecided()) {
-                PictureBox hole = (PictureBox) sender;
-                int col = (int) hole.Tag;
-                ConnectFourAction action = new ConnectFourAction(col, humanPlayerID, context);
-                if (action.isValid(context)) {
-                    executeAction(action);
-                    computerTurn();
-                }
-            }
+            PictureBox hole = (PictureBox) sender;
+            int col = (int) hole.Tag;
+            ConnectFourContext context = (ConnectFourContext) controller.Context;
+            ConnectFourAction action = new ConnectFourAction(col, context.getActivePlayer(), context);
+            controller.tryHumanTurn(action);
         }
     }
 }

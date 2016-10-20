@@ -40,7 +40,7 @@ namespace BeatTheComputer.TicTacToeGame
         {
             if (!gameDecided()) {
                 TicTacToeAction tttAction = (TicTacToeAction) action;
-                board[tttAction.Row, tttAction.Col] = tttAction.PlayerID;
+                board[tttAction.Row, tttAction.Col] = tttAction.Player;
                 turn = 1 - turn;
                 moves++;
                 if (moves >= 5) {

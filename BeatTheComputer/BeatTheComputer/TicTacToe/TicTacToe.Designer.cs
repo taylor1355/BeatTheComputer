@@ -39,7 +39,7 @@
             this.MaximizeBox = false;
             this.Name = "TicTacToe";
             this.Text = "Tic Tac Toe";
-            this.Load += new System.EventHandler(this.TicTacToe_Load);
+            this.Shown += new System.EventHandler(this.TicTacToe_Shown);
             this.ResumeLayout(false);
 
         }
