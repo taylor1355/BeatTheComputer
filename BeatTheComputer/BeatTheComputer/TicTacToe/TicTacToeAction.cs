@@ -6,9 +6,9 @@ namespace BeatTheComputer.TicTacToeGame
     {
         private int row;
         private int col;
-        private PlayerID playerID;
+        private Player playerID;
 
-        public TicTacToeAction(int row, int col, PlayerID playerID)
+        public TicTacToeAction(int row, int col, Player playerID)
         {
             this.row = row;
             this.col = col;
@@ -41,6 +41,11 @@ namespace BeatTheComputer.TicTacToeGame
             return PlayerUtils.valueOf(playerID) + row * PRIME1 + col * PRIME2;
         }
 
+        public IAction clone()
+        {
+            return new TicTacToeAction(row, col, playerID);
+        }
+
         public int Row {
             get { return row; }
         }
@@ -49,7 +54,7 @@ namespace BeatTheComputer.TicTacToeGame
             get { return col; }
         }
 
-        public PlayerID PlayerID {
+        public Player PlayerID {
             get { return playerID; }
         }
     }

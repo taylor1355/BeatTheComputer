@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -11,13 +10,13 @@ namespace BeatTheComputer.AI.MCTS
     class MCTSNode
     {
         private const double epsilon = 1e-5;
-        //private Random rand = new Random();
         private double exploreFactor;
 
-        private IGameContext context;
         private IBehavior rolloutBehavior;
         private int rolloutsPerNode;
 
+        private Player activePlayer;
+        private GameOutcome outcome;
         private double p1Wins;
         private double visits;
         private Dictionary<IAction, MCTSNode> children;
@@ -26,13 +25,14 @@ namespace BeatTheComputer.AI.MCTS
         {
             this.exploreFactor = exploreFactor;
 
-            this.context = context;
             this.rolloutBehavior = rolloutBehavior;
             this.rolloutsPerNode = rolloutsPerNode;
 
-            if (context.gameOutcome() == GameOutcome.WIN) {
+            activePlayer = context.getActivePlayer();
+            outcome = context.gameOutcome();
+            if (outcome == GameOutcome.WIN) {
                 p1Wins = Double.PositiveInfinity;
-            } else if (context.gameOutcome() == GameOutcome.LOSS) {
+            } else if (outcome == GameOutcome.LOSS) {
                 p1Wins = Double.NegativeInfinity;
             } else {
                 p1Wins = 0;
@@ -41,23 +41,26 @@ namespace BeatTheComputer.AI.MCTS
             children = null;
         }
 
-        public void step()
+        public void step(IGameContext context)
         {
             List<MCTSNode> visited = new List<MCTSNode>();
+            IGameContext curContext = context.clone();
 
             //selection
             MCTSNode cur = this;
             visited.Add(cur);
             while (!cur.IsLeaf) {
-                cur = cur.select();
+                MCTSNode next = cur.select();
+                curContext.applyAction(cur.actionOfChild(next));
+                cur = next;
                 visited.Add(cur);
             }
 
             //expansion
-            cur.expand();
+            cur.expand(curContext);
 
             //simulation
-            double rolloutResult = cur.simulate();
+            double rolloutResult = cur.simulate(curContext);
 
             //backpropagation
             cur.backPropagate(rolloutResult, visited);
@@ -66,7 +69,6 @@ namespace BeatTheComputer.AI.MCTS
         private MCTSNode select()
         {
             MCTSNode bestChild = null;
-            PlayerID activePlayer = context.getActivePlayerID();
             foreach (MCTSNode child in children.Values) {
                 if (bestChild == null || child.uct(visits, activePlayer) > bestChild.uct(visits, activePlayer)) {
                     bestChild = child;
@@ -75,7 +77,7 @@ namespace BeatTheComputer.AI.MCTS
             return bestChild;
         }
 
-        private void expand()
+        private void expand(IGameContext context)
         {
             if (!IsTerminal) {
                 children = new Dictionary<IAction, MCTSNode>();
@@ -88,16 +90,13 @@ namespace BeatTheComputer.AI.MCTS
             }
         }
 
-        private double simulate()
+        private double simulate(IGameContext context)
         {
             if (context.gameDecided()) {
                 return 0.5 * (double) context.gameOutcome();
             }
 
             double[] rolloutResults = new double[rolloutsPerNode];
-            /*for (int i = 0; i < rolloutResults.Length; i++) {
-                rolloutResults[i] = 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
-            }*/
             Parallel.For(0, rolloutResults.Length, i => {
                 rolloutResults[i] = 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
             });
@@ -111,19 +110,17 @@ namespace BeatTheComputer.AI.MCTS
             }
         }
 
-        public IAction bestAction()
+        public Dictionary<IAction, double> getActionScores()
         {
             if (children == null) {
                 throw new InvalidOperationException("Node has no children to compare");
             }
 
-            IAction bestAction = null;
+            Dictionary<IAction, double> actionScores = new Dictionary<IAction, double>();
             foreach (IAction action in children.Keys) {
-                if (bestAction == null || children[action].Score > children[bestAction].Score) {
-                    bestAction = action;
-                }
+                actionScores.Add(action, children[action].Score);
             }
-            return bestAction;
+            return actionScores;
         }
 
         public void update(double rolloutResult)
@@ -132,12 +129,23 @@ namespace BeatTheComputer.AI.MCTS
             visits++;
         }
 
-        private double uct(double totalVisits, PlayerID player)
+        private IAction actionOfChild(MCTSNode child)
         {
-            return exploit(player) + explore(totalVisits) + epsilon;// * rand.NextDouble();
+            foreach(IAction action in children.Keys) {
+                //compare with == here because nodes are only equal if they're the same instance
+                if (children[action] == child) {
+                    return action;
+                }
+            }
+            throw new ArgumentException("The node passed in is not a child of this node", "child");
         }
 
-        private double exploit(PlayerID player)
+        private double uct(double totalVisits, Player player)
+        {
+            return exploit(player) + explore(totalVisits) + epsilon;
+        }
+
+        private double exploit(Player player)
         {
             return wins(player) / (visits + epsilon);
         }
@@ -147,11 +155,11 @@ namespace BeatTheComputer.AI.MCTS
             return exploreFactor * Math.Sqrt(Math.Log(totalVisits + epsilon) / (visits + epsilon));
         }
 
-        private double wins(PlayerID player)
+        private double wins(Player player)
         {
-            if (player == PlayerID.ONE) {
+            if (player == Player.ONE) {
                 return p1Wins;
-            } else if (player == PlayerID.TWO) {
+            } else if (player == Player.TWO) {
                 return visits - p1Wins;
             } else {
                 throw new ArgumentException("Can't get wins of " + player.ToString());
@@ -159,15 +167,11 @@ namespace BeatTheComputer.AI.MCTS
         }
 
         public double Score {
-            get { return wins(1 - context.getActivePlayerID()) / (visits + epsilon); }
+            get { return wins(1 - activePlayer) / (visits + epsilon); }
         }
 
         public Dictionary<IAction, MCTSNode> Children {
             get { return children; }
-        }
-
-        public IGameContext Context {
-            get { return context; }
         }
 
         public bool IsLeaf {
@@ -175,7 +179,7 @@ namespace BeatTheComputer.AI.MCTS
         }
 
         public bool IsTerminal {
-            get { return context.gameDecided(); }
+            get { return outcome != GameOutcome.UNDECIDED; }
         }
     }
 }

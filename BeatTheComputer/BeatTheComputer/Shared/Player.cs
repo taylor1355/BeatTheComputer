@@ -1,6 +1,6 @@
 ﻿namespace BeatTheComputer.Shared
 {
-    enum PlayerID
+    enum Player
     {
         NONE = -1,
         ONE = 0,

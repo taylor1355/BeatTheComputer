@@ -8,11 +8,18 @@ namespace BeatTheComputer.ConnectFour
     {
         private int row;
         private int col;
-        private PlayerID playerID;
+        private Player playerID;
 
-        public ConnectFourAction(int col, PlayerID playerID, ConnectFourContext context)
+        public ConnectFourAction(int col, Player playerID, ConnectFourContext context)
         {
             row = nextRow(context, col);
+            this.col = col;
+            this.playerID = playerID;
+        }
+
+        private ConnectFourAction(int row, int col, Player playerID)
+        {
+            this.row = row;
             this.col = col;
             this.playerID = playerID;
         }
@@ -24,7 +31,7 @@ namespace BeatTheComputer.ConnectFour
             int top = context.Board.GetLength(0) - 1;
             while (bottom <= top) {
                 int middle = (top + bottom) / 2;
-                if (context.Board[middle, col] == PlayerID.NONE) {
+                if (context.Board[middle, col] == Player.NONE) {
                     top = middle - 1;
                 } else {
                     bottom = middle + 1;
@@ -63,6 +70,11 @@ namespace BeatTheComputer.ConnectFour
             return PlayerUtils.valueOf(playerID) + col * PRIME;
         }
 
+        public IAction clone()
+        {
+            return new ConnectFourAction(row, col, playerID);
+        }
+
         public int Row {
             get { return row; }
         }
@@ -71,7 +83,7 @@ namespace BeatTheComputer.ConnectFour
             get { return col; }
         }
 
-        public PlayerID PlayerID {
+        public Player PlayerID {
             get { return playerID; }
         }
     }

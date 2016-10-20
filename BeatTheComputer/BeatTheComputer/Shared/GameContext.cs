@@ -7,8 +7,8 @@ namespace BeatTheComputer.Shared
 {
     abstract class GameContext : IGameContext
     {
-        protected PlayerID turn;
-        protected PlayerID winner;
+        protected Player turn;
+        protected Player winner;
 
         public abstract List<IAction> getValidActions();
 
@@ -20,7 +20,7 @@ namespace BeatTheComputer.Shared
             IAction lastAction = null;
 
             while (!simulation.gameDecided()) {
-                if (simulation.getActivePlayerID() == 0) {
+                if (simulation.getActivePlayer() == 0) {
                     lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
                     lastAction = behavior2.requestAction(simulation, lastAction);
@@ -37,18 +37,18 @@ namespace BeatTheComputer.Shared
         {
             if (!gameDecided()) {
                 return GameOutcome.UNDECIDED;
-            } else if (winner == PlayerID.ONE) {
+            } else if (winner == Player.ONE) {
                 return GameOutcome.WIN;
-            } else if (winner == PlayerID.TWO) {
+            } else if (winner == Player.TWO) {
                 return GameOutcome.LOSS;
             } else {
                 return GameOutcome.TIE;
             }
         }
 
-        public PlayerID getActivePlayerID() { return turn; }
+        public Player getActivePlayer() { return turn; }
 
-        public PlayerID getWinningPlayerID() { return winner; }
+        public Player getWinningPlayer() { return winner; }
 
         public abstract int getMoves();
 

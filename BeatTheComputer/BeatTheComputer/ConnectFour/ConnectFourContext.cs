@@ -9,19 +9,19 @@ namespace BeatTheComputer.ConnectFour
 {
     class ConnectFourContext : GameContext
     {
-        private PlayerID[,] board;
+        private Player[,] board;
         private int moves;
 
         public ConnectFourContext(int rows, int cols)
         {
-            board = new PlayerID[rows, cols];
+            board = new Player[rows, cols];
             for (int row = 0; row < board.GetLength(0); row++) {
                 for (int col = 0; col < board.GetLength(1); col++) {
-                    board[row, col] = PlayerID.NONE;
+                    board[row, col] = Player.NONE;
                 }
             }
-            turn = PlayerID.ONE;
-            winner = PlayerID.NONE;
+            turn = Player.ONE;
+            winner = Player.NONE;
             moves = 0;
         }
 
@@ -37,7 +37,7 @@ namespace BeatTheComputer.ConnectFour
             return validActions;
         }
 
-        private PlayerID currentWinner(int changedRow, int changedCol)
+        private Player currentWinner(int changedRow, int changedCol)
         {
             bool winTriggered = identicalNeighborsOnLine(changedRow, changedCol, 1, 0) >= 4
                 || identicalNeighborsOnLine(changedRow, changedCol, 0, 1) >= 4
@@ -45,7 +45,7 @@ namespace BeatTheComputer.ConnectFour
                 || identicalNeighborsOnLine(changedRow, changedCol, -1, 1) >= 4;
 
             if (winTriggered) return board[changedRow, changedCol];
-            else return PlayerID.NONE;
+            else return Player.NONE;
         }
 
         private int identicalNeighborsOnLine(int startRow, int startCol, int rowSlope, int colSlope)
@@ -79,7 +79,7 @@ namespace BeatTheComputer.ConnectFour
             }
         }
 
-        public override bool gameDecided() { return winner != PlayerID.NONE || moves >= board.Length; }
+        public override bool gameDecided() { return winner != Player.NONE || moves == board.Length; }
 
         public override int getMoves() { return moves; }
 
@@ -101,14 +101,14 @@ namespace BeatTheComputer.ConnectFour
         public override IGameContext clone()
         {
             ConnectFourContext clone = new ConnectFourContext(board.GetLength(0), board.GetLength(1));
-            clone.board = (PlayerID[,]) board.Clone();
+            clone.board = (Player[,]) board.Clone();
             clone.turn = turn;
             clone.winner = winner;
             clone.moves = moves;
             return clone;
         }
 
-        public PlayerID[,] Board {
+        public Player[,] Board {
             get { return board; }
         }
     }
