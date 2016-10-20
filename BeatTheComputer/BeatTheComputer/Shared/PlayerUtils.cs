@@ -14,21 +14,21 @@ namespace BeatTheComputer.Shared
             }
         }
 
-        public static int valueOf(PlayerID player)
+        public static int valueOf(Player player)
         {
             switch (player) {
-                case PlayerID.ONE: return 0;
-                case PlayerID.TWO: return 1;
+                case Player.ONE: return 0;
+                case Player.TWO: return 1;
                 default: return -1;
             }
         }
 
-        public static PlayerID opponentOf(PlayerID player)
+        public static Player opponentOf(Player player)
         {
             switch (player) {
-                case PlayerID.ONE: return PlayerID.TWO;
-                case PlayerID.TWO: return PlayerID.ONE;
-                default: return PlayerID.NONE;
+                case Player.ONE: return Player.TWO;
+                case Player.TWO: return Player.ONE;
+                default: return Player.NONE;
             }
         }
     }

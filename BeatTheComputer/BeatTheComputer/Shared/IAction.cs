@@ -2,5 +2,8 @@
 
 namespace BeatTheComputer.Shared
 {
-    interface IAction : IEquatable<IAction> { }
+    interface IAction : IEquatable<IAction>
+    {
+        IAction clone();
+    }
 }

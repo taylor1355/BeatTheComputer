@@ -12,8 +12,6 @@ namespace BeatTheComputer
 {
     public partial class TicTacToe : Form
     {
-        private Random rand = new Random();
-
         private Bitmap emptyImg = BeatTheComputer.Properties.Resources.TicTacToeEmpty;
         private Bitmap p1Img = BeatTheComputer.Properties.Resources.TicTacToeX;
         private Bitmap p2Img = BeatTheComputer.Properties.Resources.TicTacToeO;
@@ -23,7 +21,7 @@ namespace BeatTheComputer
 
         private TicTacToeContext context;
         private IAction previousAction;
-        private PlayerID humanPlayerID;
+        private Player humanPlayerID;
         IBehavior computer;
 
         public TicTacToe()
@@ -44,17 +42,17 @@ namespace BeatTheComputer
 
             DialogResult playAsX = MessageBox.Show("Select \"Yes\" to play as X's or \"No\" to play as O's", "Player Selection", MessageBoxButtons.YesNo);
             if (playAsX == DialogResult.Yes) {
-                humanPlayerID = PlayerID.ONE;
+                humanPlayerID = Player.ONE;
             } else {
-                humanPlayerID = PlayerID.TWO;
+                humanPlayerID = Player.TWO;
             }
 
-            computer = new MCTS(new PlayRandom(), 2, 1000);
             context = new TicTacToeContext();
-
             previousAction = null;
 
-            if (context.getActivePlayerID() != humanPlayerID) {
+            computer = new MCTS(new PlayRandom(), 4, 1, 1000);
+
+            if (context.getActivePlayer() != humanPlayerID) {
                 computerTurn();
             }
         }
@@ -86,7 +84,7 @@ namespace BeatTheComputer
             square.Refresh();
 
             if (context.gameDecided()) {
-                PlayerID winner = context.getWinningPlayerID();
+                Player winner = context.getWinningPlayer();
                 if (winner == humanPlayerID) {
                     MessageBox.Show("Human Wins!");
                 } else if (winner == 1 - humanPlayerID) {
@@ -101,7 +99,7 @@ namespace BeatTheComputer
 
         private void computerTurn()
         {
-            if (context.getActivePlayerID() != humanPlayerID && !context.gameDecided()) {
+            if (context.getActivePlayer() != humanPlayerID && !context.gameDecided()) {
                 TicTacToeAction action = (TicTacToeAction) computer.requestAction(context, previousAction);
                 executeAction(action);
             }
@@ -109,12 +107,12 @@ namespace BeatTheComputer
 
         private void square_Clicked(object sender, EventArgs e)
         {
-            if (context.getActivePlayerID() == humanPlayerID && !context.gameDecided()) {
+            if (context.getActivePlayer() == humanPlayerID && !context.gameDecided()) {
                 PictureBox square = (PictureBox) sender;
                 Point coord = (Point) square.Tag;
                 int row = coord.Y;
                 int col = coord.X;
-                if (context.Board[row, col] == PlayerID.NONE) {
+                if (context.Board[row, col] == Player.NONE) {
                     executeAction(new TicTacToeAction(row, col, humanPlayerID));
                     computerTurn();
                 }

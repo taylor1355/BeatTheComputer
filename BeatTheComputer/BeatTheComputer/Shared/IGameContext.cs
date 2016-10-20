@@ -14,8 +14,8 @@ namespace BeatTheComputer.Shared
         bool gameDecided();
         GameOutcome gameOutcome();
 
-        PlayerID getActivePlayerID();
-        PlayerID getWinningPlayerID();
+        Player getActivePlayer();
+        Player getWinningPlayer();
         int getMoves();
 
         IGameContext clone();

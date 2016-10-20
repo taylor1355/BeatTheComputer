@@ -11,8 +11,6 @@ namespace BeatTheComputer.ConnectFour
 {
     public partial class ConnectFour : Form
     {
-        private Random rand = new Random();
-        
         private Bitmap emptyImg = BeatTheComputer.Properties.Resources.ConnectFourHole;
         private Bitmap p1Img = BeatTheComputer.Properties.Resources.ConnectFourHoleRed;
         private Bitmap p2Img = BeatTheComputer.Properties.Resources.ConnectFourHoleYellow;
@@ -22,7 +20,7 @@ namespace BeatTheComputer.ConnectFour
 
         private ConnectFourContext context;
         private IAction previousAction;
-        private PlayerID humanPlayerID;
+        private Player humanPlayerID;
         private IBehavior computer;
 
         public ConnectFour()
@@ -43,22 +41,21 @@ namespace BeatTheComputer.ConnectFour
 
             DialogResult goFirst = MessageBox.Show("Select \"Yes\" to go first or \"No\" to go second", "Player Selection", MessageBoxButtons.YesNo);
             if (goFirst == DialogResult.Yes) {
-                humanPlayerID = PlayerID.ONE;
+                humanPlayerID = Player.ONE;
             } else {
-                humanPlayerID = PlayerID.TWO;
+                humanPlayerID = Player.TWO;
             }
 
-            computer = new MCTS(new PlayRandom(), 2, 10000);
-
-            if (humanPlayerID == 0) {
-                context = new ConnectFourContext(rows, cols);
-            } else {
-                context = new ConnectFourContext(rows, cols);
-            }
-
+            context = new ConnectFourContext(rows, cols);
             previousAction = null;
 
-            if (context.getActivePlayerID() != humanPlayerID) {
+            computer = new MCTS(new PlayRandom(), 4, 1, 2500);
+
+            /*MCTS control = new MCTS(new PlayRandom(), 1, 1, 100);
+            double newScore = Benchmark.compare(computer, control, context, 10, true);
+            MessageBox.Show("Multi-Tree Score: " + newScore);*/
+
+            if (context.getActivePlayer() != humanPlayerID) {
                 computerTurn();
             }
         }
@@ -90,7 +87,7 @@ namespace BeatTheComputer.ConnectFour
             hole.Refresh();
 
             if (context.gameDecided()) {
-                PlayerID winner = context.getWinningPlayerID();
+                Player winner = context.getWinningPlayer();
                 if (winner == humanPlayerID) {
                     MessageBox.Show("Human Wins!");
                 } else if (winner == 1 - humanPlayerID) {
@@ -105,7 +102,7 @@ namespace BeatTheComputer.ConnectFour
 
         private void computerTurn()
         {
-            if (context.getActivePlayerID() != humanPlayerID && !context.gameDecided()) {
+            if (context.getActivePlayer() != humanPlayerID && !context.gameDecided()) {
                 ConnectFourAction action = (ConnectFourAction) computer.requestAction(context, previousAction);
                 executeAction(action);
             }
@@ -113,7 +110,7 @@ namespace BeatTheComputer.ConnectFour
 
         private void hole_Clicked(object sender, EventArgs e)
         {
-            if (context.getActivePlayerID() == humanPlayerID && !context.gameDecided()) {
+            if (context.getActivePlayer() == humanPlayerID && !context.gameDecided()) {
                 PictureBox hole = (PictureBox) sender;
                 int col = (int) hole.Tag;
                 ConnectFourAction action = new ConnectFourAction(col, humanPlayerID, context);

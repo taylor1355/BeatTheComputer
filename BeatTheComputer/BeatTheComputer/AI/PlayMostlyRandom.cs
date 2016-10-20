@@ -48,7 +48,7 @@ namespace BeatTheComputer.AI
             IGameContext simulation = context.clone();
             simulation.applyAction(action);
 
-            if (simulation.getWinningPlayerID() == context.getActivePlayerID()) {
+            if (simulation.getWinningPlayer() == context.getActivePlayer()) {
                 return 0;
             } else if (!activePlayerCanWin(simulation, simulation.getValidActions())) {
                 return 1;
@@ -62,7 +62,7 @@ namespace BeatTheComputer.AI
             foreach (IAction action in validActions) {
                 IGameContext simulation = context.clone();
                 simulation.applyAction(action);
-                if (simulation.getWinningPlayerID() == context.getActivePlayerID()) {
+                if (simulation.getWinningPlayer() == context.getActivePlayer()) {
                     return true;
                 }
             }
@@ -79,7 +79,7 @@ namespace BeatTheComputer.AI
                     foreach (IAction inactiveAction in validInactiveActions) {
                         IGameContext doubleSimulation = simulation.clone();
                         doubleSimulation.applyAction(inactiveAction);
-                        if (doubleSimulation.getWinningPlayerID() == simulation.getActivePlayerID()) {
+                        if (doubleSimulation.getWinningPlayer() == simulation.getActivePlayer()) {
                             return true;
                         }
                     }
@@ -90,7 +90,7 @@ namespace BeatTheComputer.AI
 
         public IBehavior clone()
         {
-            return new PlayMostlyRandom();
+            return new PlayMostlyRandom(new Random(rand.Next()));
         }
     }
 }

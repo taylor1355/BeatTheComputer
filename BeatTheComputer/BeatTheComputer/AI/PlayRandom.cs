@@ -26,7 +26,7 @@ namespace BeatTheComputer.AI
 
         public IBehavior clone()
         {
-            return new PlayRandom();
+            return new PlayRandom(new Random(rand.Next()));
         }
     }
 }
