@@ -24,6 +24,11 @@ namespace BeatTheComputer.AI
             return validActions[rand.Next(validActions.Count)];
         }
 
+        public override string ToString()
+        {
+            return "Random Player";
+        }
+
         public IBehavior clone()
         {
             return new PlayRandom(new Random(rand.Next()));

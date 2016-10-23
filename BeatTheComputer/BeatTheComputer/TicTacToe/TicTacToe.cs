@@ -1,14 +1,11 @@
-﻿using BeatTheComputer.AI;
-using BeatTheComputer.AI.MCTS;
-using BeatTheComputer.Shared;
-using BeatTheComputer.TicTacToeGame;
+﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BeatTheComputer
+namespace BeatTheComputer.TicTacToe
 {
     public partial class TicTacToe : Form
     {

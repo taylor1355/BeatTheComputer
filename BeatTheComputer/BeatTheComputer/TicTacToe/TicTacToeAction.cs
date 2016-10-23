@@ -1,7 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
-namespace BeatTheComputer.TicTacToeGame
+namespace BeatTheComputer.TicTacToe
 {
     class TicTacToeAction : IAction
     {

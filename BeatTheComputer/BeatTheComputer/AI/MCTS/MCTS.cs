@@ -7,22 +7,29 @@ namespace BeatTheComputer.AI.MCTS
 {
     class MCTS : IBehavior
     {
-        private double EXPLORE_FACTOR = 1.41;
-
         private IBehavior rolloutBehavior;
         private int rolloutsPerNode;
         private double timeLimit;
         private int iterationLimit;
+        private double exploreFactor;
+        private bool tryToWin;
 
         private MCTSTree[] trees;
         private IAction myLastAction;
 
-        public MCTS(IBehavior rolloutBehavior, int numTrees, int rolloutsPerNode, double timeLimit, int iterationLimit = int.MaxValue)
+        public MCTS(IBehavior rolloutBehavior, int numTrees, int rolloutsPerNode, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
+        {
+            reset(rolloutBehavior, numTrees, rolloutsPerNode, timeLimit, iterationLimit, exploreFactor, tryToWin);
+        }
+
+        public void reset(IBehavior rolloutBehavior, int numTrees, int rolloutsPerNode, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
         {
             this.rolloutBehavior = rolloutBehavior;
             this.rolloutsPerNode = rolloutsPerNode;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
+            this.exploreFactor = exploreFactor;
+            this.tryToWin = tryToWin;
 
             trees = new MCTSTree[numTrees];
             myLastAction = null;
@@ -32,7 +39,7 @@ namespace BeatTheComputer.AI.MCTS
         {
             if (trees[0] == null) {
                 for (int i = 0; i < trees.Length; i++) {
-                    trees[i] = new MCTSTree(context.clone(), rolloutBehavior.clone(), rolloutsPerNode, EXPLORE_FACTOR);
+                    trees[i] = new MCTSTree(context.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor, tryToWin);
                 }
             }
 
@@ -88,10 +95,43 @@ namespace BeatTheComputer.AI.MCTS
             return bestAction;
         }
 
+        public override string ToString()
+        {
+            return "Monte Carlo Tree Search";
+        }
+
         //does not save game tree
         public IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), trees.Length, rolloutsPerNode, timeLimit, iterationLimit);
+            return new MCTS(rolloutBehavior.clone(), trees.Length, rolloutsPerNode, timeLimit, iterationLimit, exploreFactor, tryToWin);
+        }
+
+        public IBehavior RolloutBehavior {
+            get { return rolloutBehavior; }
+        }
+
+        public int RolloutsPerNode {
+            get { return rolloutsPerNode; }
+        }
+
+        public int NumTrees {
+            get { return trees.Length; }
+        }
+
+        public double TimeLimit {
+            get { return timeLimit; }
+        }
+
+        public int IterationLimit {
+            get { return iterationLimit; }
+        }
+
+        public double ExploreFactor {
+            get { return exploreFactor; }
+        }
+
+        public bool TryingToWin {
+            get { return tryToWin; }
         }
     }
 }

@@ -11,9 +11,9 @@ namespace BeatTheComputer.AI.MCTS
         private MCTSNode root;
         private IGameContext rootContext;
 
-        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor)
+        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor, bool tryToWin)
         {
-            root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor);
+            root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor, tryToWin);
             this.rootContext = rootContext;
         }
 

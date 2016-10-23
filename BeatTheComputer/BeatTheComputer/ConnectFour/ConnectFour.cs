@@ -1,7 +1,5 @@
 ﻿using BeatTheComputer.Utils;
 using BeatTheComputer.Shared;
-using BeatTheComputer.AI;
-using BeatTheComputer.AI.MCTS;
 
 using System;
 using System.Drawing;

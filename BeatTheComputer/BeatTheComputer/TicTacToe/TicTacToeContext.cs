@@ -3,7 +3,7 @@ using BeatTheComputer.Utils;
 
 using System.Collections.Generic;
 
-namespace BeatTheComputer.TicTacToeGame
+namespace BeatTheComputer.TicTacToe
 {
     class TicTacToeContext : GameContext
     {
@@ -92,6 +92,11 @@ namespace BeatTheComputer.TicTacToeGame
                 }
             }
             return true;
+        }
+
+        public override string ToString()
+        {
+            return "Tic Tac Toe";
         }
 
         public override IGameContext clone()

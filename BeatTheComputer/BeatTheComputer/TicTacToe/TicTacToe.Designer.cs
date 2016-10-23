@@ -1,4 +1,4 @@
-﻿namespace BeatTheComputer
+﻿namespace BeatTheComputer.TicTacToe
 {
     partial class TicTacToe
     {

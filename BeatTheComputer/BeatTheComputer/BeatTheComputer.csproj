@@ -61,11 +61,17 @@
     </Compile>
     <Compile Include="ConnectFour\ConnectFourAction.cs" />
     <Compile Include="ConnectFour\ConnectFourContext.cs" />
-    <Compile Include="MainMenu.cs">
+    <Compile Include="GUI\MCTSSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainMenu.Designer.cs">
-      <DependentUpon>MainMenu.cs</DependentUpon>
+    <Compile Include="GUI\MCTSSettings.Designer.cs">
+      <DependentUpon>MCTSSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Setup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Setup.Designer.cs">
+      <DependentUpon>Setup.cs</DependentUpon>
     </Compile>
     <Compile Include="Bao\Bao.cs">
       <SubType>Form</SubType>
@@ -97,8 +103,11 @@
     <EmbeddedResource Include="ConnectFour\ConnectFour.resx">
       <DependentUpon>ConnectFour.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainMenu.resx">
-      <DependentUpon>MainMenu.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\MCTSSettings.resx">
+      <DependentUpon>MCTSSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Setup.resx">
+      <DependentUpon>Setup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Bao\Bao.resx">
       <DependentUpon>Bao.cs</DependentUpon>

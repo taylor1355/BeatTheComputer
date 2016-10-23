@@ -98,6 +98,11 @@ namespace BeatTheComputer.ConnectFour
             return true;
         }
 
+        public override string ToString()
+        {
+            return "Connect Four";
+        }
+
         public override IGameContext clone()
         {
             ConnectFourContext clone = new ConnectFourContext(board.GetLength(0), board.GetLength(1));

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BeatTheComputer.GUI;
+
+using System;
 using System.Windows.Forms;
 
 namespace BeatTheComputer
@@ -13,7 +15,7 @@ namespace BeatTheComputer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainMenu());
+            Application.Run(new Setup());
         }
     }
 }

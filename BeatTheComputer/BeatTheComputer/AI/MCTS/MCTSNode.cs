@@ -14,6 +14,7 @@ namespace BeatTheComputer.AI.MCTS
 
         private IBehavior rolloutBehavior;
         private int rolloutsPerNode;
+        private bool tryToWin;
 
         private Player activePlayer;
         private GameOutcome outcome;
@@ -21,12 +22,13 @@ namespace BeatTheComputer.AI.MCTS
         private double visits;
         private Dictionary<IAction, MCTSNode> children;
 
-        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor)
+        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor, bool tryToWin)
         {
             this.exploreFactor = exploreFactor;
 
             this.rolloutBehavior = rolloutBehavior;
             this.rolloutsPerNode = rolloutsPerNode;
+            this.tryToWin = tryToWin;
 
             activePlayer = context.getActivePlayer();
             outcome = context.gameOutcome();
@@ -85,7 +87,7 @@ namespace BeatTheComputer.AI.MCTS
                 foreach (IAction action in validActions) {
                     IGameContext successor = context.clone();
                     successor.applyAction(action);
-                    children.Add(action, new MCTSNode(successor, rolloutBehavior, rolloutsPerNode, exploreFactor));
+                    children.Add(action, new MCTSNode(successor, rolloutBehavior, rolloutsPerNode, exploreFactor, tryToWin));
                 }
             }
         }
@@ -157,9 +159,9 @@ namespace BeatTheComputer.AI.MCTS
 
         private double wins(Player player)
         {
-            if (player == Player.ONE) {
+            if ((player == Player.ONE && tryToWin) || (player == Player.TWO && !tryToWin)) {
                 return p1Wins;
-            } else if (player == Player.TWO) {
+            } else if ((player == Player.TWO && tryToWin) || (player == Player.ONE && !tryToWin)) {
                 return visits - p1Wins;
             } else {
                 throw new ArgumentException("Can't get wins of " + player.ToString());
