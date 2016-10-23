@@ -2,8 +2,10 @@
 
 namespace BeatTheComputer.Shared
 {
-    interface IAction : IEquatable<IAction>
+    public interface IAction : IEquatable<IAction>
     {
+        bool isValid(IGameContext context);
+
         IAction clone();
     }
 }

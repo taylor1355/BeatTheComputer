@@ -11,6 +11,11 @@ namespace BeatTheComputer.AI
             throw new NotImplementedException();
         }
 
+        public override string ToString()
+        {
+            return "Human";
+        }
+
         public IBehavior clone()
         {
             return new DummyBehavior();

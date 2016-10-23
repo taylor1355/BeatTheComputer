@@ -39,7 +39,7 @@
             this.MaximizeBox = false;
             this.Name = "ConnectFour";
             this.Text = "Connect4";
-            this.Load += new System.EventHandler(this.ConnectFour_Load);
+            this.Shown += new System.EventHandler(this.ConnectFour_Shown);
             this.ResumeLayout(false);
 
         }

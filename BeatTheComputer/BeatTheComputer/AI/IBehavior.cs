@@ -1,7 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 
 namespace BeatTheComputer.AI {
-    interface IBehavior 
+    public interface IBehavior 
     {
         IAction requestAction(IGameContext context, IAction opponentAction);
 

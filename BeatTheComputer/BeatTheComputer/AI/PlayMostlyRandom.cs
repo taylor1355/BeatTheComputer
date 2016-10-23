@@ -88,6 +88,11 @@ namespace BeatTheComputer.AI
             return false;
         }
 
+        public override string ToString()
+        {
+            return "Mostly Random Player";
+        }
+
         public IBehavior clone()
         {
             return new PlayMostlyRandom(new Random(rand.Next()));

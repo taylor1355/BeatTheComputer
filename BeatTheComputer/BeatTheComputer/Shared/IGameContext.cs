@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BeatTheComputer.Shared
 {
-    interface IGameContext : IEquatable<IGameContext>
+    public interface IGameContext : IEquatable<IGameContext>
     {
         List<IAction> getValidActions();
         void applyAction(IAction action);
