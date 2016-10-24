@@ -1,5 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
+using BeatTheComputer.GUI;
 
 using System;
 using System.Drawing;
@@ -101,6 +102,7 @@ namespace BeatTheComputer.TicTacToe
             int row = coord.Y;
             int col = coord.X;
             IAction action = new TicTacToeAction(row, col, controller.Context.getActivePlayer());
+
             controller.tryHumanTurn(action);
         }
     }

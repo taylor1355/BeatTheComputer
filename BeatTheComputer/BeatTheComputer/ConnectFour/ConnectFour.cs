@@ -1,5 +1,6 @@
 ﻿using BeatTheComputer.Utils;
 using BeatTheComputer.Shared;
+using BeatTheComputer.GUI;
 
 using System;
 using System.Drawing;
@@ -29,6 +30,7 @@ namespace BeatTheComputer.ConnectFour
         private void ConnectFour_Shown(object sender, EventArgs e)
         {
             initGraphics(controller.Context);
+
             controller.tryComputerTurn();
         }
 
