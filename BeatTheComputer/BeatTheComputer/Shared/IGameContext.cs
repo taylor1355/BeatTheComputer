@@ -7,7 +7,7 @@ namespace BeatTheComputer.Shared
 {
     public interface IGameContext : IEquatable<IGameContext>
     {
-        ICollection<IAction> getValidActions();
+        IList<IAction> getValidActions();
         void applyAction(IAction action);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2);
 

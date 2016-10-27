@@ -1,4 +1,5 @@
 ﻿using BeatTheComputer.Shared;
+using BeatTheComputer.Utils;
 
 using System.Collections.Generic;
 using System;
@@ -18,9 +19,9 @@ namespace BeatTheComputer.Checkers
             this.promoted = promoted;
         }
 
-        public HashSet<IAction> getActions(CheckersContext context)
+        public IList<IAction> getActions(CheckersContext context)
         {
-            HashSet<IAction> actions = new HashSet<IAction>();
+            IList<IAction> actions = new IndexedSet<IAction>();
             if (player == Player.NONE) {
                 throw new InvalidOperationException("empty piece has no actions");
             }

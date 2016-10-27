@@ -35,7 +35,7 @@ namespace BeatTheComputer.ConnectFour
             }
         }
 
-        public override ICollection<IAction> getValidActions()
+        public override IList<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
             for (int col = 0; col < board.GetLength(1); col++) {

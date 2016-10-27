@@ -11,7 +11,7 @@ namespace BeatTheComputer.Shared
         protected Player winner;
         protected int moves;
 
-        public abstract ICollection<IAction> getValidActions();
+        public abstract IList<IAction> getValidActions();
 
         public abstract void applyAction(IAction action);
 

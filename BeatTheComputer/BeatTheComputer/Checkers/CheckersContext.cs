@@ -1,4 +1,5 @@
 ﻿using BeatTheComputer.Shared;
+using BeatTheComputer.Utils;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace BeatTheComputer.Checkers
         private Dictionary<Position, Piece> p1Pieces;
         private Dictionary<Position, Piece> p2Pieces;
 
-        private ISet<IAction> validActions;
+        private IList<IAction> validActions;
 
         public CheckersContext(int rows, int cols, int pieceRows, int moveLimit)
         {
@@ -78,7 +79,7 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        public override ICollection<IAction> getValidActions()
+        public override IList<IAction> getValidActions()
         {
             generateValidActions();
             return validActions;
@@ -87,10 +88,13 @@ namespace BeatTheComputer.Checkers
         private void generateValidActions()
         {
             if (validActions == null) {
-                validActions = new HashSet<IAction>();
+                validActions = new IndexedSet<IAction>();
                 Dictionary<Position, Piece> myPieces = piecesOf(activePlayer);
                 foreach (Position pos in myPieces.Keys) {
-                    validActions.UnionWith(myPieces[pos].getActions(this));
+                    IList<IAction> subset = myPieces[pos].getActions(this);
+                    for (int i = 0; i < subset.Count; i++) {
+                        validActions.Add(subset[i]);
+                    }
                 }
             }
         }
@@ -218,7 +222,7 @@ namespace BeatTheComputer.Checkers
             Dictionary<Position, Piece> cloneP2Pieces = new Dictionary<Position, Piece>(p2Pieces);
             CheckersContext clone = new CheckersContext(moveLimit, cloneBoard, cloneP1Pieces, cloneP2Pieces);
             if (validActions != null) {
-                clone.validActions = new HashSet<IAction>(validActions);
+                clone.validActions = new IndexedSet<IAction>(validActions);
             }
             clone.activePlayer = activePlayer;
             clone.winner = winner;

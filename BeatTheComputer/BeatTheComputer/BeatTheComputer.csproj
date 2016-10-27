@@ -113,6 +113,7 @@
     <Compile Include="TicTacToe\TicTacToeContext.cs" />
     <Compile Include="Utils\BoardUtils.cs" />
     <Compile Include="Utils\FormUtils.cs" />
+    <Compile Include="Utils\IndexedSet.cs" />
     <EmbeddedResource Include="Checkers\Checkers.resx">
       <DependentUpon>Checkers.cs</DependentUpon>
     </EmbeddedResource>

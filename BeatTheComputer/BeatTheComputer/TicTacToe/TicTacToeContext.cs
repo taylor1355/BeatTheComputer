@@ -23,7 +23,7 @@ namespace BeatTheComputer.TicTacToe
             moves = 0;
         }
 
-        public override ICollection<IAction> getValidActions()
+        public override IList<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
             for (int row = 0; row < board.GetLength(0); row++) {
