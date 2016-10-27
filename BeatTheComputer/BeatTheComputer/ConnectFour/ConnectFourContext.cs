@@ -3,33 +3,43 @@ using BeatTheComputer.Utils;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BeatTheComputer.ConnectFour
 {
     class ConnectFourContext : GameContext
     {
         private Player[,] board;
-        private int moves;
 
         public ConnectFourContext(int rows, int cols)
         {
+            validateArguments(rows, cols);
+
             board = new Player[rows, cols];
             for (int row = 0; row < board.GetLength(0); row++) {
                 for (int col = 0; col < board.GetLength(1); col++) {
                     board[row, col] = Player.NONE;
                 }
             }
-            turn = Player.ONE;
+            activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
         }
 
-        public override List<IAction> getValidActions()
+        private void validateArguments(int rows, int cols)
+        {
+            if (rows < 1) {
+                throw new ArgumentException("Must have at least 1 row", "rows");
+            }
+            if (cols < 1) {
+                throw new ArgumentException("Must have at least 1 column", "cols");
+            }
+        }
+
+        public override ICollection<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
             for (int col = 0; col < board.GetLength(1); col++) {
-                ConnectFourAction action = new ConnectFourAction(col, turn, this);
+                ConnectFourAction action = new ConnectFourAction(col, activePlayer, this);
                 if (action.isValid(this)) {
                     validActions.Add(action);
                 }
@@ -67,11 +77,13 @@ namespace BeatTheComputer.ConnectFour
         public override void applyAction(IAction action)
         {
             if (!gameDecided()) {
-                ConnectFourAction c4Action = (ConnectFourAction) action;
-                if (!c4Action.isValid(this)) throw new ArgumentException("Can't apply invalid action", "action");
+                if (!action.isValid(this)) {
+                    throw new ArgumentException("Can't apply invalid action", "action");
+                }
 
+                ConnectFourAction c4Action = (ConnectFourAction) action;
                 board[c4Action.Row, c4Action.Col] = c4Action.Player;
-                turn = 1 - turn;
+                activePlayer = 1 - activePlayer;
                 moves++;
                 if (moves >= 7) {
                     winner = currentWinner(c4Action.Row, c4Action.Col);
@@ -80,8 +92,6 @@ namespace BeatTheComputer.ConnectFour
         }
 
         public override bool gameDecided() { return winner != Player.NONE || moves == board.Length; }
-
-        public override int getMoves() { return moves; }
 
         public override bool equalTo(object obj)
         {
@@ -107,7 +117,7 @@ namespace BeatTheComputer.ConnectFour
         {
             ConnectFourContext clone = new ConnectFourContext(board.GetLength(0), board.GetLength(1));
             clone.board = (Player[,]) board.Clone();
-            clone.turn = turn;
+            clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;
             return clone;

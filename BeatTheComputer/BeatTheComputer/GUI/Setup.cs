@@ -3,6 +3,7 @@ using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
 using BeatTheComputer.TicTacToe;
 using BeatTheComputer.ConnectFour;
+using BeatTheComputer.Checkers;
 
 using System;
 using System.Windows.Forms;
@@ -26,6 +27,7 @@ namespace BeatTheComputer.GUI
             gameToFormTypes = new Dictionary<Type, Type>();
             gameToFormTypes.Add(typeof(TicTacToeContext), typeof(TicTacToe.TicTacToe));
             gameToFormTypes.Add(typeof(ConnectFourContext), typeof(ConnectFour.ConnectFour));
+            gameToFormTypes.Add(typeof(CheckersContext), typeof(Checkers.Checkers));
 
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));
@@ -103,6 +105,7 @@ namespace BeatTheComputer.GUI
             List<IGameContext> gamesList = new List<IGameContext>();
             gamesList.Add(new TicTacToeContext());
             gamesList.Add(new ConnectFourContext(6, 7));
+            gamesList.Add(new CheckersContext(8, 8, 3, 100));
             return gamesList.ToArray();
         }
 

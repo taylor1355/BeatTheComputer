@@ -7,10 +7,11 @@ namespace BeatTheComputer.Shared
 {
     abstract class GameContext : IGameContext
     {
-        protected Player turn;
+        protected Player activePlayer;
         protected Player winner;
+        protected int moves;
 
-        public abstract List<IAction> getValidActions();
+        public abstract ICollection<IAction> getValidActions();
 
         public abstract void applyAction(IAction action);
 
@@ -46,11 +47,11 @@ namespace BeatTheComputer.Shared
             }
         }
 
-        public Player getActivePlayer() { return turn; }
+        public Player getActivePlayer() { return activePlayer; }
 
         public Player getWinningPlayer() { return winner; }
 
-        public abstract int getMoves();
+        public int getMoves() { return moves; }
 
         public bool Equals(IGameContext context) { return equalTo(context); }
         public override bool Equals(object obj) { return equalTo(obj); }

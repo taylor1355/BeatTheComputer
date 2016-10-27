@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
+using System;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.TicTacToe
@@ -8,7 +9,6 @@ namespace BeatTheComputer.TicTacToe
     class TicTacToeContext : GameContext
     {
         private Player[,] board;
-        private int moves;
 
         public TicTacToeContext()
         {
@@ -18,18 +18,18 @@ namespace BeatTheComputer.TicTacToe
                     board[row, col] = Player.NONE;
                 }
             }
-            turn = Player.ONE;
+            activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
         }
 
-        public override List<IAction> getValidActions()
+        public override ICollection<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
             for (int row = 0; row < board.GetLength(0); row++) {
                 for (int col = 0; col < board.GetLength(1); col++) {
                     if (board[row, col] == Player.NONE) {
-                        validActions.Add(new TicTacToeAction(row, col, turn));
+                        validActions.Add(new TicTacToeAction(row, col, activePlayer));
                     }
                 }
             }
@@ -39,9 +39,13 @@ namespace BeatTheComputer.TicTacToe
         public override void applyAction(IAction action)
         {
             if (!gameDecided()) {
+                if (!action.isValid(this)) {
+                    throw new ArgumentException("Can't apply invalid action", "action");
+                }
+
                 TicTacToeAction tttAction = (TicTacToeAction) action;
                 board[tttAction.Row, tttAction.Col] = tttAction.Player;
-                turn = 1 - turn;
+                activePlayer = 1 - activePlayer;
                 moves++;
                 if (moves >= 5) {
                     winner = getWinner();
@@ -77,8 +81,6 @@ namespace BeatTheComputer.TicTacToe
 
         public override bool gameDecided() { return winner != Player.NONE || moves >= board.Length; }
 
-        public override int getMoves() { return moves; }
-
         public override bool equalTo(object obj)
         {
             TicTacToeContext other = obj as TicTacToeContext;
@@ -103,7 +105,7 @@ namespace BeatTheComputer.TicTacToe
         {
             TicTacToeContext clone = new TicTacToeContext();
             clone.board = (Player[,]) board.Clone();
-            clone.turn = turn;
+            clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;
             return clone;

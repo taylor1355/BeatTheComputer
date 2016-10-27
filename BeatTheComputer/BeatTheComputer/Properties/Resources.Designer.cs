@@ -63,6 +63,26 @@ namespace BeatTheComputer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CheckersPieceRed {
+            get {
+                object obj = ResourceManager.GetObject("CheckersPieceRed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CheckersPieceWhite {
+            get {
+                object obj = ResourceManager.GetObject("CheckersPieceWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ConnectFourHole {
             get {
                 object obj = ResourceManager.GetObject("ConnectFourHole", resourceCulture);
@@ -86,6 +106,16 @@ namespace BeatTheComputer.Properties {
         internal static System.Drawing.Bitmap ConnectFourHoleYellow {
             get {
                 object obj = ResourceManager.GetObject("ConnectFourHoleYellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Empty {
+            get {
+                object obj = ResourceManager.GetObject("Empty", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
