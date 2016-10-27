@@ -1,7 +1,6 @@
 ﻿using BeatTheComputer.AI;
 using BeatTheComputer.Shared;
 
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatTheComputer.GUI
@@ -43,36 +42,42 @@ namespace BeatTheComputer.GUI
 
         public async void tryComputerTurn()
         {
-            IBehavior player = null;
-            if (!isHuman(player1) && turn == Player.ONE) {
-                player = player1;
-            } else if (!isHuman(player2) && turn == Player.TWO) {
-                player = player2;
-            }
-
-            if (player != null) {
-                executeAction(await Task.Run(() => player.requestAction(context, lastAction)));
+            if (!isHumansTurn() && turn != Player.NONE) {
+                executeAction(await Task.Run(() => behaviorOf(turn).requestAction(context, lastAction)));
             }
         }
 
         public void tryHumanTurn(IAction action)
         {
-            bool player1CanGo = isHuman(player1) && turn == Player.ONE;
-            bool player2CanGo = isHuman(player2) && turn == Player.TWO;
-            if (action.isValid(context) && (player1CanGo || player2CanGo)) {
+            if (action.isValid(context) && isHumansTurn()) {
                 executeAction(action);
             }
         }
-
-        private bool isHuman(IBehavior player) { return player.GetType() == typeof(DummyBehavior); }
 
         public void setUpdateViewMethod(UpdateView updateViewMethod)
         {
             this.updateViewMethod = updateViewMethod;
         }
 
+        private bool isHuman(IBehavior player) { return player != null && player.GetType() == typeof(DummyBehavior); }
+
+        public bool isHumansTurn() { return isHuman(behaviorOf(turn)); }
+
+        private IBehavior behaviorOf(Player player)
+        {
+            switch (player) {
+                case Player.ONE: return player1;
+                case Player.TWO: return player2;
+                default: return null;
+            }
+        }
+
         public IGameContext Context {
             get { return context; }
+        }
+
+        public Player Turn {
+            get { return turn; }
         }
     }
 }

@@ -83,7 +83,7 @@ namespace BeatTheComputer.AI.MCTS
         {
             if (!IsTerminal) {
                 children = new Dictionary<IAction, MCTSNode>();
-                List<IAction> validActions = context.getValidActions();
+                ICollection<IAction> validActions = context.getValidActions();
                 foreach (IAction action in validActions) {
                     IGameContext successor = context.clone();
                     successor.applyAction(action);

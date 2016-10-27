@@ -20,7 +20,7 @@ namespace BeatTheComputer.AI
 
         public IAction requestAction(IGameContext context, IAction opponentAction = null)
         {
-            List<IAction> validActions = context.getValidActions();
+            List<IAction> validActions = new List<IAction>(context.getValidActions());
             return validActions[rand.Next(validActions.Count)];
         }
 

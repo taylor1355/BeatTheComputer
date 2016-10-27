@@ -20,7 +20,7 @@ namespace BeatTheComputer.AI
 
         public IAction requestAction(IGameContext context, IAction opponentAction = null)
         {
-            List<IAction> validActions = context.getValidActions();
+            List<IAction> validActions = new List<IAction>(context.getValidActions());
             List<IAction> toEvaluate = new List<IAction>(validActions);
             IAction minPriorityAction = null;
             int minPriority = 3;
@@ -39,11 +39,11 @@ namespace BeatTheComputer.AI
 
         public bool isConfident(IGameContext context)
         {
-            List<IAction> validActions = context.getValidActions();
+            List<IAction> validActions = new List<IAction>(context.getValidActions());
             return activePlayerCanWin(context, validActions) || inactivePlayerCouldWin(context, validActions);
         }
 
-        private int getPriority(IAction action, IGameContext context, List<IAction> validActions)
+        private int getPriority(IAction action, IGameContext context, ICollection<IAction> validActions)
         {
             IGameContext simulation = context.clone();
             simulation.applyAction(action);
@@ -57,7 +57,7 @@ namespace BeatTheComputer.AI
             }
         }
 
-        private bool activePlayerCanWin(IGameContext context, List<IAction> validActions)
+        private bool activePlayerCanWin(IGameContext context, ICollection<IAction> validActions)
         {
             foreach (IAction action in validActions) {
                 IGameContext simulation = context.clone();
@@ -69,13 +69,13 @@ namespace BeatTheComputer.AI
             return false;
         }
 
-        private bool inactivePlayerCouldWin(IGameContext context, List<IAction> validActions)
+        private bool inactivePlayerCouldWin(IGameContext context, ICollection<IAction> validActions)
         {
             foreach (IAction action in validActions) {
                 IGameContext simulation = context.clone();
                 simulation.applyAction(action);
                 if (!context.gameDecided()) {
-                    List<IAction> validInactiveActions = simulation.getValidActions();
+                    ICollection<IAction> validInactiveActions = simulation.getValidActions();
                     foreach (IAction inactiveAction in validInactiveActions) {
                         IGameContext doubleSimulation = simulation.clone();
                         doubleSimulation.applyAction(inactiveAction);

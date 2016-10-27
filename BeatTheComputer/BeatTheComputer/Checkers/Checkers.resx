@@ -117,32 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CheckersPieceRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CheckersPieceRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CheckersPieceWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CheckersPieceWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ConnectFourHole" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ConnectFourHole.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ConnectFourHoleRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ConnectFourHoleRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ConnectFourHoleYellow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ConnectFourHoleYellow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TicTacToeEmpty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TicTacToeEmpty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TicTacToeO" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TicTacToeO.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TicTacToeX" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TicTacToeX.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>

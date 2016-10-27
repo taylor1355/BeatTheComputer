@@ -56,6 +56,16 @@
     <Compile Include="AI\MCTS\MCTSTree.cs" />
     <Compile Include="AI\PlayRandom.cs" />
     <Compile Include="AI\PlayMostlyRandom.cs" />
+    <Compile Include="Checkers\Checkers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Checkers\Checkers.Designer.cs">
+      <DependentUpon>Checkers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Checkers\CheckersAction.cs" />
+    <Compile Include="Checkers\CheckersContext.cs" />
+    <Compile Include="Checkers\Piece.cs" />
+    <Compile Include="Checkers\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +113,9 @@
     <Compile Include="TicTacToe\TicTacToeContext.cs" />
     <Compile Include="Utils\BoardUtils.cs" />
     <Compile Include="Utils\FormUtils.cs" />
+    <EmbeddedResource Include="Checkers\Checkers.resx">
+      <DependentUpon>Checkers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConnectFour\ConnectFour.resx">
       <DependentUpon>ConnectFour.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,6 +169,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ConnectFourHoleYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
