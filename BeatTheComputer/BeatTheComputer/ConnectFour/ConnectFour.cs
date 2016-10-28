@@ -65,10 +65,10 @@ namespace BeatTheComputer.ConnectFour
 
             if (context.gameDecided()) {
                 Player winner = context.getWinningPlayer();
-                if (context.getWinningPlayer() != Player.NONE) {
-                    MessageBox.Show("Player " + winner + " wins!");
-                } else {
+                if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
+                } else {
+                    MessageBox.Show("Player " + winner + " wins!");
                 }
             }
         }

@@ -80,6 +80,7 @@
     <Compile Include="GUI\MCTSSettings.Designer.cs">
       <DependentUpon>MCTSSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ObjectWrapper.cs" />
     <Compile Include="GUI\Setup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CheckersPieceWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceKingRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceKingWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

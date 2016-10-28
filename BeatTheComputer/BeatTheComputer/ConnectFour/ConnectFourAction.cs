@@ -11,7 +11,7 @@ namespace BeatTheComputer.ConnectFour
 
         public ConnectFourAction(int col, Player player, ConnectFourContext context)
         {
-            row = nextRow(context, col);
+            row = context.topRowOf(col);
             this.col = col;
             this.player = player;
         }
@@ -21,22 +21,6 @@ namespace BeatTheComputer.ConnectFour
             this.row = row;
             this.col = col;
             this.player = playerID;
-        }
-
-        private int nextRow(ConnectFourContext context, int col)
-        {
-            //binary search
-            int bottom = 0;
-            int top = context.Board.GetLength(0) - 1;
-            while (bottom <= top) {
-                int middle = (top + bottom) / 2;
-                if (context.Board[middle, col] == Player.NONE) {
-                    top = middle - 1;
-                } else {
-                    bottom = middle + 1;
-                }
-            }
-            return top + 1;
         }
 
         public bool isValid(IGameContext context)
@@ -68,8 +52,7 @@ namespace BeatTheComputer.ConnectFour
 
         public override int GetHashCode()
         {
-            const int PRIME = 19;
-            return PlayerUtils.valueOf(player) + col * PRIME;
+            return PlayerUtils.valueOf(player) + col * 19;
         }
 
         public IAction clone()

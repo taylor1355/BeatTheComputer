@@ -9,17 +9,24 @@ namespace BeatTheComputer.ConnectFour
     class ConnectFourContext : GameContext
     {
         private Player[,] board;
+        private int[] topRows;
 
         public ConnectFourContext(int rows, int cols)
         {
             validateArguments(rows, cols);
 
             board = new Player[rows, cols];
-            for (int row = 0; row < board.GetLength(0); row++) {
-                for (int col = 0; col < board.GetLength(1); col++) {
+            topRows = new int[cols];
+            
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
                     board[row, col] = Player.NONE;
                 }
             }
+            for (int col = 0; col < cols; col++) {
+                topRows[col] = 0;
+            }
+
             activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
@@ -38,13 +45,18 @@ namespace BeatTheComputer.ConnectFour
         public override IList<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
-            for (int col = 0; col < board.GetLength(1); col++) {
+            for (int col = 0; col < Cols; col++) {
                 ConnectFourAction action = new ConnectFourAction(col, activePlayer, this);
                 if (action.isValid(this)) {
                     validActions.Add(action);
                 }
             }
             return validActions;
+        }
+
+        public int topRowOf(int col)
+        {
+            return topRows[col];
         }
 
         private Player currentWinner(int changedRow, int changedCol)
@@ -83,6 +95,8 @@ namespace BeatTheComputer.ConnectFour
 
                 ConnectFourAction c4Action = (ConnectFourAction) action;
                 board[c4Action.Row, c4Action.Col] = c4Action.Player;
+                topRows[c4Action.Col]++;
+
                 activePlayer = 1 - activePlayer;
                 moves++;
                 if (moves >= 7) {
@@ -100,8 +114,8 @@ namespace BeatTheComputer.ConnectFour
                 return false;
             }
 
-            for (int row = 0; row < board.GetLength(0); row++) {
-                for (int col = 0; col < board.GetLength(1); col++) {
+            for (int row = 0; row < Rows; row++) {
+                for (int col = 0; col < Cols; col++) {
                     if (board[row, col] != other.board[row, col]) return false;
                 }
             }
@@ -115,8 +129,9 @@ namespace BeatTheComputer.ConnectFour
 
         public override IGameContext clone()
         {
-            ConnectFourContext clone = new ConnectFourContext(board.GetLength(0), board.GetLength(1));
+            ConnectFourContext clone = new ConnectFourContext(Rows, Cols);
             clone.board = (Player[,]) board.Clone();
+            clone.topRows = (int[]) topRows.Clone();
             clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;
@@ -125,6 +140,14 @@ namespace BeatTheComputer.ConnectFour
 
         public Player[,] Board {
             get { return board; }
+        }
+
+        public int Rows {
+            get { return board.GetLength(0); }
+        }
+
+        public int Cols {
+            get { return board.GetLength(1); }
         }
     }
 }

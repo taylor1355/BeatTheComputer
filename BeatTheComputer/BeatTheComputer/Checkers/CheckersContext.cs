@@ -90,8 +90,9 @@ namespace BeatTheComputer.Checkers
             if (validActions == null) {
                 validActions = new IndexedSet<IAction>();
                 Dictionary<Position, Piece> myPieces = piecesOf(activePlayer);
-                foreach (Position pos in myPieces.Keys) {
-                    IList<IAction> subset = myPieces[pos].getActions(this);
+
+                foreach (Piece piece in myPieces.Values) {
+                    IList<IAction> subset = piece.getActions(this);
                     for (int i = 0; i < subset.Count; i++) {
                         validActions.Add(subset[i]);
                     }
@@ -116,8 +117,10 @@ namespace BeatTheComputer.Checkers
 
                 CheckersAction cAction = (CheckersAction) action;
                 movePiece(cAction.Start, cAction.Destination);
-                foreach (Position jump in cAction.Jumps) {
-                    removePieceAt(jump);
+                if (cAction.NumJumps > 0) {
+                    foreach (Position jump in cAction.Jumps) {
+                        removePieceAt(jump);
+                    }
                 }
 
                 activePlayer = 1 - activePlayer;
@@ -127,18 +130,6 @@ namespace BeatTheComputer.Checkers
 
                 if (piecesOf(activePlayer).Count == 0 || getValidActions().Count == 0) {
                     winner = 1 - activePlayer;
-                }
-
-                int p1Count = 0;
-                int p2Count = 0;
-                for (int row = 0; row < Rows; row++) {
-                    for (int col = 0; col < Cols; col++) {
-                        if (board[row, col].Player == Player.ONE) {
-                            p1Count++;
-                        } else if (board[row, col].Player == Player.TWO) {
-                            p2Count++;
-                        }
-                    }
                 }
             }
         }

@@ -17,6 +17,10 @@ namespace BeatTheComputer.Shared
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
+            if (gameDecided()) {
+                return gameOutcome();
+            }
+
             IGameContext simulation = clone();
             IAction lastAction = null;
 

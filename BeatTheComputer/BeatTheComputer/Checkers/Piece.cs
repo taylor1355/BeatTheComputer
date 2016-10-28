@@ -26,30 +26,25 @@ namespace BeatTheComputer.Checkers
                 throw new InvalidOperationException("empty piece has no actions");
             }
 
-            Dictionary<Position, List<Position>> moves = new Dictionary<Position, List<Position>>();
-
-            List<Position> move = new List<Position>();
-            move.Add(position);
+            Dictionary<Position, CheckersAction> moves = new Dictionary<Position, CheckersAction>();
 
             foreach (Position dir in moveDirs()) {
                 Position movePos = position + dir;
                 if (movePos.inBounds(context.Rows, context.Cols) && context.playerAt(movePos) == Player.NONE) {
-                    move.Add(movePos);
-                    tryAddMove(new List<Position>(move), moves);
-                    move.RemoveAt(move.Count - 1);
+                    tryAddMove(new CheckersAction(position, movePos), moves);
                 }
             }
 
             addJumps(context, moves);
 
-            foreach (Position key in moves.Keys) {
-                actions.Add(new CheckersAction(moves[key]));
+            foreach (IAction action in moves.Values) {
+                actions.Add(action);
             }
 
             return actions;
         }
 
-        private void addJumps(CheckersContext context, Dictionary<Position, List<Position>> moves)
+        private void addJumps(CheckersContext context, Dictionary<Position, CheckersAction> moves)
         {
             List<Position> moveSoFar = new List<Position>();
             moveSoFar.Add(position);
@@ -57,13 +52,13 @@ namespace BeatTheComputer.Checkers
             addJumpsHelper(moveSoFar, context, new HashSet<Position>(), moves);
         }
 
-        private void addJumpsHelper(List<Position> moveSoFar, CheckersContext context, ISet<Position> alreadyJumped, Dictionary<Position, List<Position>> moves)
+        private void addJumpsHelper(List<Position> moveSoFar, CheckersContext context, ISet<Position> alreadyJumped, Dictionary<Position, CheckersAction> moves)
         {
             Position start = moveSoFar[moveSoFar.Count - 1];
             if (start != position && context.playerAt(start) != Player.NONE) {
                 return;
             } else if (moveSoFar.Count > 1) {
-                tryAddMove(new List<Position>(moveSoFar), moves);
+                tryAddMove(new CheckersAction(moveSoFar), moves);
             }
 
             foreach (Position dir in moveDirs()) {
@@ -81,12 +76,11 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        private bool tryAddMove(List<Position> move, Dictionary<Position, List<Position>> moves)
+        private bool tryAddMove(CheckersAction move, Dictionary<Position, CheckersAction> moves)
         {
-            Position endPos = move[move.Count - 1];
-            List<Position> currentMove;
-            if (!moves.TryGetValue(endPos, out currentMove) || move.Count > currentMove.Count) {
-                moves[endPos] = move;
+            CheckersAction currentMove;
+            if (!moves.TryGetValue(move.Destination, out currentMove) || move.NumJumps > currentMove.NumJumps) {
+                moves[move.Destination] = move;
                 return true;
             }
             return false;

@@ -7,24 +7,24 @@ namespace BeatTheComputer.GUI
 {
     public partial class MCTSSettings : Form
     {
-        MCTS modified;
+        ObjectWrapper<IBehavior> mctsWrapper;
 
-        public MCTSSettings(IBehavior mcts)
+        public MCTSSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {
             InitializeComponent();
             
-            modified = (MCTS) mcts;
+            this.mctsWrapper = behaviorWrapper;
         }
 
         private void MCTSSettings_Load(object sender, System.EventArgs e)
         {
-            tryToWinRadio.Checked = modified.TryingToWin;
-            tryToLoseRadio.Checked = !modified.TryingToWin;
-            thinkingTimeField.Text = (modified.TimeLimit / 1000).ToString();
-            iterationLimitField.Text = modified.IterationLimit.ToString();
-            rolloutsPerNodeField.Text = modified.RolloutsPerNode.ToString();
-            parallelTreesField.Text = modified.NumTrees.ToString();
-            exploreFactorField.Text = modified.ExploreFactor.ToString();
+            MCTS mcts = (MCTS) mctsWrapper.Reference;
+            tryToWinRadio.Checked = mcts.TryingToWin;
+            tryToLoseRadio.Checked = !mcts.TryingToWin;
+            thinkingTimeField.Text = (mcts.TimeLimit / 1000).ToString();
+            iterationLimitField.Text = mcts.IterationLimit.ToString();
+            parallelTreesField.Text = mcts.NumTrees.ToString();
+            exploreFactorField.Text = mcts.ExploreFactor.ToString();
         } 
 
         private void cancel_Click(object sender, System.EventArgs e)
@@ -46,11 +46,6 @@ namespace BeatTheComputer.GUI
                 errors += "Iteration Limit must be a positive integer.\n";
             }
 
-            int rolloutsPerNode;
-            if (!int.TryParse(rolloutsPerNodeField.Text, out rolloutsPerNode) || rolloutsPerNode <= 0) {
-                errors += "Rollouts / Node must be a positive integer.\n";
-            }
-
             int parallelTrees;
             if (!int.TryParse(parallelTreesField.Text, out parallelTrees) || parallelTrees <= 0) {
                 errors += "Parallel Trees must be a positive integer.\n";
@@ -64,15 +59,16 @@ namespace BeatTheComputer.GUI
             bool tryToWin = tryToWinRadio.Checked;
 
             if (errors.Length == 0) {
-                modified.reset(modified.RolloutBehavior, parallelTrees, rolloutsPerNode, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
+                MCTS mcts = (MCTS) mctsWrapper.Reference;
+                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, parallelTrees, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
                 this.Close();
             } else {
                 MessageBox.Show(errors);
             }
         }
 
-        public IBehavior Modified {
-            get { return modified; }
+        public IBehavior mcts {
+            get { return mcts; }
         }
     }
 }

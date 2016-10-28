@@ -49,7 +49,7 @@ namespace BeatTheComputer.GUI
 
         public void tryHumanTurn(IAction action)
         {
-            if (action.isValid(context) && isHumansTurn()) {
+            if (isHumansTurn() && action.isValid(context)) {
                 executeAction(action);
             }
         }
@@ -74,6 +74,10 @@ namespace BeatTheComputer.GUI
 
         public IGameContext Context {
             get { return context; }
+        }
+
+        public IAction LastAction {
+            get { return lastAction; }
         }
 
         public Player Turn {

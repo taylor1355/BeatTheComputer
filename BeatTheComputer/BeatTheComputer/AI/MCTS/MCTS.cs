@@ -8,7 +8,6 @@ namespace BeatTheComputer.AI.MCTS
     class MCTS : IBehavior
     {
         private IBehavior rolloutBehavior;
-        private int rolloutsPerNode;
         private double timeLimit;
         private int iterationLimit;
         private double exploreFactor;
@@ -17,15 +16,9 @@ namespace BeatTheComputer.AI.MCTS
         private MCTSTree[] trees;
         private IAction myLastAction;
 
-        public MCTS(IBehavior rolloutBehavior, int numTrees, int rolloutsPerNode, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
-        {
-            reset(rolloutBehavior, numTrees, rolloutsPerNode, timeLimit, iterationLimit, exploreFactor, tryToWin);
-        }
-
-        public void reset(IBehavior rolloutBehavior, int numTrees, int rolloutsPerNode, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
+        public MCTS(IBehavior rolloutBehavior, int numTrees, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
         {
             this.rolloutBehavior = rolloutBehavior;
-            this.rolloutsPerNode = rolloutsPerNode;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
             this.exploreFactor = exploreFactor;
@@ -39,31 +32,25 @@ namespace BeatTheComputer.AI.MCTS
         {
             if (trees[0] == null) {
                 for (int i = 0; i < trees.Length; i++) {
-                    trees[i] = new MCTSTree(context.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor, tryToWin);
+                    trees[i] = new MCTSTree(context.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
                 }
             }
 
             Dictionary<IAction, double>[] actionScoresList = new Dictionary<IAction, double>[trees.Length];
-
-            IGameContext contextClone = context.clone();
-            IAction opponentActionClone = null;
-            if (opponentAction != null) {
-                opponentActionClone = opponentAction.clone();
-            }
             
             Parallel.For(0, trees.Length, i => {
-                IGameContext myContextClone;
-                lock (contextClone) {
-                    myContextClone = contextClone.clone();
+                IGameContext contextClone;
+                lock (context) {
+                    contextClone = context.clone();
                 }
 
-                IAction myOpponentActionClone = null;
-                if (opponentActionClone != null) {
-                    lock (opponentActionClone) {
-                        myOpponentActionClone = opponentAction.clone();
+                IAction opponentActionClone = null;
+                if (opponentAction != null) {
+                    lock (opponentAction) {
+                        opponentActionClone = opponentAction.clone();
                     }
                 }
-
+                    
                 IAction myLastActionClone = null;
                 if (myLastAction != null) {
                     lock (myLastAction) {
@@ -71,7 +58,7 @@ namespace BeatTheComputer.AI.MCTS
                     }
                 }
 
-                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, myContextClone, myLastActionClone, myOpponentActionClone);
+                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, contextClone, myLastActionClone, opponentActionClone);
             });
 
             Dictionary<IAction, double> averageActionScores = new Dictionary<IAction, double>();
@@ -103,15 +90,11 @@ namespace BeatTheComputer.AI.MCTS
         //does not save game tree
         public IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), trees.Length, rolloutsPerNode, timeLimit, iterationLimit, exploreFactor, tryToWin);
+            return new MCTS(rolloutBehavior.clone(), trees.Length, timeLimit, iterationLimit, exploreFactor, tryToWin);
         }
 
         public IBehavior RolloutBehavior {
             get { return rolloutBehavior; }
-        }
-
-        public int RolloutsPerNode {
-            get { return rolloutsPerNode; }
         }
 
         public int NumTrees {

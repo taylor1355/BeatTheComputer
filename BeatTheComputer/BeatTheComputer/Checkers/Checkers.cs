@@ -15,6 +15,7 @@ namespace BeatTheComputer.Checkers
         {
             Selected,
             Destination,
+            Moved,
             None
         }
         private Dictionary<Highlight, Color> highlightColors;
@@ -22,7 +23,9 @@ namespace BeatTheComputer.Checkers
 
         private Bitmap emptyImg = BeatTheComputer.Properties.Resources.Empty;
         private Bitmap p1Img = BeatTheComputer.Properties.Resources.CheckersPieceWhite;
+        private Bitmap p1KingImg = BeatTheComputer.Properties.Resources.CheckersPieceKingWhite;
         private Bitmap p2Img = BeatTheComputer.Properties.Resources.CheckersPieceRed;
+        private Bitmap p2KingImg = BeatTheComputer.Properties.Resources.CheckersPieceKingRed;
 
         private PictureBox[,] squares;
         private int squareLength;
@@ -55,8 +58,9 @@ namespace BeatTheComputer.Checkers
             CheckersContext cContext = (CheckersContext) context;
 
             highlightColors = new Dictionary<Highlight, Color>();
-            highlightColors.Add(Highlight.Selected, Color.Green);
+            highlightColors.Add(Highlight.Selected, Color.Orange);
             highlightColors.Add(Highlight.Destination, Color.Yellow);
+            highlightColors.Add(Highlight.Moved, Color.LightGray);
 
             highlightedSquares = new Dictionary<Position, Highlight>();
 
@@ -84,12 +88,17 @@ namespace BeatTheComputer.Checkers
                 }
             }
 
+            if (controller.LastAction != null) {
+                resetHighlights(true);
+                highlightMove(controller.LastAction);
+            }
+
             if (context.gameDecided()) {
                 Player winner = context.getWinningPlayer();
-                if (context.getWinningPlayer() != Player.NONE) {
-                    MessageBox.Show("Player " + winner + " wins!");
-                } else {
+                if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
+                } else {
+                    MessageBox.Show("Player " + winner + " wins!");
                 }
             }
         }
@@ -98,11 +107,28 @@ namespace BeatTheComputer.Checkers
         {
             Position pos = new Position(row, col);
             if (context.playerAt(pos) == Player.ONE) {
-                return p1Img;
+                if (context.pieceAt(pos).Promoted) {
+                    return p1KingImg;
+                } else {
+                    return p1Img;
+                }
             } else if (context.playerAt(pos) == Player.TWO) {
-                return p2Img;
+                if (context.pieceAt(pos).Promoted) {
+                    return p2KingImg;
+                } else {
+                    return p2Img;
+                }
             } else {
                 return emptyImg;
+            }
+        }
+
+        private void highlightMove(IAction action)
+        {
+            CheckersAction cAction = action as CheckersAction;
+            if (action != null) {
+                setHighlight(cAction.Start, Highlight.Moved);
+                setHighlight(cAction.Destination, Highlight.Moved);
             }
         }
 
@@ -115,15 +141,17 @@ namespace BeatTheComputer.Checkers
             }
 
             squares[pos.Row, pos.Col].BackColor = colorOf(pos, newHighlight);
-
         }
 
-        private void resetHighlights()
+        private void resetHighlights(bool clearLastMove)
         {
-            foreach (Position pos in highlightedSquares.Keys) {
-                squares[pos.Row, pos.Col].BackColor = colorOf(pos);
+            Dictionary<Position, Highlight> highlightedSquaresClone = new Dictionary<Position, Highlight>(highlightedSquares);
+            foreach (Position pos in highlightedSquaresClone.Keys) {
+                if (clearLastMove || highlightedSquares[pos] != Highlight.Moved) {
+                    squares[pos.Row, pos.Col].BackColor = colorOf(pos);
+                    highlightedSquares.Remove(pos);
+                }
             }
-            highlightedSquares.Clear();
         }
 
         private Color colorOf(Position pos, Highlight highlight = Highlight.None)
@@ -142,11 +170,12 @@ namespace BeatTheComputer.Checkers
             return color;
         }
 
-        private Color mixColors(Color c1, Color c2)
+        private Color mixColors(Color primary, Color highlight)
         {
-            int red = (c1.R + c2.R) / 2;
-            int green = (c1.G + c2.G) / 2;
-            int blue = (c1.G + c2.G) / 2;
+            const double ratio = 0.85;
+            int red = (int) (ratio * primary.R + (1 - ratio) * highlight.R);
+            int green = (int) (ratio * primary.G + (1 - ratio) * highlight.G);
+            int blue = (int) (ratio * primary.B + (1 - ratio) * highlight.B);
             return Color.FromArgb(red, green, blue);
         }
 
@@ -171,9 +200,11 @@ namespace BeatTheComputer.Checkers
                 Position pos = (Position) square.Tag;
                 CheckersContext context = (CheckersContext) controller.Context;
 
+                highlightMove(controller.LastAction);
+
                 if (context.playerAt(pos) == controller.Turn) {
                     if (availableActions != null) {
-                        resetHighlights();
+                        resetHighlights(false);
                         availableActions = null;
                     }
 
@@ -188,10 +219,10 @@ namespace BeatTheComputer.Checkers
                         setHighlight(pos, Highlight.Selected);
                     }
                 } else if (availableActions != null) {
-                    resetHighlights();
-
                     if (availableActions.ContainsKey(pos)) {
                         controller.tryHumanTurn(availableActions[pos]);
+                    } else {
+                        resetHighlights(false);
                     }
 
                     availableActions = null;

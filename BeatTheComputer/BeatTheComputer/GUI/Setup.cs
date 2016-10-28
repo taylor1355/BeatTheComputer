@@ -42,7 +42,7 @@ namespace BeatTheComputer.GUI
             p2List.SelectedIndex = 1;
 
             gameList.Items.AddRange(defaultGamesList());
-            gameList.SelectedIndex = 1;
+            gameList.SelectedIndex = gameList.Items.Count - 1;
         }
 
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
@@ -62,18 +62,23 @@ namespace BeatTheComputer.GUI
 
         private void p1Settings_Click(object sender, EventArgs e)
         {
-            openSettings(player1);
+            ObjectWrapper<IBehavior> p1Wrapper = new ObjectWrapper<IBehavior>(player1);
+            openSettings(p1Wrapper);
+            player1 = p1Wrapper.Reference;
         }
 
         private void p2Settings_Click(object sender, EventArgs e)
         {
-            openSettings(player2);
+            ObjectWrapper<IBehavior> p2Wrapper = new ObjectWrapper<IBehavior>(player2);
+            openSettings(p2Wrapper);
+            player2 = p2Wrapper.Reference;
         }
 
-        private void openSettings(IBehavior player)
+        private void openSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {
+            IBehavior player = behaviorWrapper.Reference;
             if (player != null && behaviorToSettingTypes.ContainsKey(player.GetType())) {
-                Form settings = (Form) Activator.CreateInstance(behaviorToSettingTypes[player.GetType()], player);
+                Form settings = (Form) Activator.CreateInstance(behaviorToSettingTypes[player.GetType()], behaviorWrapper);
                 settings.ShowDialog();
             }
         }
@@ -94,7 +99,7 @@ namespace BeatTheComputer.GUI
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 4, 1, 2500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 5000, int.MaxValue, 1.41, true));
             behaviorsList.Add(new PlayRandom());
             behaviorsList.Add(new PlayMostlyRandom());
             return behaviorsList.ToArray();
@@ -105,7 +110,7 @@ namespace BeatTheComputer.GUI
             List<IGameContext> gamesList = new List<IGameContext>();
             gamesList.Add(new TicTacToeContext());
             gamesList.Add(new ConnectFourContext(6, 7));
-            gamesList.Add(new CheckersContext(8, 8, 3, 100));
+            gamesList.Add(new CheckersContext(8, 8, 3, 150));
             return gamesList.ToArray();
         }
 

@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace BeatTheComputer.AI.MCTS
 {
@@ -13,7 +11,6 @@ namespace BeatTheComputer.AI.MCTS
         private double exploreFactor;
 
         private IBehavior rolloutBehavior;
-        private int rolloutsPerNode;
         private bool tryToWin;
 
         private Player activePlayer;
@@ -22,12 +19,11 @@ namespace BeatTheComputer.AI.MCTS
         private double visits;
         private Dictionary<IAction, MCTSNode> children;
 
-        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor, bool tryToWin)
+        public MCTSNode(IGameContext context, IBehavior rolloutBehavior, double exploreFactor, bool tryToWin)
         {
             this.exploreFactor = exploreFactor;
 
             this.rolloutBehavior = rolloutBehavior;
-            this.rolloutsPerNode = rolloutsPerNode;
             this.tryToWin = tryToWin;
 
             activePlayer = context.getActivePlayer();
@@ -87,22 +83,14 @@ namespace BeatTheComputer.AI.MCTS
                 foreach (IAction action in validActions) {
                     IGameContext successor = context.clone();
                     successor.applyAction(action);
-                    children.Add(action, new MCTSNode(successor, rolloutBehavior, rolloutsPerNode, exploreFactor, tryToWin));
+                    children.Add(action, new MCTSNode(successor, rolloutBehavior, exploreFactor, tryToWin));
                 }
             }
         }
 
         private double simulate(IGameContext context)
         {
-            if (context.gameDecided()) {
-                return 0.5 * (double) context.gameOutcome();
-            }
-
-            double[] rolloutResults = new double[rolloutsPerNode];
-            Parallel.For(0, rolloutResults.Length, i => {
-                rolloutResults[i] = 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
-            });
-            return rolloutResults.Average();
+            return 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
         }
 
         private void backPropagate(double rolloutResult, List<MCTSNode> visited)
