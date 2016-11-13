@@ -6,8 +6,10 @@ using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BeatTheComputer.GUI
 {
@@ -42,7 +44,7 @@ namespace BeatTheComputer.GUI
             p2List.SelectedIndex = 1;
 
             gameList.Items.AddRange(defaultGamesList());
-            gameList.SelectedIndex = 1;
+            gameList.SelectedIndex = gameList.Items.Count - 1;
         }
 
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
@@ -62,39 +64,61 @@ namespace BeatTheComputer.GUI
 
         private void p1Settings_Click(object sender, EventArgs e)
         {
-            openSettings(player1);
+            ObjectWrapper<IBehavior> p1Wrapper = new ObjectWrapper<IBehavior>(player1);
+            openSettings(p1Wrapper);
+            player1 = p1Wrapper.Reference;
         }
 
         private void p2Settings_Click(object sender, EventArgs e)
         {
-            openSettings(player2);
+            ObjectWrapper<IBehavior> p2Wrapper = new ObjectWrapper<IBehavior>(player2);
+            openSettings(p2Wrapper);
+            player2 = p2Wrapper.Reference;
         }
 
-        private void openSettings(IBehavior player)
+        private void openSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {
+            IBehavior player = behaviorWrapper.Reference;
             if (player != null && behaviorToSettingTypes.ContainsKey(player.GetType())) {
-                Form settings = (Form) Activator.CreateInstance(behaviorToSettingTypes[player.GetType()], player);
+                Form settings = (Form) Activator.CreateInstance(behaviorToSettingTypes[player.GetType()], behaviorWrapper);
                 settings.ShowDialog();
             }
         }
 
         private void playGame_Click(object sender, EventArgs e)
         {
-            GameController controller = new GameController(tryClone(context), tryClone(player1), tryClone(player2));
+            GameController controller = new GameController(context.clone(), player1.clone(), player2.clone());
             Form form = (Form) Activator.CreateInstance(gameToFormTypes[context.GetType()], controller);
             form.Show();
         }
 
-        private void runSimulations_Click(object sender, EventArgs e)
+        async private void runSimulations_Click(object sender, EventArgs e)
         {
-            
+            if (player1 is DummyBehavior || player2 is DummyBehavior) {
+                MessageBox.Show("Can't run simulations with a human");
+            } else {
+                Stopwatch timer = null;
+                int simulations = 10000;
+                double result = -1;
+                await Task.Run(() => {
+                    timer = Stopwatch.StartNew();
+                    result = Benchmark.compare(player1.clone(), player2.clone(), context.clone(), simulations, false);
+                    timer.Stop();
+                });
+
+                string games = "Simulations: " + simulations + "\n";
+                string time = "Time: " + ((double) timer.ElapsedMilliseconds) / 1000 + " sec\n";
+                string timePer = "Avg Time per Simulation: " + ((double) timer.ElapsedMilliseconds) / simulations + " ms\n";
+                string winRate = "Player 1 win rate: " + result + "\n";
+                MessageBox.Show(games + time + timePer + winRate);
+            }
         }
 
         private object[] defaultBehaviorsList()
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 4, 1, 2500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
             behaviorsList.Add(new PlayRandom());
             behaviorsList.Add(new PlayMostlyRandom());
             return behaviorsList.ToArray();
@@ -105,20 +129,13 @@ namespace BeatTheComputer.GUI
             List<IGameContext> gamesList = new List<IGameContext>();
             gamesList.Add(new TicTacToeContext());
             gamesList.Add(new ConnectFourContext(6, 7));
-            gamesList.Add(new CheckersContext(8, 8, 3, 100));
+            gamesList.Add(new CheckersContext(8, 8, 3, 150));
             return gamesList.ToArray();
         }
 
-        private IGameContext tryClone(IGameContext context)
+        private void Setup_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (context == null) return null;
-            else return context.clone();
-        }
-
-        private IBehavior tryClone(IBehavior behavior)
-        {
-            if (behavior == null) return null;
-            else return behavior.clone();
+            Application.Exit();
         }
     }
 }

@@ -169,6 +169,7 @@
             this.MaximizeBox = false;
             this.Name = "Setup";
             this.Text = "Setup";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Setup_FormClosed);
             this.Load += new System.EventHandler(this.MainMenu_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -16,7 +16,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -65,7 +65,7 @@
     <Compile Include="Checkers\CheckersAction.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
     <Compile Include="Checkers\Piece.cs" />
-    <Compile Include="Checkers\Position.cs" />
+    <Compile Include="Utils\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +80,7 @@
     <Compile Include="GUI\MCTSSettings.Designer.cs">
       <DependentUpon>MCTSSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ObjectWrapper.cs" />
     <Compile Include="GUI\Setup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +114,7 @@
     <Compile Include="TicTacToe\TicTacToeContext.cs" />
     <Compile Include="Utils\BoardUtils.cs" />
     <Compile Include="Utils\FormUtils.cs" />
+    <Compile Include="Utils\IndexedSet.cs" />
     <EmbeddedResource Include="Checkers\Checkers.resx">
       <DependentUpon>Checkers.cs</DependentUpon>
     </EmbeddedResource>
@@ -178,6 +180,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CheckersPieceWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceKingRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckersPieceKingWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

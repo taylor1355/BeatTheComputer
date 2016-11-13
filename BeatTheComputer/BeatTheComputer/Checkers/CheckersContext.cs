@@ -1,4 +1,5 @@
 ﻿using BeatTheComputer.Shared;
+using BeatTheComputer.Utils;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace BeatTheComputer.Checkers
         private Dictionary<Position, Piece> p1Pieces;
         private Dictionary<Position, Piece> p2Pieces;
 
-        private ISet<IAction> validActions;
+        private IList<IAction> validActions;
 
         public CheckersContext(int rows, int cols, int pieceRows, int moveLimit)
         {
@@ -78,7 +79,7 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        public override ICollection<IAction> getValidActions()
+        public override IList<IAction> getValidActions()
         {
             generateValidActions();
             return validActions;
@@ -87,10 +88,14 @@ namespace BeatTheComputer.Checkers
         private void generateValidActions()
         {
             if (validActions == null) {
-                validActions = new HashSet<IAction>();
+                validActions = new IndexedSet<IAction>();
                 Dictionary<Position, Piece> myPieces = piecesOf(activePlayer);
-                foreach (Position pos in myPieces.Keys) {
-                    validActions.UnionWith(myPieces[pos].getActions(this));
+
+                foreach (Piece piece in myPieces.Values) {
+                    IList<IAction> subset = piece.getActions(this);
+                    for (int i = 0; i < subset.Count; i++) {
+                        validActions.Add(subset[i]);
+                    }
                 }
             }
         }
@@ -112,8 +117,10 @@ namespace BeatTheComputer.Checkers
 
                 CheckersAction cAction = (CheckersAction) action;
                 movePiece(cAction.Start, cAction.Destination);
-                foreach (Position jump in cAction.Jumps) {
-                    removePieceAt(jump);
+                if (cAction.NumJumps > 0) {
+                    foreach (Position jump in cAction.Jumps) {
+                        removePieceAt(jump);
+                    }
                 }
 
                 activePlayer = 1 - activePlayer;
@@ -123,18 +130,6 @@ namespace BeatTheComputer.Checkers
 
                 if (piecesOf(activePlayer).Count == 0 || getValidActions().Count == 0) {
                     winner = 1 - activePlayer;
-                }
-
-                int p1Count = 0;
-                int p2Count = 0;
-                for (int row = 0; row < Rows; row++) {
-                    for (int col = 0; col < Cols; col++) {
-                        if (board[row, col].Player == Player.ONE) {
-                            p1Count++;
-                        } else if (board[row, col].Player == Player.TWO) {
-                            p2Count++;
-                        }
-                    }
                 }
             }
         }
@@ -178,10 +173,6 @@ namespace BeatTheComputer.Checkers
         public override bool equalTo(object obj)
         {
             CheckersContext other = obj as CheckersContext;
-            if (other == null) {
-                return false;
-            }
-
             if (other == null || Rows != other.Rows || Cols != other.Cols || moves != other.moves
                 || moveLimit != other.moveLimit || !piecesEqual(p1Pieces, other.p1Pieces)
                 || !piecesEqual(p2Pieces, other.p2Pieces)) {
@@ -197,8 +188,8 @@ namespace BeatTheComputer.Checkers
                 return false;
             }
 
-            foreach (Position key in pieces1.Keys) {
-                if (!pieces2.ContainsKey(key) || pieces1[key] != pieces2[key]) {
+            foreach (KeyValuePair<Position, Piece> entry in pieces1) {
+                if (!pieces2.ContainsKey(entry.Key) || entry.Value != pieces2[entry.Key]) {
                     return false;
                 }
             }
@@ -217,9 +208,6 @@ namespace BeatTheComputer.Checkers
             Dictionary<Position, Piece> cloneP1Pieces = new Dictionary<Position, Piece>(p1Pieces);
             Dictionary<Position, Piece> cloneP2Pieces = new Dictionary<Position, Piece>(p2Pieces);
             CheckersContext clone = new CheckersContext(moveLimit, cloneBoard, cloneP1Pieces, cloneP2Pieces);
-            if (validActions != null) {
-                clone.validActions = new HashSet<IAction>(validActions);
-            }
             clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;

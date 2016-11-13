@@ -11,23 +11,27 @@ namespace BeatTheComputer.Shared
         protected Player winner;
         protected int moves;
 
-        public abstract ICollection<IAction> getValidActions();
+        public abstract IList<IAction> getValidActions();
 
         public abstract void applyAction(IAction action);
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
+            if (gameDecided()) {
+                return gameOutcome();
+            }
+
             IGameContext simulation = clone();
             IAction lastAction = null;
 
-            while (!simulation.gameDecided()) {
+            do {
                 if (simulation.getActivePlayer() == 0) {
                     lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
                     lastAction = behavior2.requestAction(simulation, lastAction);
                 }
                 simulation.applyAction(lastAction);
-            }
+            } while (!simulation.gameDecided());
 
             return simulation.gameOutcome();
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BeatTheComputer.Checkers
+namespace BeatTheComputer.Utils
 {
     struct Position
     {

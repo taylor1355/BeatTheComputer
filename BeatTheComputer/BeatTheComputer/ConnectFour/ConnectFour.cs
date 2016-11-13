@@ -34,13 +34,18 @@ namespace BeatTheComputer.ConnectFour
             controller.tryComputerTurn();
         }
 
+        private void ConnectFour_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            controller.stop();
+        }
+
         private void initGraphics(IGameContext context)
         {
             ConnectFourContext c4Context = (ConnectFourContext) context;
 
             int padding = 10;
-            int rows = c4Context.Board.GetLength(0);
-            int cols = c4Context.Board.GetLength(1);
+            int rows = c4Context.Rows;
+            int cols = c4Context.Cols;
             holes = new PictureBox[rows, cols];
             holeLength = 100;
 
@@ -65,10 +70,10 @@ namespace BeatTheComputer.ConnectFour
 
             if (context.gameDecided()) {
                 Player winner = context.getWinningPlayer();
-                if (context.getWinningPlayer() != Player.NONE) {
-                    MessageBox.Show("Player " + winner + " wins!");
-                } else {
+                if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
+                } else {
+                    MessageBox.Show("Player " + winner + " wins!");
                 }
             }
         }
@@ -87,9 +92,10 @@ namespace BeatTheComputer.ConnectFour
 
         private Bitmap imageOf(int row, int col, ConnectFourContext context)
         {
-            if (context.Board[row, col] == Player.ONE) {
+            Position pos = new Position(row, col);
+            if (context.playerAt(pos) == Player.ONE) {
                 return p1Img;
-            } else if (context.Board[row, col] == Player.TWO) {
+            } else if (context.playerAt(pos) == Player.TWO) {
                 return p2Img;
             } else {
                 return emptyImg;

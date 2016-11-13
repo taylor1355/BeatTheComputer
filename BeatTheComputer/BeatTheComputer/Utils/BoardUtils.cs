@@ -6,11 +6,6 @@ namespace BeatTheComputer.Utils
     {
         private BoardUtils() { }
 
-        public static bool inBounds<T>(T[,] board, int row, int col)
-        {
-            return row >= 0 && row < board.GetLength(0) && col >= 0 && col < board.GetLength(1);
-        }
-
         public static int rowCount<T>(T[,] board, T item, int row)
         {
             int count = 0;

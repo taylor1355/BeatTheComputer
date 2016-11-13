@@ -33,12 +33,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(557, 452);
+            this.ClientSize = new System.Drawing.Size(271, 122);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "ConnectFour";
             this.Text = "Connect4";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConnectFour_FormClosed);
             this.Shown += new System.EventHandler(this.ConnectFour_Shown);
             this.ResumeLayout(false);
 

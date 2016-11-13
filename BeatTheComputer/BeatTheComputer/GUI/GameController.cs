@@ -28,15 +28,27 @@ namespace BeatTheComputer.GUI
             lastAction = null;
         }
 
-        private void executeAction(IAction action)
+        public void stop()
         {
             turn = Player.NONE;
-            context.applyAction(action);
-            lastAction = action;
-            updateViewMethod(context);
-            if (!context.gameDecided()) {
-                turn = context.getActivePlayer();
-                tryComputerTurn();
+            context = null;
+            player1 = null;
+            player2 = null;
+            updateViewMethod = null;
+            lastAction = null;
+        }
+
+        private void executeAction(IAction action)
+        {
+            if (turn != Player.NONE) {
+                turn = Player.NONE;
+                context.applyAction(action);
+                lastAction = action;
+                updateViewMethod(context);
+                if (!context.gameDecided()) {
+                    turn = context.getActivePlayer();
+                    tryComputerTurn();
+                }
             }
         }
 
@@ -49,7 +61,7 @@ namespace BeatTheComputer.GUI
 
         public void tryHumanTurn(IAction action)
         {
-            if (action.isValid(context) && isHumansTurn()) {
+            if (isHumansTurn() && action.isValid(context)) {
                 executeAction(action);
             }
         }
@@ -74,6 +86,10 @@ namespace BeatTheComputer.GUI
 
         public IGameContext Context {
             get { return context; }
+        }
+
+        public IAction LastAction {
+            get { return lastAction; }
         }
 
         public Player Turn {

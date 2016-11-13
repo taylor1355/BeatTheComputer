@@ -11,9 +11,9 @@ namespace BeatTheComputer.AI.MCTS
         private MCTSNode root;
         private IGameContext rootContext;
 
-        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, int rolloutsPerNode, double exploreFactor, bool tryToWin)
+        public MCTSTree(IGameContext rootContext, IBehavior rolloutBehavior, double exploreFactor, bool tryToWin)
         {
-            root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), rolloutsPerNode, exploreFactor, tryToWin);
+            root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
             this.rootContext = rootContext;
         }
 
@@ -40,7 +40,7 @@ namespace BeatTheComputer.AI.MCTS
             }
 
             int iterations = 0;
-            while (timer.ElapsedMilliseconds < maxTime && iterations < Math.Max(1, maxIterations)) {
+            while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations)) {
                 root.step(rootContext);
                 iterations++;
             };

@@ -63,6 +63,26 @@ namespace BeatTheComputer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CheckersPieceKingRed {
+            get {
+                object obj = ResourceManager.GetObject("CheckersPieceKingRed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CheckersPieceKingWhite {
+            get {
+                object obj = ResourceManager.GetObject("CheckersPieceKingWhite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CheckersPieceRed {
             get {
                 object obj = ResourceManager.GetObject("CheckersPieceRed", resourceCulture);
