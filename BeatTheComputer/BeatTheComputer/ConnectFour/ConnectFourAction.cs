@@ -5,29 +5,26 @@ namespace BeatTheComputer.ConnectFour
 {
     class ConnectFourAction : IAction
     {
-        private int row;
-        private int col;
+        private Position position;
         private Player player;
 
         public ConnectFourAction(int col, Player player, ConnectFourContext context)
         {
-            row = context.topRowOf(col);
-            this.col = col;
+            position = new Position(context.topRowOf(col), col);
             this.player = player;
         }
 
-        private ConnectFourAction(int row, int col, Player playerID)
+        private ConnectFourAction(Position position, Player playerID)
         {
-            this.row = row;
-            this.col = col;
+            this.position = position;
             this.player = playerID;
         }
 
         public bool isValid(IGameContext context)
         {
             ConnectFourContext c4Context = context as ConnectFourContext;
-            return BoardUtils.inBounds(c4Context.Board, row, col) 
-                && c4Context.Board[row, col] == Player.NONE
+            return position.inBounds(c4Context.Rows, c4Context.Cols)
+                && c4Context.playerAt(position) == Player.NONE
                 && player == context.getActivePlayer();
         }
 
@@ -44,28 +41,21 @@ namespace BeatTheComputer.ConnectFour
         private bool equalTo(object obj)
         {
             ConnectFourAction other = obj as ConnectFourAction;
-            if (other == null) {
-                return false;
-            }
-            return col == other.col && player == other.player;
+            return other != null && position == other.position && player == other.player;
         }
 
         public override int GetHashCode()
         {
-            return PlayerUtils.valueOf(player) + col * 19;
+            return PlayerUtils.valueOf(player) + position.Col * 19;
         }
 
         public IAction clone()
         {
-            return new ConnectFourAction(row, col, player);
+            return new ConnectFourAction(position, player);
         }
 
-        public int Row {
-            get { return row; }
-        }
-
-        public int Col {
-            get { return col; }
+        public Position Position {
+            get { return position; }
         }
 
         public Player Player {

@@ -24,14 +24,14 @@ namespace BeatTheComputer.Shared
             IGameContext simulation = clone();
             IAction lastAction = null;
 
-            while (!simulation.gameDecided()) {
+            do {
                 if (simulation.getActivePlayer() == 0) {
                     lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
                     lastAction = behavior2.requestAction(simulation, lastAction);
                 }
                 simulation.applyAction(lastAction);
-            }
+            } while (!simulation.gameDecided());
 
             return simulation.gameOutcome();
         }

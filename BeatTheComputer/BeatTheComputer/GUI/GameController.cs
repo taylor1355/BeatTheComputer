@@ -28,15 +28,27 @@ namespace BeatTheComputer.GUI
             lastAction = null;
         }
 
-        private void executeAction(IAction action)
+        public void stop()
         {
             turn = Player.NONE;
-            context.applyAction(action);
-            lastAction = action;
-            updateViewMethod(context);
-            if (!context.gameDecided()) {
-                turn = context.getActivePlayer();
-                tryComputerTurn();
+            context = null;
+            player1 = null;
+            player2 = null;
+            updateViewMethod = null;
+            lastAction = null;
+        }
+
+        private void executeAction(IAction action)
+        {
+            if (turn != Player.NONE) {
+                turn = Player.NONE;
+                context.applyAction(action);
+                lastAction = action;
+                updateViewMethod(context);
+                if (!context.gameDecided()) {
+                    turn = context.getActivePlayer();
+                    tryComputerTurn();
+                }
             }
         }
 

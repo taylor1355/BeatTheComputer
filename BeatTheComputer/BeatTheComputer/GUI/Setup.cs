@@ -6,8 +6,10 @@ using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BeatTheComputer.GUI
 {
@@ -85,21 +87,38 @@ namespace BeatTheComputer.GUI
 
         private void playGame_Click(object sender, EventArgs e)
         {
-            GameController controller = new GameController(tryClone(context), tryClone(player1), tryClone(player2));
+            GameController controller = new GameController(context.clone(), player1.clone(), player2.clone());
             Form form = (Form) Activator.CreateInstance(gameToFormTypes[context.GetType()], controller);
             form.Show();
         }
 
-        private void runSimulations_Click(object sender, EventArgs e)
+        async private void runSimulations_Click(object sender, EventArgs e)
         {
-            
+            if (player1 is DummyBehavior || player2 is DummyBehavior) {
+                MessageBox.Show("Can't run simulations with a human");
+            } else {
+                Stopwatch timer = null;
+                int simulations = 10000;
+                double result = -1;
+                await Task.Run(() => {
+                    timer = Stopwatch.StartNew();
+                    result = Benchmark.compare(player1.clone(), player2.clone(), context.clone(), simulations, false);
+                    timer.Stop();
+                });
+
+                string games = "Simulations: " + simulations + "\n";
+                string time = "Time: " + ((double) timer.ElapsedMilliseconds) / 1000 + " sec\n";
+                string timePer = "Avg Time per Simulation: " + ((double) timer.ElapsedMilliseconds) / simulations + " ms\n";
+                string winRate = "Player 1 win rate: " + result + "\n";
+                MessageBox.Show(games + time + timePer + winRate);
+            }
         }
 
         private object[] defaultBehaviorsList()
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 5000, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
             behaviorsList.Add(new PlayRandom());
             behaviorsList.Add(new PlayMostlyRandom());
             return behaviorsList.ToArray();
@@ -114,16 +133,9 @@ namespace BeatTheComputer.GUI
             return gamesList.ToArray();
         }
 
-        private IGameContext tryClone(IGameContext context)
+        private void Setup_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (context == null) return null;
-            else return context.clone();
-        }
-
-        private IBehavior tryClone(IBehavior behavior)
-        {
-            if (behavior == null) return null;
-            else return behavior.clone();
+            Application.Exit();
         }
     }
 }

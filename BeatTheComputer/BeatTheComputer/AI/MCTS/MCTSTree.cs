@@ -40,7 +40,7 @@ namespace BeatTheComputer.AI.MCTS
             }
 
             int iterations = 0;
-            while (timer.ElapsedMilliseconds < maxTime && iterations < Math.Max(1, maxIterations)) {
+            while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations)) {
                 root.step(rootContext);
                 iterations++;
             };

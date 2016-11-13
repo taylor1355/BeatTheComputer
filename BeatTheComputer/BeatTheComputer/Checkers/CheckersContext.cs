@@ -173,10 +173,6 @@ namespace BeatTheComputer.Checkers
         public override bool equalTo(object obj)
         {
             CheckersContext other = obj as CheckersContext;
-            if (other == null) {
-                return false;
-            }
-
             if (other == null || Rows != other.Rows || Cols != other.Cols || moves != other.moves
                 || moveLimit != other.moveLimit || !piecesEqual(p1Pieces, other.p1Pieces)
                 || !piecesEqual(p2Pieces, other.p2Pieces)) {
@@ -192,8 +188,8 @@ namespace BeatTheComputer.Checkers
                 return false;
             }
 
-            foreach (Position key in pieces1.Keys) {
-                if (!pieces2.ContainsKey(key) || pieces1[key] != pieces2[key]) {
+            foreach (KeyValuePair<Position, Piece> entry in pieces1) {
+                if (!pieces2.ContainsKey(entry.Key) || entry.Value != pieces2[entry.Key]) {
                     return false;
                 }
             }
@@ -212,9 +208,6 @@ namespace BeatTheComputer.Checkers
             Dictionary<Position, Piece> cloneP1Pieces = new Dictionary<Position, Piece>(p1Pieces);
             Dictionary<Position, Piece> cloneP2Pieces = new Dictionary<Position, Piece>(p2Pieces);
             CheckersContext clone = new CheckersContext(moveLimit, cloneBoard, cloneP1Pieces, cloneP2Pieces);
-            if (validActions != null) {
-                clone.validActions = new IndexedSet<IAction>(validActions);
-            }
             clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;

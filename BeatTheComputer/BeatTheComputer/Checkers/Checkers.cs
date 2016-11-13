@@ -188,7 +188,6 @@ namespace BeatTheComputer.Checkers
             square.SizeMode = PictureBoxSizeMode.StretchImage;
             square.Image = imageOf(row, col, (CheckersContext) controller.Context);
             square.BackColor = colorOf(new Position(row, col));
-            square.BorderStyle = BorderStyle.FixedSingle;
             square.Click += new EventHandler(square_Clicked);
             return square;
         }

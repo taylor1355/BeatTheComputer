@@ -26,10 +26,11 @@ namespace BeatTheComputer.TicTacToe
         public override IList<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
-            for (int row = 0; row < board.GetLength(0); row++) {
-                for (int col = 0; col < board.GetLength(1); col++) {
-                    if (board[row, col] == Player.NONE) {
-                        validActions.Add(new TicTacToeAction(row, col, activePlayer));
+            for (int row = 0; row < Rows; row++) {
+                for (int col = 0; col < Cols; col++) {
+                    Position pos = new Position(row, col);
+                    if (playerAt(pos) == Player.NONE) {
+                        validActions.Add(new TicTacToeAction(pos, activePlayer));
                     }
                 }
             }
@@ -44,7 +45,7 @@ namespace BeatTheComputer.TicTacToe
                 }
 
                 TicTacToeAction tttAction = (TicTacToeAction) action;
-                board[tttAction.Row, tttAction.Col] = tttAction.Player;
+                setPlayer(tttAction.Position, tttAction.Player);
                 activePlayer = 1 - activePlayer;
                 moves++;
                 if (moves >= 5) {
@@ -56,22 +57,22 @@ namespace BeatTheComputer.TicTacToe
         private Player getWinner()
         {
             for (int i = 0; i < board.GetLength(0); i++) {
-                if (BoardUtils.rowCount(board, Player.ONE, i) == board.GetLength(0)) {
+                if (BoardUtils.rowCount(board, Player.ONE, i) == Rows) {
                     return Player.ONE;
-                } else if (BoardUtils.rowCount(board, Player.TWO, i) == board.GetLength(0)) {
+                } else if (BoardUtils.rowCount(board, Player.TWO, i) == Rows) {
                     return Player.TWO;
                 }
 
-                if (BoardUtils.colCount(board, Player.ONE, i) == board.GetLength(0)) {
+                if (BoardUtils.colCount(board, Player.ONE, i) == Rows) {
                     return Player.ONE;
-                } else if (BoardUtils.colCount(board, Player.TWO, i) == board.GetLength(0)) {
+                } else if (BoardUtils.colCount(board, Player.TWO, i) == Rows) {
                     return Player.TWO;
                 }
 
                 if (i <= 1) {
-                    if (BoardUtils.diagonalCount(board, Player.ONE, i) == board.GetLength(0)) {
+                    if (BoardUtils.diagonalCount(board, Player.ONE, i) == Rows) {
                         return Player.ONE;
-                    } else if (BoardUtils.diagonalCount(board, Player.TWO, i) == board.GetLength(0)) {
+                    } else if (BoardUtils.diagonalCount(board, Player.TWO, i) == Rows) {
                         return Player.TWO;
                     }
                 }
@@ -80,6 +81,16 @@ namespace BeatTheComputer.TicTacToe
         }
 
         public override bool gameDecided() { return winner != Player.NONE || moves >= board.Length; }
+
+        private void setPlayer(Position pos, Player player)
+        {
+            board[pos.Row, pos.Col] = player;
+        }
+
+        public Player playerAt(Position pos)
+        {
+            return board[pos.Row, pos.Col];
+        }
 
         public override bool equalTo(object obj)
         {
@@ -93,6 +104,7 @@ namespace BeatTheComputer.TicTacToe
                     if (board[row, col] != other.board[row, col]) return false;
                 }
             }
+
             return true;
         }
 
@@ -111,8 +123,12 @@ namespace BeatTheComputer.TicTacToe
             return clone;
         }
 
-        public Player[,] Board {
-            get { return board; }
+        public int Rows {
+            get { return board.GetLength(0); }
+        }
+
+        public int Cols {
+            get { return board.GetLength(1); }
         }
     }
 }

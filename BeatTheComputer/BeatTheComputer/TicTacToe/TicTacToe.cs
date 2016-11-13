@@ -38,8 +38,8 @@ namespace BeatTheComputer.TicTacToe
             TicTacToeContext tttContext = (TicTacToeContext) context;
 
             int padding = 0;
-            int rows = tttContext.Board.GetLength(0);
-            int cols = tttContext.Board.GetLength(1);
+            int rows = tttContext.Rows;
+            int cols = tttContext.Cols;
             squares = new PictureBox[rows, cols];
             squareLength = 100;
 
@@ -54,7 +54,7 @@ namespace BeatTheComputer.TicTacToe
             TicTacToeContext tttContext = (TicTacToeContext) context;
             for (int row = 0; row < squares.GetLength(0); row++) {
                 for (int col = 0; col < squares.GetLength(1); col++) {
-                    Bitmap correctImage = imageOf(row, col, tttContext);
+                    Bitmap correctImage = imageOf(new Position(row, col), tttContext);
                     if (squares[row, col].Image != correctImage) {
                         squares[row, col].Image = correctImage;
                         squares[row, col].Refresh();
@@ -76,19 +76,19 @@ namespace BeatTheComputer.TicTacToe
         {
             PictureBox square = new PictureBox();
             square.Location = position;
-            square.Tag = new Point(col, row);
+            square.Tag = new Position(row, col);
             square.Size = new Size(squareLength, squareLength);
             square.SizeMode = PictureBoxSizeMode.StretchImage;
-            square.Image = imageOf(row, col, (TicTacToeContext) controller.Context);
+            square.Image = imageOf(new Position(row, col), (TicTacToeContext) controller.Context);
             square.Click += new EventHandler(square_Clicked);
             return square;
         }
 
-        private Bitmap imageOf(int row, int col, TicTacToeContext context)
+        private Bitmap imageOf(Position pos, TicTacToeContext context)
         {
-            if (context.Board[row, col] == Player.ONE) {
+            if (context.playerAt(pos) == Player.ONE) {
                 return p1Img;
-            } else if (context.Board[row, col] == Player.TWO) {
+            } else if (context.playerAt(pos) == Player.TWO) {
                 return p2Img;
             } else {
                 return emptyImg;
@@ -98,10 +98,8 @@ namespace BeatTheComputer.TicTacToe
         private void square_Clicked(object sender, EventArgs e)
         {
             PictureBox square = (PictureBox) sender;
-            Point coord = (Point) square.Tag;
-            int row = coord.Y;
-            int col = coord.X;
-            IAction action = new TicTacToeAction(row, col, controller.Context.getActivePlayer());
+            Position pos = (Position) square.Tag;
+            IAction action = new TicTacToeAction(pos, controller.Context.getActivePlayer());
 
             controller.tryHumanTurn(action);
         }

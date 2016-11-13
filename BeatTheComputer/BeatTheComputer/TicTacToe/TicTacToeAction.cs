@@ -5,22 +5,20 @@ namespace BeatTheComputer.TicTacToe
 {
     class TicTacToeAction : IAction
     {
-        private int row;
-        private int col;
+        private Position position;
         private Player player;
 
-        public TicTacToeAction(int row, int col, Player player)
+        public TicTacToeAction(Position position, Player player)
         {
-            this.row = row;
-            this.col = col;
+            this.position = position;
             this.player = player;
         }
 
         public bool isValid(IGameContext context)
         {
             TicTacToeContext tttContext = context as TicTacToeContext;
-            return BoardUtils.inBounds(tttContext.Board, row, col)
-                && tttContext.Board[row, col] == Player.NONE
+            return position.inBounds(tttContext.Rows, tttContext.Cols)
+                && tttContext.playerAt(position) == Player.NONE
                 && player == context.getActivePlayer();
         }
 
@@ -37,30 +35,21 @@ namespace BeatTheComputer.TicTacToe
         private bool equalTo(object obj)
         {
             TicTacToeAction other = obj as TicTacToeAction;
-            if (other == null) {
-                return false;
-            }
-            return row == other.row && col == other.col && player == other.player;
+            return other != null && position == other.position && player == other.player;
         }
 
         public override int GetHashCode()
         {
-            const int PRIME1 = 19;
-            const int PRIME2 = 37;
-            return PlayerUtils.valueOf(player) + row * PRIME1 + col * PRIME2;
+            return PlayerUtils.valueOf(player) + position.GetHashCode();
         }
 
         public IAction clone()
         {
-            return new TicTacToeAction(row, col, player);
+            return new TicTacToeAction(position, player);
         }
 
-        public int Row {
-            get { return row; }
-        }
-
-        public int Col {
-            get { return col; }
+        public Position Position {
+            get { return position; }
         }
 
         public Player Player {
