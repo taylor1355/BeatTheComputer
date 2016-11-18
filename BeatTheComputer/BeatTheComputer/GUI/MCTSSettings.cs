@@ -66,9 +66,5 @@ namespace BeatTheComputer.GUI
                 MessageBox.Show(errors);
             }
         }
-
-        public IBehavior mcts {
-            get { return mcts; }
-        }
     }
 }
