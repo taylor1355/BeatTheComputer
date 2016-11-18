@@ -50,8 +50,8 @@ namespace BeatTheComputer.Shared
         {
             switch (id) {
                 case -1: return "NONE";
-                case 0: return "TWO";
-                case 1: return "ONE";
+                case 0: return "ONE";
+                case 1: return "TWO";
                 default: throw new Exception("Current player id is invalid");
             }
         }
