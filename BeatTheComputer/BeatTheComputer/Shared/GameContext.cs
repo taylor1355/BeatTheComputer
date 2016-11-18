@@ -25,7 +25,7 @@ namespace BeatTheComputer.Shared
             IAction lastAction = null;
 
             do {
-                if (simulation.ActivePlayer == 0) {
+                if (simulation.ActivePlayer == Player.ONE) {
                     lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
                     lastAction = behavior2.requestAction(simulation, lastAction);

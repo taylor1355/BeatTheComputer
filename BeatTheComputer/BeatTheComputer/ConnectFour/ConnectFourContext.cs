@@ -94,7 +94,7 @@ namespace BeatTheComputer.ConnectFour
                 setPlayerAt(c4Action.Position, c4Action.Player);
                 topRows[c4Action.Position.Col]++;
 
-                activePlayer = 1 - activePlayer;
+                activePlayer = activePlayer.Opponent;
                 moves++;
                 if (moves >= 7) {
                     winner = currentWinner(c4Action.Position);

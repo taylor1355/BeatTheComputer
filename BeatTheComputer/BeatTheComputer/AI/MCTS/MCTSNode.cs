@@ -157,7 +157,7 @@ namespace BeatTheComputer.AI.MCTS
         }
 
         public double Score {
-            get { return wins(1 - activePlayer) / (visits + epsilon); }
+            get { return wins(activePlayer.Opponent) / (visits + epsilon); }
         }
 
         public Dictionary<IAction, MCTSNode> Children {

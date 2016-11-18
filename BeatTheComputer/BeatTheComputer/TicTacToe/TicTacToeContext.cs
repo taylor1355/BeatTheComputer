@@ -46,7 +46,7 @@ namespace BeatTheComputer.TicTacToe
 
                 TicTacToeAction tttAction = (TicTacToeAction) action;
                 setPlayer(tttAction.Position, tttAction.Player);
-                activePlayer = 1 - activePlayer;
+                activePlayer = activePlayer.Opponent;
                 moves++;
                 if (moves >= 5) {
                     winner = getWinner();

@@ -64,7 +64,7 @@ namespace BeatTheComputer.Checkers
             foreach (Position dir in moveDirs()) {
                 Position movePos = start + dir;
                 Position jumpPos = movePos + dir;
-                if (jumpPos.inBounds(context.Rows, context.Cols) && context.playerAt(movePos) == 1 - player && !alreadyJumped.Contains(movePos)) {
+                if (jumpPos.inBounds(context.Rows, context.Cols) && context.playerAt(movePos) == player.Opponent && !alreadyJumped.Contains(movePos)) {
                     moveSoFar.Add(jumpPos);
                     alreadyJumped.Add(movePos);
 

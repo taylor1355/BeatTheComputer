@@ -46,7 +46,7 @@ namespace BeatTheComputer.ConnectFour
 
         public override int GetHashCode()
         {
-            return PlayerUtils.valueOf(player) + position.Col * 19;
+            return player.GetHashCode() + position.Col * 19;
         }
 
         public IAction clone()
