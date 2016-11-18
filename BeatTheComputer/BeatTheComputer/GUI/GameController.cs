@@ -1,8 +1,9 @@
 ﻿using BeatTheComputer.AI;
 using BeatTheComputer.Shared;
 
+using System.Threading;
 using System.Threading.Tasks;
-
+using System;
 namespace BeatTheComputer.GUI
 {
     public class GameController
@@ -16,6 +17,7 @@ namespace BeatTheComputer.GUI
 
         Player turn;
         IAction lastAction;
+        CancellationTokenSource interruptSource;
 
         public GameController(IGameContext context, IBehavior player1, IBehavior player2)
         {
@@ -26,6 +28,7 @@ namespace BeatTheComputer.GUI
 
             turn = Player.ONE;
             lastAction = null;
+            interruptSource = new CancellationTokenSource();
         }
 
         public void stop()
@@ -36,6 +39,7 @@ namespace BeatTheComputer.GUI
             player2 = null;
             updateViewMethod = null;
             lastAction = null;
+            interruptSource.Cancel();
         }
 
         private void executeAction(IAction action)
@@ -55,7 +59,10 @@ namespace BeatTheComputer.GUI
         public async void tryComputerTurn()
         {
             if (!isHumansTurn() && turn != Player.NONE) {
-                executeAction(await Task.Run(() => behaviorOf(turn).requestAction(context, lastAction)));
+                executeAction(await Task.Run(() => behaviorOf(turn).requestAction(context, lastAction, interruptSource.Token)));
+                if (interruptSource.IsCancellationRequested) {
+                    //interruptSource.Dispose();
+                }
             }
         }
 

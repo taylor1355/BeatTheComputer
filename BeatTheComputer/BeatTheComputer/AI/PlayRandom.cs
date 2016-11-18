@@ -1,11 +1,12 @@
 ﻿using BeatTheComputer.Shared;
 
 using System;
+using System.Threading;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.AI
 {
-    class PlayRandom : IBehavior
+    class PlayRandom : Behavior
     {
         private Random rand;
 
@@ -18,7 +19,7 @@ namespace BeatTheComputer.AI
             }
         }
 
-        public IAction requestAction(IGameContext context, IAction opponentAction = null)
+        public override IAction requestAction(IGameContext context, IAction opponentAction, CancellationToken interrupt)
         {
             IList<IAction> validActions = context.getValidActions();
             return validActions[rand.Next(validActions.Count)];
@@ -29,7 +30,7 @@ namespace BeatTheComputer.AI
             return "Random Player";
         }
 
-        public IBehavior clone()
+        public override IBehavior clone()
         {
             return new PlayRandom(new Random(rand.Next()));
         }

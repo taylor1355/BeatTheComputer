@@ -39,6 +39,7 @@
             this.MaximizeBox = false;
             this.Name = "TicTacToe";
             this.Text = "Tic Tac Toe";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TicTacToe_FormClosed);
             this.Shown += new System.EventHandler(this.TicTacToe_Shown);
             this.ResumeLayout(false);
 

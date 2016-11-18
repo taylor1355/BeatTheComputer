@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 
 using System;
+using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace BeatTheComputer.AI.MCTS
             this.rootContext = rootContext;
         }
 
-        public Dictionary<IAction, double> run(double maxTime, int maxIterations, IGameContext context, IAction myAction, IAction opponentAction)
+        public Dictionary<IAction, double> run(double maxTime, int maxIterations, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
         {
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -40,7 +41,7 @@ namespace BeatTheComputer.AI.MCTS
             }
 
             int iterations = 0;
-            while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations)) {
+            while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations && !interrupt.IsCancellationRequested)) {
                 root.step(rootContext);
                 iterations++;
             };

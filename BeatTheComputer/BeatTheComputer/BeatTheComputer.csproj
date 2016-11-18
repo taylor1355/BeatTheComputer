@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\Behavior.cs" />
     <Compile Include="AI\Benchmark.cs" />
     <Compile Include="AI\DummyBehavior.cs" />
     <Compile Include="AI\MCTS\MCTS.cs" />
