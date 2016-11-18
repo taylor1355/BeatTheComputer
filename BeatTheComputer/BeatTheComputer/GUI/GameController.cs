@@ -81,10 +81,12 @@ namespace BeatTheComputer.GUI
 
         private IBehavior behaviorOf(Player player)
         {
-            switch (player) {
-                case Player.ONE: return player1;
-                case Player.TWO: return player2;
-                default: return null;
+            if (player == Player.ONE) {
+                return player1;
+            } else if (player == Player.TWO) {
+                return player2;
+            } else {
+                return null;
             }
         }
 

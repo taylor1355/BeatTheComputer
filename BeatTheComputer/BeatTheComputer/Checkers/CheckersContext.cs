@@ -101,10 +101,12 @@ namespace BeatTheComputer.Checkers
         }
 
         private Dictionary<Position, Piece> piecesOf(Player player) {
-            switch (player) {
-                case Player.ONE: return p1Pieces;
-                case Player.TWO: return p2Pieces;
-                default: throw new ArgumentException("Player " + player.ToString() + " has no pieces", "player");
+            if (player == Player.ONE) {
+                return p1Pieces;
+            } else if (player == Player.TWO) {
+                return p2Pieces;
+            } else {
+                throw new ArgumentException("Player " + player.ToString() + " has no pieces", "player");
             }
         }
 
@@ -123,13 +125,13 @@ namespace BeatTheComputer.Checkers
                     }
                 }
 
-                activePlayer = 1 - activePlayer;
+                activePlayer = activePlayer.Opponent;
                 moves++;
 
                 validActions = null;
 
                 if (piecesOf(activePlayer).Count == 0 || getValidActions().Count == 0) {
-                    winner = 1 - activePlayer;
+                    winner = activePlayer.Opponent;
                 }
             }
         }

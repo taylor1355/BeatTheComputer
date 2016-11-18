@@ -104,7 +104,7 @@
     <Compile Include="Shared\IAction.cs" />
     <Compile Include="AI\IBehavior.cs" />
     <Compile Include="Shared\Player.cs" />
-    <Compile Include="Shared\PlayerUtils.cs" />
+    <Compile Include="Shared\GameOutcomeUtils.cs" />
     <Compile Include="TicTacToe\TicTacToe.cs">
       <SubType>Form</SubType>
     </Compile>

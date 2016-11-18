@@ -40,7 +40,7 @@ namespace BeatTheComputer.TicTacToe
 
         public override int GetHashCode()
         {
-            return PlayerUtils.valueOf(player) + position.GetHashCode();
+            return player.GetHashCode() + position.GetHashCode();
         }
 
         public IAction clone()
