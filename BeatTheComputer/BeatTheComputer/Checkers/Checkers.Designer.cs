@@ -38,6 +38,7 @@
             this.MaximizeBox = false;
             this.Name = "Checkers";
             this.Text = "Checkers";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Checkers_FormClosed);
             this.Shown += new System.EventHandler(this.Checkers_Shown);
             this.ResumeLayout(false);
 

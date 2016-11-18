@@ -1,11 +1,12 @@
 ﻿using BeatTheComputer.Shared;
 
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.AI.MCTS
 {
-    class MCTS : IBehavior
+    class MCTS : Behavior
     {
         private IBehavior rolloutBehavior;
         private double timeLimit;
@@ -28,7 +29,7 @@ namespace BeatTheComputer.AI.MCTS
             myLastAction = null;
         }
 
-        public IAction requestAction(IGameContext context, IAction opponentAction)
+        public override IAction requestAction(IGameContext context, IAction opponentAction, CancellationToken interrupt)
         {
             if (trees[0] == null) {
                 for (int i = 0; i < trees.Length; i++) {
@@ -51,14 +52,14 @@ namespace BeatTheComputer.AI.MCTS
                     }
                 }
                     
-                IAction myLastActionClone = null;
+                IAction myActionClone = null;
                 if (myLastAction != null) {
                     lock (myLastAction) {
-                        myLastActionClone = myLastAction.clone();
+                        myActionClone = myLastAction.clone();
                     }
                 }
 
-                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, contextClone, myLastActionClone, opponentActionClone);
+                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, contextClone, myActionClone, opponentActionClone, interrupt);
             });
 
             Dictionary<IAction, double> averageActionScores = new Dictionary<IAction, double>();
@@ -88,7 +89,7 @@ namespace BeatTheComputer.AI.MCTS
         }
 
         //does not save game tree
-        public IBehavior clone()
+        public override IBehavior clone()
         {
             return new MCTS(rolloutBehavior.clone(), trees.Length, timeLimit, iterationLimit, exploreFactor, tryToWin);
         }

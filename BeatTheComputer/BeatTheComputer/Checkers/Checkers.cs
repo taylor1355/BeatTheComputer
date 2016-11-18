@@ -53,6 +53,11 @@ namespace BeatTheComputer.Checkers
             controller.tryComputerTurn();
         }
 
+        private void Checkers_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            controller.stop();
+        }
+
         private void initGraphics(IGameContext context)
         {
             CheckersContext cContext = (CheckersContext) context;

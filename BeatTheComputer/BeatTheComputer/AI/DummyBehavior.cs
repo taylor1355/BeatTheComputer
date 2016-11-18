@@ -1,12 +1,13 @@
 ﻿using BeatTheComputer.Shared;
 
 using System;
+using System.Threading;
 
 namespace BeatTheComputer.AI
 {
-    class DummyBehavior : IBehavior
+    class DummyBehavior : Behavior
     {
-        public IAction requestAction(IGameContext context, IAction opponentAction = null)
+        public override IAction requestAction(IGameContext context, IAction opponentAction, CancellationToken interrupt)
         {
             throw new NotImplementedException();
         }
@@ -16,7 +17,7 @@ namespace BeatTheComputer.AI
             return "Human";
         }
 
-        public IBehavior clone()
+        public override IBehavior clone()
         {
             return new DummyBehavior();
         }

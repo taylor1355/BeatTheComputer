@@ -33,6 +33,11 @@ namespace BeatTheComputer.TicTacToe
             controller.tryComputerTurn();
         }
 
+        private void TicTacToe_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            controller.stop();
+        }
+
         private void initGraphics(IGameContext context)
         {
             TicTacToeContext tttContext = (TicTacToeContext) context;
