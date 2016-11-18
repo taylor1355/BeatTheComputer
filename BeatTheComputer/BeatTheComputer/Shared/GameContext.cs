@@ -17,45 +17,44 @@ namespace BeatTheComputer.Shared
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
-            if (gameDecided()) {
-                return gameOutcome();
+            if (GameDecided) {
+                return GameOutcome;
             }
 
             IGameContext simulation = clone();
             IAction lastAction = null;
 
             do {
-                if (simulation.getActivePlayer() == 0) {
+                if (simulation.ActivePlayer == 0) {
                     lastAction = behavior1.requestAction(simulation, lastAction);
                 } else {
                     lastAction = behavior2.requestAction(simulation, lastAction);
                 }
                 simulation.applyAction(lastAction);
-            } while (!simulation.gameDecided());
+            } while (!simulation.GameDecided);
 
-            return simulation.gameOutcome();
+            return simulation.GameOutcome;
         }
 
-        public abstract bool gameDecided();
+        public abstract bool GameDecided { get; }
 
-        public GameOutcome gameOutcome()
-        {
-            if (!gameDecided()) {
-                return GameOutcome.UNDECIDED;
-            } else if (winner == Player.ONE) {
-                return GameOutcome.WIN;
-            } else if (winner == Player.TWO) {
-                return GameOutcome.LOSS;
-            } else {
-                return GameOutcome.TIE;
+        public GameOutcome GameOutcome {
+            get {
+                if (!GameDecided) {
+                    return GameOutcome.UNDECIDED;
+                } else if (winner == Player.ONE) {
+                    return GameOutcome.WIN;
+                } else if (winner == Player.TWO) {
+                    return GameOutcome.LOSS;
+                } else {
+                    return GameOutcome.TIE;
+                }
             }
         }
 
-        public Player getActivePlayer() { return activePlayer; }
-
-        public Player getWinningPlayer() { return winner; }
-
-        public int getMoves() { return moves; }
+        public Player ActivePlayer { get { return activePlayer; } }
+        public Player WinningPlayer { get { return winner; } }
+        public int Moves { get { return moves; } }
 
         public bool Equals(IGameContext context) { return equalTo(context); }
         public override bool Equals(object obj) { return equalTo(obj); }

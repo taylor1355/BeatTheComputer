@@ -85,7 +85,7 @@ namespace BeatTheComputer.ConnectFour
 
         public override void applyAction(IAction action)
         {
-            if (!gameDecided()) {
+            if (!GameDecided) {
                 if (!action.isValid(this)) {
                     throw new ArgumentException("Can't apply invalid action", "action");
                 }
@@ -102,7 +102,7 @@ namespace BeatTheComputer.ConnectFour
             }
         }
 
-        public override bool gameDecided() { return winner != Player.NONE || moves == board.Length; }
+        public override bool GameDecided { get { return winner != Player.NONE || moves == board.Length; } }
 
         private void setPlayerAt(Position pos, Player player)
         {

@@ -49,8 +49,8 @@ namespace BeatTheComputer.GUI
                 context.applyAction(action);
                 lastAction = action;
                 updateViewMethod(context);
-                if (!context.gameDecided()) {
-                    turn = context.getActivePlayer();
+                if (!context.GameDecided) {
+                    turn = context.ActivePlayer;
                     tryComputerTurn();
                 }
             }
@@ -60,9 +60,6 @@ namespace BeatTheComputer.GUI
         {
             if (!isHumansTurn() && turn != Player.NONE) {
                 executeAction(await Task.Run(() => behaviorOf(turn).requestAction(context, lastAction, interruptSource.Token)));
-                if (interruptSource.IsCancellationRequested) {
-                    //interruptSource.Dispose();
-                }
             }
         }
 

@@ -19,7 +19,7 @@ namespace BeatTheComputer.TicTacToe
             TicTacToeContext tttContext = context as TicTacToeContext;
             return position.inBounds(tttContext.Rows, tttContext.Cols)
                 && tttContext.playerAt(position) == Player.NONE
-                && player == context.getActivePlayer();
+                && player == context.ActivePlayer;
         }
 
         public bool Equals(IAction other)

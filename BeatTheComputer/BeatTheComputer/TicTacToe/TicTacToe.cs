@@ -67,8 +67,8 @@ namespace BeatTheComputer.TicTacToe
                 }
             }
 
-            if (context.gameDecided()) {
-                Player winner = context.getWinningPlayer();
+            if (context.GameDecided) {
+                Player winner = context.WinningPlayer;
                 if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
                 } else {
@@ -104,7 +104,7 @@ namespace BeatTheComputer.TicTacToe
         {
             PictureBox square = (PictureBox) sender;
             Position pos = (Position) square.Tag;
-            IAction action = new TicTacToeAction(pos, controller.Context.getActivePlayer());
+            IAction action = new TicTacToeAction(pos, controller.Context.ActivePlayer);
 
             controller.tryHumanTurn(action);
         }

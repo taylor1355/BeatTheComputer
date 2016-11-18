@@ -68,8 +68,8 @@ namespace BeatTheComputer.ConnectFour
                 }
             }
 
-            if (context.gameDecided()) {
-                Player winner = context.getWinningPlayer();
+            if (context.GameDecided) {
+                Player winner = context.WinningPlayer;
                 if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
                 } else {
@@ -107,7 +107,7 @@ namespace BeatTheComputer.ConnectFour
             PictureBox hole = (PictureBox) sender;
             int col = (int) hole.Tag;
             ConnectFourContext context = (ConnectFourContext) controller.Context;
-            ConnectFourAction action = new ConnectFourAction(col, context.getActivePlayer(), context);
+            ConnectFourAction action = new ConnectFourAction(col, context.ActivePlayer, context);
             controller.tryHumanTurn(action);
         }
     }

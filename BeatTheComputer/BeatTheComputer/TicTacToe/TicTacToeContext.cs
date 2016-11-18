@@ -39,7 +39,7 @@ namespace BeatTheComputer.TicTacToe
 
         public override void applyAction(IAction action)
         {
-            if (!gameDecided()) {
+            if (!GameDecided) {
                 if (!action.isValid(this)) {
                     throw new ArgumentException("Can't apply invalid action", "action");
                 }
@@ -80,7 +80,7 @@ namespace BeatTheComputer.TicTacToe
             return Player.NONE;
         }
 
-        public override bool gameDecided() { return winner != Player.NONE || moves >= board.Length; }
+        public override bool GameDecided { get { return winner != Player.NONE || moves >= board.Length; } }
 
         private void setPlayer(Position pos, Player player)
         {

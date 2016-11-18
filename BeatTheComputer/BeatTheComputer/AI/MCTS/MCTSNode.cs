@@ -26,8 +26,8 @@ namespace BeatTheComputer.AI.MCTS
             this.rolloutBehavior = rolloutBehavior;
             this.tryToWin = tryToWin;
 
-            activePlayer = context.getActivePlayer();
-            outcome = context.gameOutcome();
+            activePlayer = context.ActivePlayer;
+            outcome = context.GameOutcome;
             if (outcome == GameOutcome.WIN) {
                 p1Wins = Double.PositiveInfinity;
             } else if (outcome == GameOutcome.LOSS) {

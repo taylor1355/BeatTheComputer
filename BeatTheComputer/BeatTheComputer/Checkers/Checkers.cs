@@ -98,8 +98,8 @@ namespace BeatTheComputer.Checkers
                 highlightMove(controller.LastAction);
             }
 
-            if (context.gameDecided()) {
-                Player winner = context.getWinningPlayer();
+            if (context.GameDecided) {
+                Player winner = context.WinningPlayer;
                 if (winner == Player.NONE) {
                     MessageBox.Show("Tie");
                 } else {

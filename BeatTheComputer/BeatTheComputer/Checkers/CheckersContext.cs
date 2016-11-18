@@ -110,7 +110,7 @@ namespace BeatTheComputer.Checkers
 
         public override void applyAction(IAction action)
         {
-            if (!gameDecided()) {
+            if (!GameDecided) {
                 if (!action.isValid(this)) {
                     throw new ArgumentException("Can't apply invalid action", "action");
                 }
@@ -134,7 +134,7 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        public override bool gameDecided() { return winner != Player.NONE || moves >= moveLimit; }
+        public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }
 
         public Player playerAt(Position pos)
         {

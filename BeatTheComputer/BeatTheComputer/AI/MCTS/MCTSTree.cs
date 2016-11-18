@@ -26,7 +26,7 @@ namespace BeatTheComputer.AI.MCTS
                 return new Dictionary<IAction, double>();
             }
 
-            if (context.getMoves() > rootContext.getMoves()) {
+            if (context.Moves > rootContext.Moves) {
                 if (myAction != null) {
                     generateRootChildrenIfLeaf();
                     advanceRoot(myAction);

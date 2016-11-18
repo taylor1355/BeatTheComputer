@@ -11,13 +11,13 @@ namespace BeatTheComputer.Shared
         void applyAction(IAction action);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2);
 
-        bool gameDecided();
-        GameOutcome gameOutcome();
+        bool GameDecided { get; }
+        GameOutcome GameOutcome { get; }
 
-        Player getActivePlayer();
-        Player getWinningPlayer();
-        int getMoves();
+        Player ActivePlayer { get; }
+        Player WinningPlayer { get; }
+        int Moves { get; }
 
-        IGameContext clone();
+        IGameContext clone();        
     }
 }

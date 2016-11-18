@@ -25,7 +25,7 @@ namespace BeatTheComputer.ConnectFour
             ConnectFourContext c4Context = context as ConnectFourContext;
             return position.inBounds(c4Context.Rows, c4Context.Cols)
                 && c4Context.playerAt(position) == Player.NONE
-                && player == context.getActivePlayer();
+                && player == context.ActivePlayer;
         }
 
         public bool Equals(IAction other)
