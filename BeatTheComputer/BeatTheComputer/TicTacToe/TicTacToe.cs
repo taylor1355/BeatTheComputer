@@ -77,14 +77,14 @@ namespace BeatTheComputer.TicTacToe
             }
         }
 
-        private Control squareFactory(Point position, int row, int col)
+        private Control squareFactory(Point drawPos, Position gridPos)
         {
             PictureBox square = new PictureBox();
-            square.Location = position;
-            square.Tag = new Position(row, col);
+            square.Location = drawPos;
+            square.Tag = gridPos;
             square.Size = new Size(squareLength, squareLength);
             square.SizeMode = PictureBoxSizeMode.StretchImage;
-            square.Image = imageOf(new Position(row, col), (TicTacToeContext) controller.Context);
+            square.Image = imageOf(gridPos, (TicTacToeContext) controller.Context);
             square.Click += new EventHandler(square_Clicked);
             return square;
         }

@@ -60,7 +60,7 @@ namespace BeatTheComputer.ConnectFour
             ConnectFourContext c4Context = (ConnectFourContext) context;
             for (int row = 0; row < holes.GetLength(0); row++) {
                 for (int col = 0; col < holes.GetLength(1); col++) {
-                    Bitmap correctImage = imageOf(row, col, c4Context);
+                    Bitmap correctImage = imageOf(new Position(row, col), c4Context);
                     if (holes[row, col].Image != correctImage) {
                         holes[row, col].Image = correctImage;
                         holes[row, col].Refresh();
@@ -78,21 +78,20 @@ namespace BeatTheComputer.ConnectFour
             }
         }
 
-        private Control holeFactory(Point position, int row, int col)
+        private Control holeFactory(Point drawPos, Position gridPos)
         {
             PictureBox hole = new PictureBox();
-            hole.Location = position;
-            hole.Tag = col;
+            hole.Location = drawPos;
+            hole.Tag = gridPos.Col;
             hole.Size = new Size(holeLength, holeLength);
             hole.SizeMode = PictureBoxSizeMode.StretchImage;
-            hole.Image = imageOf(row, col, (ConnectFourContext) controller.Context);
+            hole.Image = imageOf(gridPos, (ConnectFourContext) controller.Context);
             hole.Click += new EventHandler(hole_Clicked);
             return hole;
         }
 
-        private Bitmap imageOf(int row, int col, ConnectFourContext context)
+        private Bitmap imageOf(Position pos, ConnectFourContext context)
         {
-            Position pos = new Position(row, col);
             if (context.playerAt(pos) == Player.ONE) {
                 return p1Img;
             } else if (context.playerAt(pos) == Player.TWO) {

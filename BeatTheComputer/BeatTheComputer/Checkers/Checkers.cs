@@ -85,7 +85,7 @@ namespace BeatTheComputer.Checkers
             CheckersContext cContext = (CheckersContext) context;
             for (int row = 0; row < squares.GetLength(0); row++) {
                 for (int col = 0; col < squares.GetLength(1); col++) {
-                    Bitmap correctImage = imageOf(row, col, cContext);
+                    Bitmap correctImage = imageOf(new Position(row, col), cContext);
                     if (squares[row, col].Image != correctImage) {
                         squares[row, col].Image = correctImage;
                         squares[row, col].Refresh();
@@ -108,9 +108,8 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        private Bitmap imageOf(int row, int col, CheckersContext context)
+        private Bitmap imageOf(Position pos, CheckersContext context)
         {
-            Position pos = new Position(row, col);
             if (context.playerAt(pos) == Player.ONE) {
                 if (context.pieceAt(pos).Promoted) {
                     return p1KingImg;
@@ -184,15 +183,15 @@ namespace BeatTheComputer.Checkers
             return Color.FromArgb(red, green, blue);
         }
 
-        private Control squareFactory(Point position, int row, int col)
+        private Control squareFactory(Point drawPos, Position gridPos)
         {
             PictureBox square = new PictureBox();
-            square.Location = position;
-            square.Tag = new Position(row, col);
+            square.Location = drawPos;
+            square.Tag = gridPos;
             square.Size = new Size(squareLength, squareLength);
             square.SizeMode = PictureBoxSizeMode.StretchImage;
-            square.Image = imageOf(row, col, (CheckersContext) controller.Context);
-            square.BackColor = colorOf(new Position(row, col));
+            square.Image = imageOf(gridPos, (CheckersContext) controller.Context);
+            square.BackColor = colorOf(gridPos);
             square.Click += new EventHandler(square_Clicked);
             return square;
         }
