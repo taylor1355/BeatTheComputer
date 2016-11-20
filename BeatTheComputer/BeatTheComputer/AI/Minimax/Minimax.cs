@@ -3,29 +3,25 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using BeatTheComputer.TicTacToe;
-namespace BeatTheComputer.AI.MCTS
+
+namespace BeatTheComputer.AI.Minimax
 {
-    class MCTS : Behavior
+    class Minimax : Behavior
     {
-        private IBehavior rolloutBehavior;
         private double timeLimit;
         private int iterationLimit;
-        private double exploreFactor;
         private bool tryToWin;
 
-        private MCTSTree[] trees;
+        private MinimaxTree[] trees;
         private IAction myLastAction;
 
-        public MCTS(IBehavior rolloutBehavior, int numTrees, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
+        public Minimax(int numTrees, double timeLimit, int iterationLimit, bool tryToWin)
         {
-            this.rolloutBehavior = rolloutBehavior;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
-            this.exploreFactor = exploreFactor;
             this.tryToWin = tryToWin;
 
-            trees = new MCTSTree[numTrees];
+            trees = new MinimaxTree[numTrees];
             myLastAction = null;
         }
 
@@ -33,12 +29,12 @@ namespace BeatTheComputer.AI.MCTS
         {
             if (trees[0] == null) {
                 for (int i = 0; i < trees.Length; i++) {
-                    trees[i] = new MCTSTree(context.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
+                    trees[i] = new MinimaxTree(context.clone(), tryToWin);
                 }
             }
 
             Dictionary<IAction, double>[] actionScoresList = new Dictionary<IAction, double>[trees.Length];
-            
+
             Parallel.For(0, trees.Length, i => {
                 IGameContext contextClone;
                 lock (context) {
@@ -51,7 +47,7 @@ namespace BeatTheComputer.AI.MCTS
                         opponentActionClone = opponentAction.clone();
                     }
                 }
-                    
+
                 IAction myActionClone = null;
                 if (myLastAction != null) {
                     lock (myLastAction) {
@@ -85,17 +81,12 @@ namespace BeatTheComputer.AI.MCTS
 
         public override string ToString()
         {
-            return "Monte Carlo Tree Search";
+            return "Minimax";
         }
 
-        //does not save game tree
         public override IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), trees.Length, timeLimit, iterationLimit, exploreFactor, tryToWin);
-        }
-
-        public IBehavior RolloutBehavior {
-            get { return rolloutBehavior; }
+            return new Minimax(trees.Length, timeLimit, iterationLimit, tryToWin);
         }
 
         public int NumTrees {
@@ -108,10 +99,6 @@ namespace BeatTheComputer.AI.MCTS
 
         public int IterationLimit {
             get { return iterationLimit; }
-        }
-
-        public double ExploreFactor {
-            get { return exploreFactor; }
         }
 
         public bool TryingToWin {

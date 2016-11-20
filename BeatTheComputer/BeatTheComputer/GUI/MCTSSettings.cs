@@ -13,7 +13,7 @@ namespace BeatTheComputer.GUI
         {
             InitializeComponent();
             
-            this.mctsWrapper = behaviorWrapper;
+            mctsWrapper = behaviorWrapper;
         }
 
         private void MCTSSettings_Load(object sender, System.EventArgs e)

@@ -77,7 +77,7 @@ namespace BeatTheComputer.AI.MCTS
 
         private void expand(IGameContext context)
         {
-            if (!IsTerminal) {
+            if (IsLeaf && !IsTerminal) {
                 children = new Dictionary<IAction, MCTSNode>();
                 ICollection<IAction> validActions = context.getValidActions();
                 foreach (IAction action in validActions) {
@@ -121,10 +121,10 @@ namespace BeatTheComputer.AI.MCTS
 
         private IAction actionOfChild(MCTSNode child)
         {
-            foreach(IAction action in children.Keys) {
+            foreach(KeyValuePair<IAction, MCTSNode> entry in children) {
                 //compare with == here because nodes are only equal if they're the same instance
-                if (children[action] == child) {
-                    return action;
+                if (entry.Value == child) {
+                    return entry.Key;
                 }
             }
             throw new ArgumentException("The node passed in is not a child of this node", "child");

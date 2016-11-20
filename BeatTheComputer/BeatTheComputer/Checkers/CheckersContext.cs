@@ -110,7 +110,7 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        public override void applyAction(IAction action)
+        public override IGameContext applyAction(IAction action)
         {
             if (!GameDecided) {
                 if (!action.isValid(this)) {
@@ -134,6 +134,13 @@ namespace BeatTheComputer.Checkers
                     winner = activePlayer.Opponent;
                 }
             }
+
+            return this;
+        }
+
+        public override double heuristicEval()
+        {
+            throw new NotImplementedException();
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }

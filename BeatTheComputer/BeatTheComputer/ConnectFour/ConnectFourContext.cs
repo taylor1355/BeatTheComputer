@@ -83,7 +83,7 @@ namespace BeatTheComputer.ConnectFour
             return neighborCount;
         }
 
-        public override void applyAction(IAction action)
+        public override IGameContext applyAction(IAction action)
         {
             if (!GameDecided) {
                 if (!action.isValid(this)) {
@@ -100,6 +100,13 @@ namespace BeatTheComputer.ConnectFour
                     winner = currentWinner(c4Action.Position);
                 }
             }
+
+            return this;
+        }
+
+        public override double heuristicEval()
+        {
+            throw new NotImplementedException();
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves == board.Length; } }

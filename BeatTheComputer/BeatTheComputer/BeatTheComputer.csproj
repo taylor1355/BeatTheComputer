@@ -55,6 +55,9 @@
     <Compile Include="AI\MCTS\MCTS.cs" />
     <Compile Include="AI\MCTS\MCTSNode.cs" />
     <Compile Include="AI\MCTS\MCTSTree.cs" />
+    <Compile Include="AI\Minimax\Minimax.cs" />
+    <Compile Include="AI\Minimax\MinimaxNode.cs" />
+    <Compile Include="AI\Minimax\MinimaxTree.cs" />
     <Compile Include="AI\PlayRandom.cs" />
     <Compile Include="AI\PlayMostlyRandom.cs" />
     <Compile Include="Checkers\Checkers.cs">
@@ -66,6 +69,12 @@
     <Compile Include="Checkers\CheckersAction.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
     <Compile Include="Checkers\Piece.cs" />
+    <Compile Include="GUI\MinimaxSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\MinimaxSettings.Designer.cs">
+      <DependentUpon>MinimaxSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
       <SubType>Form</SubType>
@@ -124,6 +133,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MCTSSettings.resx">
       <DependentUpon>MCTSSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MinimaxSettings.resx">
+      <DependentUpon>MinimaxSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Setup.resx">
       <DependentUpon>Setup.cs</DependentUpon>
@@ -188,6 +200,7 @@
   <ItemGroup>
     <None Include="Resources\CheckersPieceKingWhite.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
