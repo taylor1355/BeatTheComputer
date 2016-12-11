@@ -104,9 +104,53 @@ namespace BeatTheComputer.ConnectFour
             return this;
         }
 
-        public override double heuristicEval()
+        public override double heuristicEval() //not working
         {
-            throw new NotImplementedException();
+            double activeSign = (activePlayer == Player.ONE) ? 1 : -1;
+            double eval = 0.5;
+            double maxEval = 0.5 * (Rows * Cols - (double) moves / Rows * Cols);
+            for (int col = 0; col < topRows.Length; col++) {
+                for (int row = topRows[col]; row < Rows; row++) {
+                    Position pos = new Position(row, col);
+                    double threat = threatOwnerAt(pos);
+                    double heightRatio = (double) (row - topRows[col]) / (Rows - topRows[col]);
+                    eval += (threat * (1.0 - heightRatio)) / (2 * maxEval);
+                }
+            }
+            return eval;
+        }
+
+        private double threatOwnerAt(Position pos)
+        {
+            int ownerCount = 0;
+            foreach (Position dir in Position.POSITIVE_DIRECTIONS) {
+                int groupSize = 0;
+                for (int sign = -1; sign <= 1; sign += 2) {
+                    Position signedDir = dir * sign;
+                    Position curr = pos + 2 * signedDir;
+                    Player owner = Player.NONE;
+                    int ownerSign = 0;
+
+                    if (curr.inBounds(Rows, Cols) && playerAt(curr - signedDir) == playerAt(curr) && playerAt(curr) != Player.NONE) {
+                        owner = playerAt(curr);
+                        ownerSign = (owner == Player.ONE) ? 1 : -1;
+                        groupSize = 2 * ownerSign;
+                    }
+
+                    do {
+                        groupSize += ownerSign;
+                        if (Math.Abs(groupSize) >= 4) break;
+                        curr += signedDir;
+                    } while (curr.inBounds(Rows, Cols) && playerAt(curr) == owner);
+
+                    if (Math.Abs(groupSize) >= 4) {
+                        ownerCount += Math.Sign(groupSize);
+                        groupSize = 0;
+                    }
+                }
+            }
+
+            return Math.Sign(ownerCount);
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves == board.Length; } }

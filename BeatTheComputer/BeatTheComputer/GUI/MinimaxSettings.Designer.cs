@@ -27,11 +27,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.parallelTreesField = new System.Windows.Forms.TextBox();
             this.iterationLimitField = new System.Windows.Forms.TextBox();
             this.thinkingTimeField = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cancel = new System.Windows.Forms.Button();
@@ -41,14 +39,6 @@
             this.tryToWinRadio = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // parallelTreesField
-            // 
-            this.parallelTreesField.Location = new System.Drawing.Point(128, 150);
-            this.parallelTreesField.MaxLength = 9;
-            this.parallelTreesField.Name = "parallelTreesField";
-            this.parallelTreesField.Size = new System.Drawing.Size(58, 20);
-            this.parallelTreesField.TabIndex = 19;
             // 
             // iterationLimitField
             // 
@@ -76,15 +66,6 @@
             this.label5.TabIndex = 26;
             this.label5.Text = "s";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(48, 154);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 13);
-            this.label4.TabIndex = 25;
-            this.label4.Text = "Parallel Trees:";
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -105,7 +86,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(30, 176);
+            this.cancel.Location = new System.Drawing.Point(30, 155);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 21;
@@ -115,7 +96,7 @@
             // 
             // apply
             // 
-            this.apply.Location = new System.Drawing.Point(111, 176);
+            this.apply.Location = new System.Drawing.Point(111, 155);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(75, 23);
             this.apply.TabIndex = 22;
@@ -160,12 +141,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(229, 227);
-            this.Controls.Add(this.parallelTreesField);
+            this.ClientSize = new System.Drawing.Size(229, 194);
             this.Controls.Add(this.iterationLimitField);
             this.Controls.Add(this.thinkingTimeField);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cancel);
@@ -182,11 +161,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox parallelTreesField;
         private System.Windows.Forms.TextBox iterationLimitField;
         private System.Windows.Forms.TextBox thinkingTimeField;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button cancel;

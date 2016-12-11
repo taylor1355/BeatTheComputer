@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace BeatTheComputer.Checkers
 {
-    class CheckersAction : IAction
+    struct CheckersAction : IAction
     {
         Position start;
         Position destination;
@@ -66,9 +66,12 @@ namespace BeatTheComputer.Checkers
 
         private bool equalTo(object obj)
         {
-            CheckersAction other = obj as CheckersAction;
-            if (other == null || start != other.start || destination != other.destination
-                || NumJumps != other.NumJumps) {
+            if (!(obj is CheckersAction)) {
+                return false;
+            }
+
+            CheckersAction other = (CheckersAction) obj;
+            if (start != other.start || destination != other.destination || NumJumps != other.NumJumps) {
                 return false;
             }
 
@@ -85,17 +88,6 @@ namespace BeatTheComputer.Checkers
         public override int GetHashCode()
         {
             return NumJumps + start.GetHashCode() * 53 + destination.GetHashCode() * 193;
-        }
-
-        public IAction clone()
-        {
-            Position[] cloneJumps = null;
-            if (jumps != null) {
-                cloneJumps = new Position[jumps.Length];
-                jumps.CopyTo(cloneJumps, 0);
-            }
-
-            return new CheckersAction(start, destination, cloneJumps);
         }
 
         public Position Start {

@@ -8,7 +8,7 @@ namespace BeatTheComputer.AI.Minimax
     class MinimaxNode
     {
         private bool tryToWin;
-
+        private int move;
         private Player activePlayer;
         private double p1Score;
         private GameOutcome outcome;
@@ -16,6 +16,7 @@ namespace BeatTheComputer.AI.Minimax
 
         public MinimaxNode(IGameContext context, bool tryToWin)
         {
+            move = context.Moves;
             this.tryToWin = tryToWin;
 
             activePlayer = context.ActivePlayer;
@@ -24,13 +25,15 @@ namespace BeatTheComputer.AI.Minimax
                 p1Score = Double.PositiveInfinity;
             } else if (outcome == GameOutcome.LOSS) {
                 p1Score = Double.NegativeInfinity;
+            } else if (outcome == GameOutcome.TIE) {
+                p1Score = 0.5;
             } else {
                 p1Score = 0;
             }
             children = null;
         }
 
-        public double updateScore(IGameContext context, int depthLimit)
+        public double updateScore(IGameContext context, double alpha, double beta, int depthLimit)
         {
             if (!IsTerminal) {
                 if (depthLimit > 0) {
@@ -40,11 +43,22 @@ namespace BeatTheComputer.AI.Minimax
 
                     p1Score = Double.NaN;
                     foreach (KeyValuePair<IAction, MinimaxNode> entry in children) {
-                        double childScore = entry.Value.updateScore(context.clone().applyAction(entry.Key), depthLimit - 1);
+                        IList<IAction> validActions = context.getValidActions();
+                        double childScore = entry.Value.updateScore(context.clone().applyAction(entry.Key), alpha, beta, depthLimit - 1);
                         if (Double.IsNaN(p1Score) || childScore > 1 - Score) {
                             p1Score = entry.Value.p1Score;
+
+                            if (IsMaximizer) {
+                                alpha = Math.Max(alpha, p1Score);
+                            } else {
+                                beta = Math.Min(beta, p1Score);
+                            }
+
+                            if (alpha >= beta) {
+                                return Score;
+                            }
                         }
-                    }    
+                    }
                 } else {
                     p1Score = context.heuristicEval();
                 }

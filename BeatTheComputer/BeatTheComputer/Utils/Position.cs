@@ -4,6 +4,9 @@ namespace BeatTheComputer.Utils
 {
     struct Position
     {
+        public static readonly Position[] POSITIVE_DIRECTIONS = { new Position(0, 1),
+            new Position(1, 1), new Position(1, 0), new Position(1, -1) };
+
         private int row;
         private int col;
 

@@ -25,7 +25,6 @@ namespace BeatTheComputer.GUI
             tryToLoseRadio.Checked = !minimax.TryingToWin;
             thinkingTimeField.Text = (minimax.TimeLimit / 1000).ToString();
             iterationLimitField.Text = minimax.IterationLimit.ToString();
-            parallelTreesField.Text = minimax.NumTrees.ToString();
         }
 
         private void cancel_Click(object sender, EventArgs e)
@@ -47,16 +46,11 @@ namespace BeatTheComputer.GUI
                 errors += "Iteration Limit must be a positive integer.\n";
             }
 
-            int parallelTrees;
-            if (!int.TryParse(parallelTreesField.Text, out parallelTrees) || parallelTrees <= 0) {
-                errors += "Parallel Trees must be a positive integer.\n";
-            }
-
             bool tryToWin = tryToWinRadio.Checked;
 
             if (errors.Length == 0) {
                 Minimax minimax = (Minimax) minimaxWrapper.Reference;
-                minimaxWrapper.Reference = new Minimax(parallelTrees, thinkingTime * 1000, iterationLimit, tryToWin);
+                minimaxWrapper.Reference = new Minimax(thinkingTime * 1000, iterationLimit, tryToWin);
                 this.Close();
             } else {
                 MessageBox.Show(errors);

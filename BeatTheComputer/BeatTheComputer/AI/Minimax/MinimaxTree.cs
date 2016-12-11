@@ -46,7 +46,7 @@ namespace BeatTheComputer.AI.Minimax
 
             int iterations = 0;
             while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations && !interrupt.IsCancellationRequested)) {
-                root.updateScore(rootContext, iterations + 1);
+                root.updateScore(rootContext, Double.NegativeInfinity, Double.PositiveInfinity, iterations + 1);
                 iterations++;
             };
 

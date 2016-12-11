@@ -55,7 +55,7 @@ namespace BeatTheComputer.Checkers
         private void addJumpsHelper(List<Position> moveSoFar, CheckersContext context, ISet<Position> alreadyJumped, Dictionary<Position, CheckersAction> moves)
         {
             Position start = moveSoFar[moveSoFar.Count - 1];
-            if (start != position && context.playerAt(start) != Player.NONE) {
+            if (moveSoFar.Count > 1 && context.playerAt(start) != Player.NONE) {
                 return;
             } else if (moveSoFar.Count > 1) {
                 tryAddMove(new CheckersAction(moveSoFar), moves);
