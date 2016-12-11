@@ -45,21 +45,7 @@ namespace BeatTheComputer.AI.MCTS
                     contextClone = context.clone();
                 }
 
-                IAction opponentActionClone = null;
-                if (opponentAction != null) {
-                    lock (opponentAction) {
-                        opponentActionClone = opponentAction.clone();
-                    }
-                }
-                    
-                IAction myActionClone = null;
-                if (myLastAction != null) {
-                    lock (myLastAction) {
-                        myActionClone = myLastAction.clone();
-                    }
-                }
-
-                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, contextClone, myActionClone, opponentActionClone, interrupt);
+                actionScoresList[i] = trees[i].run(timeLimit, iterationLimit, contextClone, myLastAction, opponentAction, interrupt);
             });
 
             Dictionary<IAction, double> averageActionScores = new Dictionary<IAction, double>();

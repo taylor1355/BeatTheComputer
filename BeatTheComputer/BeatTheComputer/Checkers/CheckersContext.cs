@@ -110,7 +110,7 @@ namespace BeatTheComputer.Checkers
             }
         }
 
-        public override void applyAction(IAction action)
+        public override IGameContext applyAction(IAction action)
         {
             if (!GameDecided) {
                 if (!action.isValid(this)) {
@@ -118,6 +118,7 @@ namespace BeatTheComputer.Checkers
                 }
 
                 CheckersAction cAction = (CheckersAction) action;
+
                 movePiece(cAction.Start, cAction.Destination);
                 if (cAction.NumJumps > 0) {
                     foreach (Position jump in cAction.Jumps) {
@@ -134,6 +135,40 @@ namespace BeatTheComputer.Checkers
                     winner = activePlayer.Opponent;
                 }
             }
+
+            return this;
+        }
+
+        public override double heuristicEval()
+        {
+            const double PROMOTE_BONUS = 4.0;
+
+            double MAX_EVAL = Math.Max(p1Pieces.Count, p2Pieces.Count) * 2.0 * PROMOTE_BONUS;
+            double eval = 0.5;
+
+            foreach (KeyValuePair<Position, Piece> entry in p1Pieces) {
+                eval += (middleDist(entry.Key) * ((entry.Value.Promoted) ? 1 : PROMOTE_BONUS)) / (2.0 * MAX_EVAL);
+            }
+
+            foreach (KeyValuePair<Position, Piece> entry in p2Pieces) {
+                eval += (middleDist(entry.Key) * ((entry.Value.Promoted) ? -1 : -PROMOTE_BONUS)) / (2.0 * MAX_EVAL);
+            }
+
+            return eval;
+        }
+
+        /*creates a weighting based on proximity to the edge of the board like the following:
+                3  3  3  3  3
+                3  2  2  2  3
+                3  2  1  2  3
+                3  2  2  2  3
+                3  3  3  3  3
+            */
+        private double middleDist(Position pos)
+        {
+            double rowDist = Math.Abs(Math.Abs(pos.Row - ((Rows - 1)) / 2.0));
+            double colDist = Math.Abs(Math.Abs(pos.Col - ((Cols - 1)) / 2.0));
+            return 1.0 + Math.Ceiling(Math.Max(rowDist, colDist)) / Math.Ceiling(Math.Max(Rows / 2.0, Cols / 2.0));
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }
@@ -210,6 +245,9 @@ namespace BeatTheComputer.Checkers
             Dictionary<Position, Piece> cloneP1Pieces = new Dictionary<Position, Piece>(p1Pieces);
             Dictionary<Position, Piece> cloneP2Pieces = new Dictionary<Position, Piece>(p2Pieces);
             CheckersContext clone = new CheckersContext(moveLimit, cloneBoard, cloneP1Pieces, cloneP2Pieces);
+            if (validActions != null) {
+                clone.validActions = new IndexedSet<IAction>(validActions);
+            }
             clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;

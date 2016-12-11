@@ -129,10 +129,12 @@ namespace BeatTheComputer.Checkers
 
         private void highlightMove(IAction action)
         {
-            CheckersAction cAction = action as CheckersAction;
-            if (action != null) {
-                setHighlight(cAction.Start, Highlight.Moved);
-                setHighlight(cAction.Destination, Highlight.Moved);
+            if (action is IAction) {
+                CheckersAction cAction = (CheckersAction) action;
+                if (action != null) {
+                    setHighlight(cAction.Start, Highlight.Moved);
+                    setHighlight(cAction.Destination, Highlight.Moved);
+                }
             }
         }
 

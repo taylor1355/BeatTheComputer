@@ -3,7 +3,7 @@ using BeatTheComputer.Shared;
 
 using System.Threading;
 using System.Threading.Tasks;
-using System;
+
 namespace BeatTheComputer.GUI
 {
     public class GameController

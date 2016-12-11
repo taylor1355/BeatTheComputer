@@ -13,7 +13,7 @@ namespace BeatTheComputer.Shared
 
         public abstract IList<IAction> getValidActions();
 
-        public abstract void applyAction(IAction action);
+        public abstract IGameContext applyAction(IAction action);
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
@@ -35,6 +35,8 @@ namespace BeatTheComputer.Shared
 
             return simulation.GameOutcome;
         }
+
+        public abstract double heuristicEval();
 
         public abstract bool GameDecided { get; }
 

@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
+using BeatTheComputer.AI.Minimax;
 using BeatTheComputer.TicTacToe;
 using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
@@ -33,6 +34,7 @@ namespace BeatTheComputer.GUI
 
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));
+            behaviorToSettingTypes.Add(typeof(Minimax), typeof(MinimaxSettings));
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
@@ -98,7 +100,7 @@ namespace BeatTheComputer.GUI
                 MessageBox.Show("Can't run simulations with a human");
             } else {
                 Stopwatch timer = null;
-                int simulations = 10000;
+                int simulations = 10;
                 double result = -1;
                 await Task.Run(() => {
                     timer = Stopwatch.StartNew();
@@ -119,6 +121,7 @@ namespace BeatTheComputer.GUI
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
             behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new Minimax(7500, 1000, true));
             behaviorsList.Add(new PlayRandom());
             behaviorsList.Add(new PlayMostlyRandom());
             return behaviorsList.ToArray();

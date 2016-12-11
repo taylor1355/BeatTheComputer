@@ -4,9 +4,9 @@ namespace BeatTheComputer.Shared
 {
     public struct Player
     {
-        public static Player NONE = new Player(-1);
-        public static Player ONE = new Player(0);
-        public static Player TWO = new Player(1);
+        public static readonly Player NONE = new Player(-1);
+        public static readonly Player ONE = new Player(0);
+        public static readonly Player TWO = new Player(1);
 
         private int id;
 
