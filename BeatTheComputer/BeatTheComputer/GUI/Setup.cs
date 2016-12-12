@@ -35,6 +35,7 @@ namespace BeatTheComputer.GUI
 
             gameToSettingTypes = new Dictionary<Type, Type>();
             gameToSettingTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourSettings));
+            gameToSettingTypes.Add(typeof(CheckersContext), typeof(CheckersSettings));
 
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));

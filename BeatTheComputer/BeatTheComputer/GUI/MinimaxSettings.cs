@@ -9,7 +9,7 @@ namespace BeatTheComputer.GUI
 {
     public partial class MinimaxSettings : Form
     {
-        ObjectWrapper<IBehavior> minimaxWrapper;
+        private ObjectWrapper<IBehavior> minimaxWrapper;
 
         public MinimaxSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {

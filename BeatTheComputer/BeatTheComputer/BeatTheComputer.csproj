@@ -143,6 +143,9 @@
     <EmbeddedResource Include="ConnectFour\ConnectFour.resx">
       <DependentUpon>ConnectFour.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\CheckersSettings.resx">
+      <DependentUpon>CheckersSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ConnectFourSettings.resx">
       <DependentUpon>ConnectFourSettings.cs</DependentUpon>
     </EmbeddedResource>
