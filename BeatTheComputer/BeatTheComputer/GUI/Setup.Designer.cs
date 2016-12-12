@@ -126,6 +126,7 @@
             this.gameSettings.TabIndex = 11;
             this.gameSettings.Text = "Settings";
             this.gameSettings.UseVisualStyleBackColor = true;
+            this.gameSettings.Click += new System.EventHandler(this.gameSettings_Click);
             // 
             // playGame
             // 

@@ -7,7 +7,7 @@ namespace BeatTheComputer.GUI
 {
     public partial class MCTSSettings : Form
     {
-        ObjectWrapper<IBehavior> mctsWrapper;
+        private ObjectWrapper<IBehavior> mctsWrapper;
 
         public MCTSSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {

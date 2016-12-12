@@ -21,6 +21,7 @@ namespace BeatTheComputer.GUI
         private IBehavior player2;
 
         private Dictionary<Type, Type> gameToFormTypes;
+        private Dictionary<Type, Type> gameToSettingTypes;
         private Dictionary<Type, Type> behaviorToSettingTypes;
 
         public Setup()
@@ -31,6 +32,9 @@ namespace BeatTheComputer.GUI
             gameToFormTypes.Add(typeof(TicTacToeContext), typeof(TicTacToe.TicTacToe));
             gameToFormTypes.Add(typeof(ConnectFourContext), typeof(ConnectFour.ConnectFour));
             gameToFormTypes.Add(typeof(CheckersContext), typeof(Checkers.Checkers));
+
+            gameToSettingTypes = new Dictionary<Type, Type>();
+            gameToSettingTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourSettings));
 
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));
@@ -67,23 +71,33 @@ namespace BeatTheComputer.GUI
         private void p1Settings_Click(object sender, EventArgs e)
         {
             ObjectWrapper<IBehavior> p1Wrapper = new ObjectWrapper<IBehavior>(player1);
-            openSettings(p1Wrapper);
+            openBehaviorSettings(p1Wrapper);
             player1 = p1Wrapper.Reference;
         }
 
         private void p2Settings_Click(object sender, EventArgs e)
         {
             ObjectWrapper<IBehavior> p2Wrapper = new ObjectWrapper<IBehavior>(player2);
-            openSettings(p2Wrapper);
+            openBehaviorSettings(p2Wrapper);
             player2 = p2Wrapper.Reference;
         }
 
-        private void openSettings(ObjectWrapper<IBehavior> behaviorWrapper)
+        private void openBehaviorSettings(ObjectWrapper<IBehavior> behaviorWrapper)
         {
             IBehavior player = behaviorWrapper.Reference;
             if (player != null && behaviorToSettingTypes.ContainsKey(player.GetType())) {
                 Form settings = (Form) Activator.CreateInstance(behaviorToSettingTypes[player.GetType()], behaviorWrapper);
                 settings.ShowDialog();
+            }
+        }
+
+        private void gameSettings_Click(object sender, EventArgs e)
+        {
+            ObjectWrapper<IGameContext> gameWrapper = new ObjectWrapper<IGameContext>(context);
+            if (gameToSettingTypes.ContainsKey(context.GetType())) {
+                Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[context.GetType()], gameWrapper);
+                settings.ShowDialog();
+                context = gameWrapper.Reference;
             }
         }
 
