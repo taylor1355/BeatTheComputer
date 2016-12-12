@@ -8,6 +8,7 @@ namespace BeatTheComputer.Checkers
 {
     class CheckersContext : GameContext
     {
+        private int pieceRows;
         private int moveLimit;
 
         private Piece[,] board;
@@ -20,6 +21,7 @@ namespace BeatTheComputer.Checkers
         {
             validateArguments(rows, cols, pieceRows, moveLimit);
 
+            this.pieceRows = pieceRows;
             this.moveLimit = moveLimit;
 
             board = new Piece[rows, cols];
@@ -65,11 +67,12 @@ namespace BeatTheComputer.Checkers
 
         private void validateArguments(int rows, int cols, int pieceRows, int moveLimit)
         {
-            if (rows < 2 * pieceRows) {
-                throw new ArgumentException("Must have at least " + (2 * pieceRows).ToString() + " rows", "rows");
+            int minRows = Math.Max(3, 2 * pieceRows + 1);
+            if (rows < minRows) {
+                throw new ArgumentException("Must have at least " + minRows.ToString() + " rows", "rows");
             }
-            if (cols < 3) {
-                throw new ArgumentException("Must have at least 3 columns", "cols");
+            if (cols < 2) {
+                throw new ArgumentException("Must have at least 2 columns", "cols");
             }
             if (pieceRows < 1) {
                 throw new ArgumentException("Must have at least 1 row of pieces", "pieceRows");
@@ -260,6 +263,14 @@ namespace BeatTheComputer.Checkers
 
         public int Cols {
             get { return board.GetLength(1); }
+        }
+
+        public int PieceRows {
+            get { return pieceRows; }
+        }
+
+        public int MoveLimit {
+            get { return moveLimit; }
         }
     }
 }
