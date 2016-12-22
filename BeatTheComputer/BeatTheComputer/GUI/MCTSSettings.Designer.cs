@@ -34,11 +34,9 @@
             this.cancel = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.thinkingTimeField = new System.Windows.Forms.TextBox();
             this.iterationLimitField = new System.Windows.Forms.TextBox();
-            this.parallelTreesField = new System.Windows.Forms.TextBox();
             this.exploreFactorField = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -79,7 +77,7 @@
             // 
             // apply
             // 
-            this.apply.Location = new System.Drawing.Point(110, 211);
+            this.apply.Location = new System.Drawing.Point(110, 185);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(75, 23);
             this.apply.TabIndex = 8;
@@ -89,7 +87,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(29, 211);
+            this.cancel.Location = new System.Drawing.Point(29, 185);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 7;
@@ -115,19 +113,10 @@
             this.label2.TabIndex = 10;
             this.label2.Text = "Iteration Limit:";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(46, 152);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Parallel Trees:";
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(185, 98);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(13, 13);
@@ -150,17 +139,9 @@
             this.iterationLimitField.Size = new System.Drawing.Size(58, 20);
             this.iterationLimitField.TabIndex = 3;
             // 
-            // parallelTreesField
-            // 
-            this.parallelTreesField.Location = new System.Drawing.Point(126, 148);
-            this.parallelTreesField.MaxLength = 9;
-            this.parallelTreesField.Name = "parallelTreesField";
-            this.parallelTreesField.Size = new System.Drawing.Size(58, 20);
-            this.parallelTreesField.TabIndex = 5;
-            // 
             // exploreFactorField
             // 
-            this.exploreFactorField.Location = new System.Drawing.Point(126, 174);
+            this.exploreFactorField.Location = new System.Drawing.Point(126, 148);
             this.exploreFactorField.MaxLength = 9;
             this.exploreFactorField.Name = "exploreFactorField";
             this.exploreFactorField.Size = new System.Drawing.Size(58, 20);
@@ -169,7 +150,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(42, 178);
+            this.label6.Location = new System.Drawing.Point(42, 152);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(78, 13);
             this.label6.TabIndex = 15;
@@ -179,14 +160,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(229, 252);
+            this.ClientSize = new System.Drawing.Size(229, 224);
             this.Controls.Add(this.exploreFactorField);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.parallelTreesField);
             this.Controls.Add(this.iterationLimitField);
             this.Controls.Add(this.thinkingTimeField);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cancel);
@@ -213,11 +192,9 @@
         private System.Windows.Forms.Button cancel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox thinkingTimeField;
         private System.Windows.Forms.TextBox iterationLimitField;
-        private System.Windows.Forms.TextBox parallelTreesField;
         private System.Windows.Forms.TextBox exploreFactorField;
         private System.Windows.Forms.Label label6;
     }

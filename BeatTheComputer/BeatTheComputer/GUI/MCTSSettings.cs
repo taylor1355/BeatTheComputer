@@ -23,7 +23,6 @@ namespace BeatTheComputer.GUI
             tryToLoseRadio.Checked = !mcts.TryingToWin;
             thinkingTimeField.Text = (mcts.TimeLimit / 1000).ToString();
             iterationLimitField.Text = mcts.IterationLimit.ToString();
-            parallelTreesField.Text = mcts.NumTrees.ToString();
             exploreFactorField.Text = mcts.ExploreFactor.ToString();
         } 
 
@@ -46,11 +45,6 @@ namespace BeatTheComputer.GUI
                 errors += "Iteration Limit must be a positive integer.\n";
             }
 
-            int parallelTrees;
-            if (!int.TryParse(parallelTreesField.Text, out parallelTrees) || parallelTrees <= 0) {
-                errors += "Parallel Trees must be a positive integer.\n";
-            }
-
             double exploreFactor;
             if (!double.TryParse(exploreFactorField.Text, out exploreFactor) || exploreFactor < 0) {
                 errors += "Explore Factor must be a non-negative number.\n";
@@ -60,7 +54,7 @@ namespace BeatTheComputer.GUI
 
             if (errors.Length == 0) {
                 MCTS mcts = (MCTS) mctsWrapper.Reference;
-                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, parallelTrees, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
+                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
                 this.Close();
             } else {
                 MessageBox.Show(errors);
