@@ -35,7 +35,7 @@ namespace BeatTheComputer.AI.MCTS
                 tree = new MCTSTree(context.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
             }
 
-            Dictionary<IAction, double> actionScores = tree.run(threads, timeLimit, iterationLimit, context, myLastAction, opponentAction, interrupt);
+            Dictionary<IAction, double> actionScores = tree.run(threads, timeLimit, rolloutLimit, context, myLastAction, opponentAction, interrupt);
 
             IAction bestAction = null;
             foreach (IAction action in actionScores.Keys) {
@@ -55,7 +55,7 @@ namespace BeatTheComputer.AI.MCTS
         //does not save game tree
         public override IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), threads, timeLimit, iterationLimit, exploreFactor, tryToWin);
+            return new MCTS(rolloutBehavior.clone(), threads, timeLimit, rolloutLimit, exploreFactor, tryToWin);
         }
 
         public IBehavior RolloutBehavior {

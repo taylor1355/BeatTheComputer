@@ -36,7 +36,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.thinkingTimeField = new System.Windows.Forms.TextBox();
-            this.iterationLimitField = new System.Windows.Forms.TextBox();
+            this.rolloutLimitField = new System.Windows.Forms.TextBox();
             this.exploreFactorField = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -109,11 +109,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 148);
+            this.label2.Location = new System.Drawing.Point(53, 148);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.Size = new System.Drawing.Size(67, 13);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Iteration Limit:";
+            this.label2.Text = "Rollout Limit:";
             // 
             // label5
             // 
@@ -133,13 +133,13 @@
             this.thinkingTimeField.Size = new System.Drawing.Size(58, 20);
             this.thinkingTimeField.TabIndex = 2;
             // 
-            // iterationLimitField
+            // rolloutLimitField
             // 
-            this.iterationLimitField.Location = new System.Drawing.Point(126, 145);
-            this.iterationLimitField.MaxLength = 9;
-            this.iterationLimitField.Name = "iterationLimitField";
-            this.iterationLimitField.Size = new System.Drawing.Size(58, 20);
-            this.iterationLimitField.TabIndex = 3;
+            this.rolloutLimitField.Location = new System.Drawing.Point(126, 145);
+            this.rolloutLimitField.MaxLength = 9;
+            this.rolloutLimitField.Name = "rolloutLimitField";
+            this.rolloutLimitField.Size = new System.Drawing.Size(58, 20);
+            this.rolloutLimitField.TabIndex = 3;
             // 
             // exploreFactorField
             // 
@@ -184,7 +184,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.exploreFactorField);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.iterationLimitField);
+            this.Controls.Add(this.rolloutLimitField);
             this.Controls.Add(this.thinkingTimeField);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
@@ -215,7 +215,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox thinkingTimeField;
-        private System.Windows.Forms.TextBox iterationLimitField;
+        private System.Windows.Forms.TextBox rolloutLimitField;
         private System.Windows.Forms.TextBox exploreFactorField;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label3;
