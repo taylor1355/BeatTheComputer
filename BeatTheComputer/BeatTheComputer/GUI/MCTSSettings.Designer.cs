@@ -39,6 +39,8 @@
             this.iterationLimitField = new System.Windows.Forms.TextBox();
             this.exploreFactorField = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.threadsField = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,7 +79,7 @@
             // 
             // apply
             // 
-            this.apply.Location = new System.Drawing.Point(110, 185);
+            this.apply.Location = new System.Drawing.Point(110, 208);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(75, 23);
             this.apply.TabIndex = 8;
@@ -87,7 +89,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(29, 185);
+            this.cancel.Location = new System.Drawing.Point(29, 208);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 7;
@@ -98,7 +100,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 102);
+            this.label1.Location = new System.Drawing.Point(43, 124);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 9;
@@ -107,7 +109,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 126);
+            this.label2.Location = new System.Drawing.Point(48, 148);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 10;
@@ -117,7 +119,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(185, 98);
+            this.label5.Location = new System.Drawing.Point(184, 125);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(13, 13);
             this.label5.TabIndex = 13;
@@ -125,7 +127,7 @@
             // 
             // thinkingTimeField
             // 
-            this.thinkingTimeField.Location = new System.Drawing.Point(126, 98);
+            this.thinkingTimeField.Location = new System.Drawing.Point(126, 121);
             this.thinkingTimeField.MaxLength = 9;
             this.thinkingTimeField.Name = "thinkingTimeField";
             this.thinkingTimeField.Size = new System.Drawing.Size(58, 20);
@@ -133,7 +135,7 @@
             // 
             // iterationLimitField
             // 
-            this.iterationLimitField.Location = new System.Drawing.Point(126, 122);
+            this.iterationLimitField.Location = new System.Drawing.Point(126, 145);
             this.iterationLimitField.MaxLength = 9;
             this.iterationLimitField.Name = "iterationLimitField";
             this.iterationLimitField.Size = new System.Drawing.Size(58, 20);
@@ -141,7 +143,7 @@
             // 
             // exploreFactorField
             // 
-            this.exploreFactorField.Location = new System.Drawing.Point(126, 148);
+            this.exploreFactorField.Location = new System.Drawing.Point(126, 169);
             this.exploreFactorField.MaxLength = 9;
             this.exploreFactorField.Name = "exploreFactorField";
             this.exploreFactorField.Size = new System.Drawing.Size(58, 20);
@@ -150,17 +152,36 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(42, 152);
+            this.label6.Location = new System.Drawing.Point(42, 172);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(78, 13);
             this.label6.TabIndex = 15;
             this.label6.Text = "Explore Factor:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(71, 100);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(49, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Threads:";
+            // 
+            // threadsField
+            // 
+            this.threadsField.Location = new System.Drawing.Point(126, 97);
+            this.threadsField.MaxLength = 9;
+            this.threadsField.Name = "threadsField";
+            this.threadsField.Size = new System.Drawing.Size(58, 20);
+            this.threadsField.TabIndex = 17;
+            // 
             // MCTSSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(229, 224);
+            this.ClientSize = new System.Drawing.Size(224, 252);
+            this.Controls.Add(this.threadsField);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.exploreFactorField);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.iterationLimitField);
@@ -197,5 +218,7 @@
         private System.Windows.Forms.TextBox iterationLimitField;
         private System.Windows.Forms.TextBox exploreFactorField;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox threadsField;
     }
 }

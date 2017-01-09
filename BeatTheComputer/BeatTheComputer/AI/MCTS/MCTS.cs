@@ -17,10 +17,10 @@ namespace BeatTheComputer.AI.MCTS
         private MCTSTree tree;
         private IAction myLastAction;
 
-        public MCTS(IBehavior rolloutBehavior, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
+        public MCTS(IBehavior rolloutBehavior, int threads, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
         {
             this.rolloutBehavior = rolloutBehavior;
-            this.threads = 1;
+            this.threads = threads;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
             this.exploreFactor = exploreFactor;
@@ -55,11 +55,15 @@ namespace BeatTheComputer.AI.MCTS
         //does not save game tree
         public override IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), timeLimit, iterationLimit, exploreFactor, tryToWin);
+            return new MCTS(rolloutBehavior.clone(), threads, timeLimit, iterationLimit, exploreFactor, tryToWin);
         }
 
         public IBehavior RolloutBehavior {
             get { return rolloutBehavior; }
+        }
+
+        public int Threads {
+            get { return threads; }
         }
 
         public double TimeLimit {

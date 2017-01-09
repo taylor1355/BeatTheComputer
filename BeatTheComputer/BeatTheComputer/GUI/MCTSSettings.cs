@@ -21,6 +21,7 @@ namespace BeatTheComputer.GUI
             MCTS mcts = (MCTS) mctsWrapper.Reference;
             tryToWinRadio.Checked = mcts.TryingToWin;
             tryToLoseRadio.Checked = !mcts.TryingToWin;
+            threadsField.Text = mcts.Threads.ToString();
             thinkingTimeField.Text = (mcts.TimeLimit / 1000).ToString();
             iterationLimitField.Text = mcts.IterationLimit.ToString();
             exploreFactorField.Text = mcts.ExploreFactor.ToString();
@@ -34,6 +35,11 @@ namespace BeatTheComputer.GUI
         private void apply_Click(object sender, System.EventArgs e)
         {
             string errors = "";
+
+            int threads;
+            if (!int.TryParse(threadsField.Text, out threads) || threads <= 0) {
+                errors += "Threads must be a positive integer.\n";
+            }
 
             double thinkingTime;
             if (!double.TryParse(thinkingTimeField.Text, out thinkingTime) || thinkingTime <= 0) {
@@ -54,7 +60,7 @@ namespace BeatTheComputer.GUI
 
             if (errors.Length == 0) {
                 MCTS mcts = (MCTS) mctsWrapper.Reference;
-                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
+                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, threads, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
                 this.Close();
             } else {
                 MessageBox.Show(errors);
