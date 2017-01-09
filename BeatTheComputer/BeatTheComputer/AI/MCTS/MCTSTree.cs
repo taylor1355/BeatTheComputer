@@ -18,7 +18,7 @@ namespace BeatTheComputer.AI.MCTS
             this.rootContext = rootContext;
         }
 
-        public Dictionary<IAction, double> run(int threads, double maxTime, int maxIterations, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
+        public Dictionary<IAction, double> run(int threads, double maxTime, int maxRollouts, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
         {
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -40,10 +40,8 @@ namespace BeatTheComputer.AI.MCTS
                 }
             }
 
-            int iterations = 0;
-            while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations && !interrupt.IsCancellationRequested)) {
+            while (root.Visits < 1 || (timer.ElapsedMilliseconds < maxTime && root.Visits < maxRollouts && !interrupt.IsCancellationRequested)) {
                 root.step(rootContext, threads);
-                iterations++;
             };
 
             return root.getActionScores();

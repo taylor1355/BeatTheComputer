@@ -10,19 +10,19 @@ namespace BeatTheComputer.AI.MCTS
         private IBehavior rolloutBehavior;
         private int threads;
         private double timeLimit;
-        private int iterationLimit;
+        private int rolloutLimit;
         private double exploreFactor;
         private bool tryToWin;
 
         private MCTSTree tree;
         private IAction myLastAction;
 
-        public MCTS(IBehavior rolloutBehavior, int threads, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
+        public MCTS(IBehavior rolloutBehavior, int threads, double timeLimit, int rolloutLimit, double exploreFactor, bool tryToWin)
         {
             this.rolloutBehavior = rolloutBehavior;
             this.threads = threads;
             this.timeLimit = timeLimit;
-            this.iterationLimit = iterationLimit;
+            this.rolloutLimit = rolloutLimit;
             this.exploreFactor = exploreFactor;
             this.tryToWin = tryToWin;
 
@@ -70,8 +70,8 @@ namespace BeatTheComputer.AI.MCTS
             get { return timeLimit; }
         }
 
-        public int IterationLimit {
-            get { return iterationLimit; }
+        public int RolloutLimit {
+            get { return rolloutLimit; }
         }
 
         public double ExploreFactor {

@@ -1,7 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -55,7 +54,6 @@ namespace BeatTheComputer.AI.MCTS
             while (!cur.IsLeaf) {
                 MCTSNode next = cur.select();
 
-                //need to update visits/wins of parent
                 if (threads > 1) {
                     MCTSNode secondNext = cur.selectSecond(next);
                     if (secondNext != null) {
@@ -207,6 +205,10 @@ namespace BeatTheComputer.AI.MCTS
 
         public double Score {
             get { return wins(activePlayer.Opponent) / (visits + epsilon); }
+        }
+
+        public int Visits {
+            get { return (int) visits; }
         }
 
         public Dictionary<IAction, MCTSNode> Children {
