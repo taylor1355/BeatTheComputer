@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.Shared;
 
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.AI.MCTS
@@ -18,6 +19,8 @@ namespace BeatTheComputer.AI.MCTS
         private double p1Wins;
         private double visits;
         private Dictionary<IAction, MCTSNode> children;
+
+        private Object updateLock = new Object();
 
         public MCTSNode(IGameContext context, IBehavior rolloutBehavior, double exploreFactor, bool tryToWin)
         {
@@ -39,16 +42,35 @@ namespace BeatTheComputer.AI.MCTS
             children = null;
         }
 
-        public void step(IGameContext context)
+        public double step(IGameContext context, int threads)
         {
             List<MCTSNode> visited = new List<MCTSNode>();
             IGameContext curContext = context.clone();
+            List<Task> taskList = new List<Task>();
 
             //selection
             MCTSNode cur = this;
             visited.Add(cur);
             while (!cur.IsLeaf) {
                 MCTSNode next = cur.select();
+
+                if (threads > 1) {
+                    MCTSNode secondNext = cur.selectSecond(next);
+                    if (secondNext != null) {
+                        threads--;
+                        IGameContext secondNextContext = curContext.clone();
+                        secondNextContext.applyAction(cur.actionOfChild(secondNext));
+                        List<MCTSNode> toUpdate = new List<MCTSNode>(visited);
+                        
+                        taskList.Add(Task.Run(() => {
+                            double result = secondNext.step(secondNextContext, 1);
+                            foreach (MCTSNode parent in toUpdate) {
+                                parent.update(result);
+                            }
+                        }));
+                    }
+                }
+
                 curContext.applyAction(cur.actionOfChild(next));
                 cur = next;
                 visited.Add(cur);
@@ -62,8 +84,16 @@ namespace BeatTheComputer.AI.MCTS
 
             //backpropagation
             cur.backPropagate(rolloutResult, visited);
+
+            //wait for child threads to finish
+            foreach (Task task in taskList) {
+                task.Wait();
+            }
+
+            return rolloutResult;
         }
 
+        //select the child with the best uct score
         private MCTSNode select()
         {
             MCTSNode bestChild = null;
@@ -75,6 +105,19 @@ namespace BeatTheComputer.AI.MCTS
             return bestChild;
         }
 
+        //select the child with the second best uct value
+        private MCTSNode selectSecond(MCTSNode best)
+        {
+            MCTSNode secondBestChild = null;
+            foreach (MCTSNode child in children.Values) {
+                if (child != best && (secondBestChild == null || child.uct(visits, activePlayer) > secondBestChild.uct(visits, activePlayer))) {
+                    secondBestChild = child;
+                }
+            }
+            return secondBestChild;
+        }
+
+        //generate the children of a node
         private void expand(IGameContext context)
         {
             if (IsLeaf && !IsTerminal) {
@@ -88,11 +131,13 @@ namespace BeatTheComputer.AI.MCTS
             }
         }
 
+        //return the result of a simulation starting from this node
         private double simulate(IGameContext context)
         {
             return 0.5 * (double) context.simulate(rolloutBehavior, rolloutBehavior);
         }
 
+        //update the scores of visited nodes based on simulation results
         private void backPropagate(double rolloutResult, List<MCTSNode> visited)
         {
             foreach (MCTSNode node in visited) {
@@ -115,8 +160,10 @@ namespace BeatTheComputer.AI.MCTS
 
         public void update(double rolloutResult)
         {
-            p1Wins += rolloutResult;
-            visits++;
+            lock(updateLock) {
+                p1Wins += rolloutResult;
+                visits++;
+            }
         }
 
         private IAction actionOfChild(MCTSNode child)
@@ -158,6 +205,10 @@ namespace BeatTheComputer.AI.MCTS
 
         public double Score {
             get { return wins(activePlayer.Opponent) / (visits + epsilon); }
+        }
+
+        public int Visits {
+            get { return (int) visits; }
         }
 
         public Dictionary<IAction, MCTSNode> Children {

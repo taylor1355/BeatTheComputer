@@ -21,9 +21,9 @@ namespace BeatTheComputer.GUI
             MCTS mcts = (MCTS) mctsWrapper.Reference;
             tryToWinRadio.Checked = mcts.TryingToWin;
             tryToLoseRadio.Checked = !mcts.TryingToWin;
+            threadsField.Text = mcts.Threads.ToString();
             thinkingTimeField.Text = (mcts.TimeLimit / 1000).ToString();
-            iterationLimitField.Text = mcts.IterationLimit.ToString();
-            parallelTreesField.Text = mcts.NumTrees.ToString();
+            rolloutLimitField.Text = mcts.RolloutLimit.ToString();
             exploreFactorField.Text = mcts.ExploreFactor.ToString();
         } 
 
@@ -36,19 +36,19 @@ namespace BeatTheComputer.GUI
         {
             string errors = "";
 
+            int threads;
+            if (!int.TryParse(threadsField.Text, out threads) || threads <= 0) {
+                errors += "Threads must be a positive integer.\n";
+            }
+
             double thinkingTime;
             if (!double.TryParse(thinkingTimeField.Text, out thinkingTime) || thinkingTime <= 0) {
                 errors += "Thinking Time must be a positive number.\n";
             }
 
-            int iterationLimit;
-            if (!int.TryParse(iterationLimitField.Text, out iterationLimit) || iterationLimit <= 0) {
+            int rolloutLimit;
+            if (!int.TryParse(rolloutLimitField.Text, out rolloutLimit) || rolloutLimit <= 0) {
                 errors += "Iteration Limit must be a positive integer.\n";
-            }
-
-            int parallelTrees;
-            if (!int.TryParse(parallelTreesField.Text, out parallelTrees) || parallelTrees <= 0) {
-                errors += "Parallel Trees must be a positive integer.\n";
             }
 
             double exploreFactor;
@@ -60,7 +60,7 @@ namespace BeatTheComputer.GUI
 
             if (errors.Length == 0) {
                 MCTS mcts = (MCTS) mctsWrapper.Reference;
-                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, parallelTrees, thinkingTime * 1000, iterationLimit, exploreFactor, tryToWin);
+                mctsWrapper.Reference = new MCTS(mcts.RolloutBehavior, threads, thinkingTime * 1000, rolloutLimit, exploreFactor, tryToWin);
                 this.Close();
             } else {
                 MessageBox.Show(errors);

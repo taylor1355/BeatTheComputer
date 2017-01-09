@@ -135,7 +135,7 @@ namespace BeatTheComputer.GUI
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(), 4, 7500, int.MaxValue, 1.41, true));
             behaviorsList.Add(new Minimax(7500, 1000, true));
             behaviorsList.Add(new PlayRandom());
             behaviorsList.Add(new PlayMostlyRandom());
