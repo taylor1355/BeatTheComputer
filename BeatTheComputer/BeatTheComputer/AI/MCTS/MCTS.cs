@@ -1,7 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 
 using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.AI.MCTS
@@ -9,6 +8,7 @@ namespace BeatTheComputer.AI.MCTS
     class MCTS : Behavior
     {
         private IBehavior rolloutBehavior;
+        private int threads;
         private double timeLimit;
         private int iterationLimit;
         private double exploreFactor;
@@ -20,6 +20,7 @@ namespace BeatTheComputer.AI.MCTS
         public MCTS(IBehavior rolloutBehavior, double timeLimit, int iterationLimit, double exploreFactor, bool tryToWin)
         {
             this.rolloutBehavior = rolloutBehavior;
+            this.threads = 1;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
             this.exploreFactor = exploreFactor;
@@ -34,7 +35,7 @@ namespace BeatTheComputer.AI.MCTS
                 tree = new MCTSTree(context.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
             }
 
-            Dictionary<IAction, double> actionScores = tree.run(timeLimit, iterationLimit, context, myLastAction, opponentAction, interrupt);
+            Dictionary<IAction, double> actionScores = tree.run(threads, timeLimit, iterationLimit, context, myLastAction, opponentAction, interrupt);
 
             IAction bestAction = null;
             foreach (IAction action in actionScores.Keys) {

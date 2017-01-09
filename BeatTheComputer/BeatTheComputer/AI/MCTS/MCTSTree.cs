@@ -18,7 +18,7 @@ namespace BeatTheComputer.AI.MCTS
             this.rootContext = rootContext;
         }
 
-        public Dictionary<IAction, double> run(double maxTime, int maxIterations, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
+        public Dictionary<IAction, double> run(int threads, double maxTime, int maxIterations, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
         {
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -42,7 +42,7 @@ namespace BeatTheComputer.AI.MCTS
 
             int iterations = 0;
             while (iterations < 1 || (timer.ElapsedMilliseconds < maxTime && iterations < maxIterations && !interrupt.IsCancellationRequested)) {
-                root.step(rootContext);
+                root.step(rootContext, threads);
                 iterations++;
             };
 
@@ -62,7 +62,7 @@ namespace BeatTheComputer.AI.MCTS
         private void generateRootChildrenIfLeaf()
         {
             if (root.IsLeaf) {
-                root.step(rootContext);
+                root.step(rootContext, 1);
             }
         }
     }
