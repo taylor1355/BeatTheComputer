@@ -8,7 +8,7 @@ namespace BeatTheComputer.AI.MCTS
 {
     class MCTSNode
     {
-        private const double epsilon = 1e-5;
+        private const double epsilon = 1e-9;
         private double exploreFactor;
 
         private IBehavior rolloutBehavior;
@@ -42,11 +42,17 @@ namespace BeatTheComputer.AI.MCTS
             children = null;
         }
 
-        public double step(IGameContext context, int threads)
+        public double step(IGameContext context)
+        {
+            return step(context, 1, 1, false);
+        }
+
+        public double step(IGameContext context, int threads, double threadUCTDiff, bool newThreadOnFinish)
         {
             List<MCTSNode> visited = new List<MCTSNode>();
             IGameContext curContext = context.clone();
             List<Task> taskList = new List<Task>();
+            Object numThreadsLock = new Object();
 
             //selection
             MCTSNode cur = this;
@@ -55,19 +61,30 @@ namespace BeatTheComputer.AI.MCTS
                 MCTSNode next = cur.select();
 
                 if (threads > 1) {
-                    MCTSNode secondNext = cur.selectSecond(next);
-                    if (secondNext != null) {
-                        threads--;
-                        IGameContext secondNextContext = curContext.clone();
-                        secondNextContext.applyAction(cur.actionOfChild(secondNext));
+                    double bestUCT = next.uct(visits, activePlayer);
+                    SortedSet<MCTSNode> alternates = cur.selectAlternates(next, threadUCTDiff);
+                    foreach(MCTSNode child in alternates) {
+                        double childUct = child.uct(visits, activePlayer);
+                        lock(numThreadsLock) {
+                            threads--;
+                        }
+                        IGameContext alternateContext = curContext.clone();
+                        alternateContext.applyAction(cur.actionOfChild(child));
                         List<MCTSNode> toUpdate = new List<MCTSNode>(visited);
-                        
+
                         taskList.Add(Task.Run(() => {
-                            double result = secondNext.step(secondNextContext, 1);
+                            double result = child.step(alternateContext);
                             foreach (MCTSNode parent in toUpdate) {
                                 parent.update(result);
                             }
+                            if (newThreadOnFinish) {
+                                lock (numThreadsLock) {
+                                    threads++;
+                                }
+                            }
                         }));
+
+                        if (threads <= 1 || threadUCTDiff > 0.02) break;
                     }
                 }
 
@@ -93,7 +110,7 @@ namespace BeatTheComputer.AI.MCTS
             return rolloutResult;
         }
 
-        //select the child with the best uct score
+        //return the child with the best uct score
         private MCTSNode select()
         {
             MCTSNode bestChild = null;
@@ -105,16 +122,24 @@ namespace BeatTheComputer.AI.MCTS
             return bestChild;
         }
 
-        //select the child with the second best uct value
-        private MCTSNode selectSecond(MCTSNode best)
+        //return the children with uct scores within maxDiff % of the best child's
+        private SortedSet<MCTSNode> selectAlternates(MCTSNode best, double maxDiff)
         {
-            MCTSNode secondBestChild = null;
+            double bestUCT = best.uct(visits, activePlayer);
+            SortedSet<MCTSNode> alternates = new SortedSet<MCTSNode>(Comparer<MCTSNode>.Create(
+                (c1, c2) => c2.uct(visits, activePlayer).CompareTo(c1.uct(visits, activePlayer))));
+
             foreach (MCTSNode child in children.Values) {
-                if (child != best && (secondBestChild == null || child.uct(visits, activePlayer) > secondBestChild.uct(visits, activePlayer))) {
-                    secondBestChild = child;
+                if (child != best) {
+                    double childUCT = child.uct(visits, activePlayer);
+                    double diff = (bestUCT - childUCT) / (bestUCT + epsilon);
+                    if (diff <= maxDiff) {
+                        alternates.Add(child);
+                    }
                 }
             }
-            return secondBestChild;
+
+            return alternates;
         }
 
         //generate the children of a node

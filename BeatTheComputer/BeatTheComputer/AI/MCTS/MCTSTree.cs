@@ -40,8 +40,10 @@ namespace BeatTheComputer.AI.MCTS
                 }
             }
 
+            int iterations = 0;
             while (root.Visits < 1 || (timer.ElapsedMilliseconds < maxTime && root.Visits < maxRollouts && !interrupt.IsCancellationRequested)) {
-                root.step(rootContext, threads);
+                root.step(rootContext, threads, 0.01, true);
+                iterations++;
             };
 
             return root.getActionScores();
@@ -60,7 +62,7 @@ namespace BeatTheComputer.AI.MCTS
         private void generateRootChildrenIfLeaf()
         {
             if (root.IsLeaf) {
-                root.step(rootContext, 1);
+                root.step(rootContext);
             }
         }
     }
