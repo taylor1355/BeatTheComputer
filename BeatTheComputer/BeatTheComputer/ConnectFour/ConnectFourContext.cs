@@ -42,12 +42,20 @@ namespace BeatTheComputer.ConnectFour
             }
         }
 
+        public bool actionIsValid(IAction action)
+        {
+            ConnectFourAction c4Action = (ConnectFourAction) action;
+            return c4Action.Position.inBounds(Rows, Cols)
+                && playerAt(c4Action.Position) == Player.NONE
+                && c4Action.Player == activePlayer;
+        }
+
         public override IList<IAction> getValidActions()
         {
             List<IAction> validActions = new List<IAction>();
             for (int col = 0; col < Cols; col++) {
                 ConnectFourAction action = new ConnectFourAction(col, activePlayer, this);
-                if (action.isValid(this)) {
+                if (actionIsValid(action)) {
                     validActions.Add(action);
                 }
             }

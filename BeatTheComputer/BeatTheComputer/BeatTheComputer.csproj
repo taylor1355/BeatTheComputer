@@ -69,6 +69,9 @@
     <Compile Include="Checkers\CheckersAction.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
     <Compile Include="Checkers\Piece.cs" />
+    <Compile Include="ConnectFour\ConnectFourBitboard.cs" />
+    <Compile Include="ConnectFour\ConnectFourBoard.cs" />
+    <Compile Include="ConnectFour\ConnectFourScalableBoard.cs" />
     <Compile Include="GUI\CheckersSettings.cs">
       <SubType>Form</SubType>
     </Compile>

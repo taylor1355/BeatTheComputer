@@ -14,18 +14,16 @@ namespace BeatTheComputer.ConnectFour
             this.player = player;
         }
 
-        private ConnectFourAction(Position position, Player playerID)
+        private ConnectFourAction(Position position, Player player)
         {
             this.position = position;
-            this.player = playerID;
+            this.player = player;
         }
 
         public bool isValid(IGameContext context)
         {
-            ConnectFourContext c4Context = context as ConnectFourContext;
-            return position.inBounds(c4Context.Rows, c4Context.Cols)
-                && c4Context.playerAt(position) == Player.NONE
-                && player == context.ActivePlayer;
+            ConnectFourContext c4Context = (ConnectFourContext) context;
+            return c4Context.actionIsValid(this);
         }
 
         public bool Equals(IAction other)
