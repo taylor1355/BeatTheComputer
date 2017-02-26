@@ -67,7 +67,10 @@
       <DependentUpon>Checkers.cs</DependentUpon>
     </Compile>
     <Compile Include="Checkers\CheckersAction.cs" />
+    <Compile Include="Checkers\CheckersBitboard.cs" />
+    <Compile Include="Checkers\CheckersBoard.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
+    <Compile Include="Checkers\CheckersScalableBoard.cs" />
     <Compile Include="Checkers\Piece.cs" />
     <Compile Include="ConnectFour\ConnectFourBitboard.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
