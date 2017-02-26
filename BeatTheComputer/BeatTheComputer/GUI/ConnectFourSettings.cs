@@ -20,8 +20,8 @@ namespace BeatTheComputer.GUI
         private void ConnectFourSettings_Load(object sender, EventArgs e)
         {
             ConnectFourContext connectFour = (ConnectFourContext) connectFourWrapper.Reference;
-            rowsField.Text = connectFour.Rows.ToString();
-            colsField.Text = connectFour.Cols.ToString();
+            rowsField.Text = connectFour.Board.Rows.ToString();
+            colsField.Text = connectFour.Board.Cols.ToString();
         }
 
         private void cancel_Click(object sender, EventArgs e)
