@@ -1,10 +1,5 @@
 ﻿using BeatTheComputer.Shared;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BeatTheComputer.Utils;
 
 namespace BeatTheComputer.ConnectFour
 {
@@ -13,38 +8,82 @@ namespace BeatTheComputer.ConnectFour
         private Player[,] board;
         private int[] topRows;
 
+        private Position lastChanged;
+
         public ConnectFourScalableBoard(int rows, int cols)
         {
             board = new Player[rows, cols];
             topRows = new int[cols];
+
+            lastChanged = new Position(-1, -1);
         }
 
-        public IList<IAction> getValidActions()
+        private ConnectFourScalableBoard() { }
+
+        public override int topRowOf(int col)
         {
-            List<IAction> validActions = new List<IAction>();
-            for (int col = 0; col < Cols; col++) {
-                ConnectFourAction action = new ConnectFourAction(col, activePlayer, this);
-                if (actionIsValid(action)) {
-                    validActions.Add(action);
+            return topRows[col];
+        }
+
+        public override Player currentWinner()
+        {
+            if (!lastChanged.inBounds(Rows, Cols)) return Player.NONE;
+
+            bool winTriggered = identicalNeighborsOnLine(lastChanged, new Position(1, 0)) >= 4
+                || identicalNeighborsOnLine(lastChanged, new Position(0, 1)) >= 4
+                || identicalNeighborsOnLine(lastChanged, new Position(1, 1)) >= 4
+                || identicalNeighborsOnLine(lastChanged, new Position(-1, 1)) >= 4;
+
+            if (winTriggered) return this[lastChanged];
+            else return Player.NONE;
+        }
+
+        private int identicalNeighborsOnLine(Position start, Position slope)
+        {
+            int neighborCount = 1;
+            for (int sign = -1; sign <= 1; sign += 2) {
+                Position pos = start + slope * sign;
+                while (pos.inBounds(Rows, Cols) && this[pos] == this[start]) {
+                    neighborCount++;
+                    pos += slope * sign;
                 }
             }
-            return validActions;
+            return neighborCount;
         }
 
-        public bool actionIsValid(IAction action)
-        {
-            ConnectFourAction c4Action = (ConnectFourAction) action;
-            return c4Action.Position.inBounds(Rows, Cols)
-                && playerAt(c4Action.Position) == Player.NONE
-                && c4Action.Player == activePlayer;
+        public override Player this[int row, int col] {
+            get { return board[row, col]; }
+            set {
+                this[row, col] = value;
+                lastChanged = new Position(row, col);
+                topRows[col]++;
+            }
         }
 
-        public int Rows {
+        public override Player this[Position pos] {
+            get { return board[pos.Row, pos.Col]; }
+            set {
+                board[pos.Row, pos.Col] = value;
+                lastChanged = pos;
+                topRows[pos.Col]++;
+            }
+        }
+
+        public override int Rows {
             get { return board.GetLength(0); }
         }
 
-        public int Cols {
+        public override int Cols {
             get { return board.GetLength(1); }
+        }
+
+        public override ConnectFourBoard clone()
+        {
+            ConnectFourScalableBoard clone = new ConnectFourScalableBoard();
+            clone.board = (Player[,]) board.Clone();
+            clone.topRows = (int[]) topRows.Clone();
+            clone.lastChanged = lastChanged;
+            return clone;
         }
     }
 }

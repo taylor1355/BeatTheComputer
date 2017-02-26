@@ -44,8 +44,8 @@ namespace BeatTheComputer.ConnectFour
             ConnectFourContext c4Context = (ConnectFourContext) context;
 
             int padding = 10;
-            int rows = c4Context.Rows;
-            int cols = c4Context.Cols;
+            int rows = c4Context.Board.Rows;
+            int cols = c4Context.Board.Cols;
             holes = new PictureBox[rows, cols];
             holeLength = 100;
 
@@ -92,9 +92,9 @@ namespace BeatTheComputer.ConnectFour
 
         private Bitmap imageOf(Position pos, ConnectFourContext context)
         {
-            if (context.playerAt(pos) == Player.ONE) {
+            if (context.Board[pos] == Player.ONE) {
                 return p1Img;
-            } else if (context.playerAt(pos) == Player.TWO) {
+            } else if (context.Board[pos] == Player.TWO) {
                 return p2Img;
             } else {
                 return emptyImg;
@@ -106,7 +106,7 @@ namespace BeatTheComputer.ConnectFour
             PictureBox hole = (PictureBox) sender;
             int col = (int) hole.Tag;
             ConnectFourContext context = (ConnectFourContext) controller.Context;
-            ConnectFourAction action = new ConnectFourAction(col, context.ActivePlayer, context);
+            ConnectFourAction action = new ConnectFourAction(col, context.ActivePlayer, context.Board);
             controller.tryHumanTurn(action);
         }
     }

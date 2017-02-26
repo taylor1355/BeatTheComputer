@@ -8,9 +8,9 @@ namespace BeatTheComputer.ConnectFour
         private Position position;
         private Player player;
 
-        public ConnectFourAction(int col, Player player, ConnectFourContext context)
+        public ConnectFourAction(int col, Player player, ConnectFourBoard board)
         {
-            position = new Position(context.topRowOf(col), col);
+            position = new Position(board.topRowOf(col), col);
             this.player = player;
         }
 
@@ -23,7 +23,7 @@ namespace BeatTheComputer.ConnectFour
         public bool isValid(IGameContext context)
         {
             ConnectFourContext c4Context = (ConnectFourContext) context;
-            return c4Context.actionIsValid(this);
+            return c4Context.Board.actionIsValid(this, context.ActivePlayer);
         }
 
         public bool Equals(IAction other)
