@@ -8,5 +8,7 @@ namespace BeatTheComputer.Checkers
 {
     class CheckersBitboard
     {
+        private ulong[] kings;
+        private ulong[] pieces;
     }
 }

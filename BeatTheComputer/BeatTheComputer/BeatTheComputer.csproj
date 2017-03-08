@@ -71,7 +71,7 @@
     <Compile Include="Checkers\CheckersBoard.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
     <Compile Include="Checkers\CheckersScalableBoard.cs" />
-    <Compile Include="Checkers\Piece.cs" />
+    <Compile Include="Checkers\CheckersPiece.cs" />
     <Compile Include="ConnectFour\ConnectFourBitboard.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourScalableBoard.cs" />

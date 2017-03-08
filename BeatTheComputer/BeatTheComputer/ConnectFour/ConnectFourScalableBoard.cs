@@ -1,4 +1,5 @@
-﻿using BeatTheComputer.Shared;
+﻿using System;
+using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
 namespace BeatTheComputer.ConnectFour
@@ -27,6 +28,7 @@ namespace BeatTheComputer.ConnectFour
 
         public override Player currentWinner()
         {
+            // if nobody has played a move
             if (!lastChanged.inBounds(Rows, Cols)) return Player.NONE;
 
             bool winTriggered = identicalNeighborsOnLine(lastChanged, new Position(1, 0)) >= 4
@@ -38,6 +40,7 @@ namespace BeatTheComputer.ConnectFour
             else return Player.NONE;
         }
 
+        // returns the number of pieces in a line passing through start belonging to the same player
         private int identicalNeighborsOnLine(Position start, Position slope)
         {
             int neighborCount = 1;
@@ -53,20 +56,17 @@ namespace BeatTheComputer.ConnectFour
 
         public override Player this[int row, int col] {
             get { return board[row, col]; }
-            set {
-                this[row, col] = value;
-                lastChanged = new Position(row, col);
-                topRows[col]++;
-            }
         }
 
         public override Player this[Position pos] {
             get { return board[pos.Row, pos.Col]; }
-            set {
-                board[pos.Row, pos.Col] = value;
-                lastChanged = pos;
-                topRows[pos.Col]++;
-            }
+        }
+
+        public override void applyAction(ConnectFourAction action)
+        {
+            board[action.Position.Row, action.Position.Col] = action.Player;
+            lastChanged = action.Position;
+            topRows[action.Position.Col]++;
         }
 
         public override int Rows {

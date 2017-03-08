@@ -1,8 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
-using System.Collections.Generic;
-
 namespace BeatTheComputer.ConnectFour
 {
     abstract class ConnectFourBoard
@@ -17,8 +15,10 @@ namespace BeatTheComputer.ConnectFour
         public abstract int topRowOf(int col);
         public abstract Player currentWinner();
 
-        public abstract Player this[int row, int col] { get; set; }
-        public abstract Player this[Position pos] { get; set; }
+        public abstract Player this[int row, int col] { get; }
+        public abstract Player this[Position pos] { get; }
+
+        public abstract void applyAction(ConnectFourAction action);
 
         public abstract int Rows { get; }
         public abstract int Cols { get; }
@@ -27,6 +27,10 @@ namespace BeatTheComputer.ConnectFour
 
         public virtual bool equalTo(ConnectFourBoard other)
         {
+            if (Rows != other.Rows || Cols != other.Cols) {
+                return false;
+            }
+            
             for (int col = 0; col < Cols; col++) {
                 if (topRowOf(col) != other.topRowOf(col)) {
                     return false;

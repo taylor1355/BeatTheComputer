@@ -48,26 +48,25 @@ namespace BeatTheComputer.ConnectFour
             return topRows[col];
         }
 
-        // TODO
         public override Player currentWinner()
         {
             if (lastPlayer == Player.NONE) {
                 return Player.NONE;
             }
 
-            //detect horizontal wins
+            // detect horizontal wins
             ulong pieces = players[lastPlayer.ID - 1] & (players[lastPlayer.ID - 1] >> 1);
             if ((pieces & (pieces >> 2 * 1)) > 0) return lastPlayer;
 
-            //detect vertical wins
+            // detect vertical wins
             pieces = players[lastPlayer.ID - 1] & (players[lastPlayer.ID - 1] >> (Cols + 1));
             if ((pieces & (pieces >> 2 * (Cols + 1))) > 0) return lastPlayer;
 
-            //detect positive slope diagonal wins
+            // detect positive slope diagonal wins
             pieces = players[lastPlayer.ID - 1] & (players[lastPlayer.ID - 1] >> (Cols + 2));
             if ((pieces & (pieces >> 2 * (Cols + 2))) > 0) return lastPlayer;
 
-            //detect negative slope diagonal wins
+            // detect negative slope diagonal wins
             pieces = players[lastPlayer.ID - 1] & (players[lastPlayer.ID - 1] >> Cols);
             if ((pieces & (pieces >> 2 * Cols)) > 0) return lastPlayer;
 
@@ -76,18 +75,10 @@ namespace BeatTheComputer.ConnectFour
 
         public override Player this[int row, int col] {
             get { return this[indexOf(row, col)]; }
-            set {
-                this[indexOf(row, col)] = value;
-                topRows[col]++;
-            }
         }
 
         public override Player this[Position pos] {
             get { return this[indexOf(pos.Row, pos.Col)]; }
-            set {
-                this[indexOf(pos.Row, pos.Col)] = value;
-                topRows[pos.Col]++;
-            }
         }
 
         private int indexOf(int row, int col)
@@ -97,15 +88,18 @@ namespace BeatTheComputer.ConnectFour
 
         private Player this[int index] {
             get { return Player.fromID(nthBit(index, players[0]) + 2 * nthBit(index, players[1])); }
-            set {
-                setNthBit(index, ref players[value.ID - 1]);
-                lastPlayer = value;
-            }
         }
 
         private int nthBit(int n, ulong bitVector)
         {
             return (int) (bitVector >> n) & 0x1;
+        }
+
+        public override void applyAction(ConnectFourAction action)
+        {
+            setNthBit(indexOf(action.Position.Row, action.Position.Col), ref players[action.Player.ID - 1]);
+            lastPlayer = action.Player;
+            topRows[action.Position.Col]++;
         }
 
         private void setNthBit(int n, ref ulong bitVector)
@@ -134,13 +128,13 @@ namespace BeatTheComputer.ConnectFour
         public override bool equalTo(ConnectFourBoard other)
         {
             ConnectFourBitboard otherBitboard = other as ConnectFourBitboard;
-            if (otherBitboard == null) {
-                return base.equalTo(other);
-            }
-
-            return rows == otherBitboard.rows && cols == otherBitboard.cols
+            if (otherBitboard != null) {
+                return rows == otherBitboard.rows && cols == otherBitboard.cols
                 && players[0] == otherBitboard.players[0]
                 && players[1] == otherBitboard.players[1];
+            }
+
+            return base.equalTo(other);
         }
 
         public static bool fits(int rows, int cols)

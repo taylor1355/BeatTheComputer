@@ -56,7 +56,7 @@ namespace BeatTheComputer.ConnectFour
                 }
 
                 ConnectFourAction c4Action = (ConnectFourAction) action;
-                board[c4Action.Position] = c4Action.Player;
+                board.applyAction(c4Action);
 
                 activePlayer = activePlayer.Opponent;
                 moves++;
@@ -71,7 +71,7 @@ namespace BeatTheComputer.ConnectFour
         //TODO
         public override double heuristicEval() 
         {
-            return 0;
+            throw new NotImplementedException();
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves == board.Rows * board.Cols; } }

@@ -69,7 +69,7 @@ namespace BeatTheComputer.Checkers
 
             highlightedSquares = new Dictionary<Position, Highlight>();
 
-            squares = new PictureBox[cContext.Rows, cContext.Cols];
+            squares = new PictureBox[cContext.Board.Rows, cContext.Board.Cols];
             squareLength = 100;
             evenColor = Color.Brown;
             oddColor = Color.Tan;
@@ -110,14 +110,14 @@ namespace BeatTheComputer.Checkers
 
         private Bitmap imageOf(Position pos, CheckersContext context)
         {
-            if (context.playerAt(pos) == Player.ONE) {
-                if (context.pieceAt(pos).Promoted) {
+            if (context.Board[pos].Player == Player.ONE) {
+                if (context.Board[pos].Promoted) {
                     return p1KingImg;
                 } else {
                     return p1Img;
                 }
-            } else if (context.playerAt(pos) == Player.TWO) {
-                if (context.pieceAt(pos).Promoted) {
+            } else if (context.Board[pos].Player == Player.TWO) {
+                if (context.Board[pos].Promoted) {
                     return p2KingImg;
                 } else {
                     return p2Img;
@@ -207,13 +207,13 @@ namespace BeatTheComputer.Checkers
 
                 highlightMove(controller.LastAction);
 
-                if (context.playerAt(pos) == controller.Turn) {
+                if (context.Board[pos].Player == controller.Turn) {
                     if (availableActions != null) {
                         resetHighlights(false);
                         availableActions = null;
                     }
 
-                    ICollection<IAction> actions = context.pieceAt(pos).getActions(context);
+                    ICollection<IAction> actions = context.Board[pos].getActions(context.Board);
 
                     if (actions.Count > 0) {
                         availableActions = new Dictionary<Position, CheckersAction>();

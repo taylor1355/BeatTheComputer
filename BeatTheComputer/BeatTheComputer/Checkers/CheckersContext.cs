@@ -11,11 +11,7 @@ namespace BeatTheComputer.Checkers
         private int pieceRows;
         private int moveLimit;
 
-        private Piece[,] board;
-        private Dictionary<Position, Piece> p1Pieces;
-        private Dictionary<Position, Piece> p2Pieces;
-
-        private IList<IAction> validActions;
+        private CheckersBoard board;
 
         public CheckersContext(int rows, int cols, int pieceRows, int moveLimit)
         {
@@ -24,46 +20,14 @@ namespace BeatTheComputer.Checkers
             this.pieceRows = pieceRows;
             this.moveLimit = moveLimit;
 
-            board = new Piece[rows, cols];
-            p1Pieces = new Dictionary<Position, Piece>();
-            p2Pieces = new Dictionary<Position, Piece>();
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    Position pos = new Position(row, col);
-                    Piece piece;
-                    if (row < pieceRows && (row + col) % 2 == 0) {
-                        piece = new Piece(Player.ONE, pos);
-                        p1Pieces.Add(pos, piece);
-                    } else if (rows - row <= pieceRows && (row + col) % 2 == 0) {
-                        piece = new Piece(Player.TWO, pos);
-                        p2Pieces.Add(pos, piece);
-                    } else {
-                        piece = new Piece(Player.NONE, pos);
-                    }
-                    board[row, col] = piece;
-                }
-            }
-
-            validActions = null;
+            board = new CheckersScalableBoard(rows, cols, pieceRows);
 
             activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
         }
 
-        private CheckersContext(int moveLimit, Piece[,] board, Dictionary<Position, Piece> p1Pieces, Dictionary<Position, Piece> p2Pieces)
-        {
-            this.moveLimit = moveLimit;
-            this.board = board;
-            this.p1Pieces = p1Pieces;
-            this.p2Pieces = p2Pieces;
-
-            validActions = null;
-
-            activePlayer = Player.ONE;
-            winner = Player.NONE;
-            moves = 0;
-        }
+        private CheckersContext() { }
 
         private void validateArguments(int rows, int cols, int pieceRows, int moveLimit)
         {
@@ -84,33 +48,7 @@ namespace BeatTheComputer.Checkers
 
         public override IList<IAction> getValidActions()
         {
-            generateValidActions();
-            return validActions;
-        }
-
-        private void generateValidActions()
-        {
-            if (validActions == null) {
-                validActions = new IndexedSet<IAction>();
-                Dictionary<Position, Piece> myPieces = piecesOf(activePlayer);
-
-                foreach (Piece piece in myPieces.Values) {
-                    IList<IAction> subset = piece.getActions(this);
-                    for (int i = 0; i < subset.Count; i++) {
-                        validActions.Add(subset[i]);
-                    }
-                }
-            }
-        }
-
-        private Dictionary<Position, Piece> piecesOf(Player player) {
-            if (player == Player.ONE) {
-                return p1Pieces;
-            } else if (player == Player.TWO) {
-                return p2Pieces;
-            } else {
-                throw new ArgumentException("Player " + player.ToString() + " has no pieces", "player");
-            }
+            return board.getValidActions(activePlayer);
         }
 
         public override IGameContext applyAction(IAction action)
@@ -121,22 +59,12 @@ namespace BeatTheComputer.Checkers
                 }
 
                 CheckersAction cAction = (CheckersAction) action;
-
-                movePiece(cAction.Start, cAction.Destination);
-                if (cAction.NumJumps > 0) {
-                    foreach (Position jump in cAction.Jumps) {
-                        removePieceAt(jump);
-                    }
-                }
+                board.applyAction(cAction);
 
                 activePlayer = activePlayer.Opponent;
                 moves++;
 
-                validActions = null;
-
-                if (piecesOf(activePlayer).Count == 0 || getValidActions().Count == 0) {
-                    winner = activePlayer.Opponent;
-                }
+                winner = board.currentWinner(activePlayer);
             }
 
             return this;
@@ -144,7 +72,9 @@ namespace BeatTheComputer.Checkers
 
         public override double heuristicEval()
         {
-            const double PROMOTE_BONUS = 4.0;
+            throw new NotImplementedException();
+
+            /*const double PROMOTE_BONUS = 4.0;
 
             double MAX_EVAL = Math.Max(p1Pieces.Count, p2Pieces.Count) * 2.0 * PROMOTE_BONUS;
             double eval = 0.5;
@@ -157,7 +87,7 @@ namespace BeatTheComputer.Checkers
                 eval += (middleDist(entry.Key) * ((entry.Value.Promoted) ? -1 : -PROMOTE_BONUS)) / (2.0 * MAX_EVAL);
             }
 
-            return eval;
+            return eval;*/
         }
 
         /*creates a weighting based on proximity to the edge of the board like the following:
@@ -169,72 +99,18 @@ namespace BeatTheComputer.Checkers
             */
         private double middleDist(Position pos)
         {
-            double rowDist = Math.Abs(Math.Abs(pos.Row - ((Rows - 1)) / 2.0));
-            double colDist = Math.Abs(Math.Abs(pos.Col - ((Cols - 1)) / 2.0));
-            return 1.0 + Math.Ceiling(Math.Max(rowDist, colDist)) / Math.Ceiling(Math.Max(Rows / 2.0, Cols / 2.0));
+            throw new NotImplementedException();
+            //double rowDist = Math.Abs(Math.Abs(pos.Row - ((Rows - 1)) / 2.0));
+            //double colDist = Math.Abs(Math.Abs(pos.Col - ((Cols - 1)) / 2.0));
+            //return 1.0 + Math.Ceiling(Math.Max(rowDist, colDist)) / Math.Ceiling(Math.Max(Rows / 2.0, Cols / 2.0));
         }
 
         public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }
 
-        public Player playerAt(Position pos)
-        {
-            return board[pos.Row, pos.Col].Player;
-        }
-
-        public Piece pieceAt(Position pos)
-        {
-            return board[pos.Row, pos.Col];
-        }
-
-        private void removePieceAt(Position pos)
-        {
-            Player player = board[pos.Row, pos.Col].Player;
-            if (player != Player.NONE) {
-                piecesOf(player).Remove(pos);
-                board[pos.Row, pos.Col] = new Piece(Player.NONE, pos);
-            }
-        }
-
-        private void movePiece(Position start, Position destination)
-        {
-            Piece current = pieceAt(start).move(destination);
-            if (!current.Promoted && (destination.Row == 0 || destination.Row == Rows - 1)) {
-                current = current.promote();
-            }
-
-            Dictionary<Position, Piece> pieces = piecesOf(current.Player);
-            pieces.Remove(start);
-            pieces.Add(destination, current);
-
-            board[start.Row, start.Col] = new Piece(Player.NONE, start);
-            board[destination.Row, destination.Col] = current;
-        }
-
         public override bool equalTo(object obj)
         {
             CheckersContext other = obj as CheckersContext;
-            if (other == null || Rows != other.Rows || Cols != other.Cols || moves != other.moves
-                || moveLimit != other.moveLimit || !piecesEqual(p1Pieces, other.p1Pieces)
-                || !piecesEqual(p2Pieces, other.p2Pieces)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool piecesEqual(Dictionary<Position, Piece> pieces1, Dictionary<Position, Piece> pieces2)
-        {
-            if (pieces1.Count != pieces2.Count) {
-                return false;
-            }
-
-            foreach (KeyValuePair<Position, Piece> entry in pieces1) {
-                if (!pieces2.ContainsKey(entry.Key) || entry.Value != pieces2[entry.Key]) {
-                    return false;
-                }
-            }
-
-            return true;
+            return other != null && moves == other.moves && moveLimit == other.moveLimit && board.equalTo(other.board);
         }
 
         public override string ToString()
@@ -244,25 +120,19 @@ namespace BeatTheComputer.Checkers
 
         public override IGameContext clone()
         {
-            Piece[,] cloneBoard = (Piece[,]) board.Clone();
-            Dictionary<Position, Piece> cloneP1Pieces = new Dictionary<Position, Piece>(p1Pieces);
-            Dictionary<Position, Piece> cloneP2Pieces = new Dictionary<Position, Piece>(p2Pieces);
-            CheckersContext clone = new CheckersContext(moveLimit, cloneBoard, cloneP1Pieces, cloneP2Pieces);
-            if (validActions != null) {
-                clone.validActions = new IndexedSet<IAction>(validActions);
-            }
+            CheckersContext clone = new CheckersContext();
+            clone.moveLimit = moveLimit;
+            clone.board = board.clone();
+
             clone.activePlayer = activePlayer;
             clone.winner = winner;
             clone.moves = moves;
+
             return clone;
         }
 
-        public int Rows {
-            get { return board.GetLength(0); }
-        }
-
-        public int Cols {
-            get { return board.GetLength(1); }
+        public CheckersBoard Board {
+            get { return board; }
         }
 
         public int PieceRows {
