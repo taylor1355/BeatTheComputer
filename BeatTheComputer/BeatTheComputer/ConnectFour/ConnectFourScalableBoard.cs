@@ -1,5 +1,4 @@
-﻿using System;
-using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
 namespace BeatTheComputer.ConnectFour

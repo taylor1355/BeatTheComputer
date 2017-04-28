@@ -1,7 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.Utils;
 
-using System.Collections.Generic;
 using System;
 
 namespace BeatTheComputer.ConnectFour
@@ -87,24 +86,14 @@ namespace BeatTheComputer.ConnectFour
         }
 
         private Player this[int index] {
-            get { return Player.fromID(nthBit(index, players[0]) + 2 * nthBit(index, players[1])); }
-        }
-
-        private int nthBit(int n, ulong bitVector)
-        {
-            return (int) (bitVector >> n) & 0x1;
+            get { return Player.fromID(BitUtils.nthBit(index, players[0]) + 2 * BitUtils.nthBit(index, players[1])); }
         }
 
         public override void applyAction(ConnectFourAction action)
         {
-            setNthBit(indexOf(action.Position.Row, action.Position.Col), ref players[action.Player.ID - 1]);
+            BitUtils.setNthBit(indexOf(action.Position.Row, action.Position.Col), ref players[action.Player.ID - 1]);
             lastPlayer = action.Player;
             topRows[action.Position.Col]++;
-        }
-
-        private void setNthBit(int n, ref ulong bitVector)
-        {
-            bitVector = bitVector | (0x1uL << n);
         }
 
         public override int Rows {

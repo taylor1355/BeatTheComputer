@@ -20,7 +20,11 @@ namespace BeatTheComputer.Checkers
             this.pieceRows = pieceRows;
             this.moveLimit = moveLimit;
 
-            board = new CheckersScalableBoard(rows, cols, pieceRows);
+            if (CheckersBitboard.fits(rows, cols)) {
+                board = new CheckersBitboard(rows, cols, pieceRows);
+            } else {
+                board = new CheckersScalableBoard(rows, cols, pieceRows);
+            }
 
             activePlayer = Player.ONE;
             winner = Player.NONE;

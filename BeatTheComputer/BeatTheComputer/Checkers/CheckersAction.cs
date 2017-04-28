@@ -8,45 +8,61 @@ namespace BeatTheComputer.Checkers
 {
     struct CheckersAction : IAction
     {
-        Position start;
-        Position destination;
-        Position[] jumps;
+        private Position start;
+        private Position destination;
+        private Position[] jumps;
+        private bool leadsToPromotion;
 
-        public CheckersAction(params Position[] sequence)
+        public CheckersAction(int promotionRow, params Position[] sequence)
         {
             start = sequence[0];
             destination = sequence[sequence.Length - 1];
+            leadsToPromotion = false;
 
             if (Math.Abs((sequence[1] - sequence[0]).Row) > 1) {
                 jumps = new Position[sequence.Length - 1];
                 for (int i = 0; i < sequence.Length - 1; i++) {
                     jumps[i] = (sequence[i] + sequence[i + 1]) / 2;
+                    if (sequence[i + 1].Row == promotionRow) {
+                        leadsToPromotion = true;
+                    }
                 }
             } else {
                 jumps = null;
+                leadsToPromotion = destination.Row == promotionRow;
             }
         }
 
-        public CheckersAction(IList<Position> sequence)
+        public CheckersAction(int promotionRow, IList<Position> sequence)
         {
             start = sequence[0];
             destination = sequence[sequence.Count - 1];
+            leadsToPromotion = false;
 
             if (Math.Abs((sequence[1] - sequence[0]).Row) > 1) {
                 jumps = new Position[sequence.Count - 1];
                 for (int i = 0; i < sequence.Count - 1; i++) {
                     jumps[i] = (sequence[i] + sequence[i + 1]) / 2;
+                    if (sequence[i + 1].Row == promotionRow) {
+                        leadsToPromotion = true;
+                    }
                 }
             } else {
                 jumps = null;
+                leadsToPromotion = destination.Row == promotionRow;
             }
         }
 
-        private CheckersAction(Position start, Position destination, Position[] jumps)
+        // used for adding one more jump to a jump action
+        public CheckersAction(int promotionRow, CheckersAction prevJumps, Position newDestination)
         {
-            this.start = start;
-            this.destination = destination;
-            this.jumps = jumps;
+            start = prevJumps.start;
+            destination = newDestination;
+            leadsToPromotion = prevJumps.leadsToPromotion || newDestination.Row == promotionRow;
+
+            jumps = new Position[prevJumps.NumJumps + 1];
+            Array.Copy(prevJumps.jumps, jumps, prevJumps.NumJumps);
+            jumps[jumps.Length - 1] = (prevJumps.destination + newDestination) / 2;
         }
 
         public bool isValid(IGameContext context)
@@ -110,6 +126,10 @@ namespace BeatTheComputer.Checkers
 
         public Position[] Jumps {
             get { return jumps; }
+        }
+
+        public bool LeadsToPromotion {
+            get { return leadsToPromotion; }
         }
     }
 }

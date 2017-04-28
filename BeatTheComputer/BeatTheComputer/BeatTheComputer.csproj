@@ -93,6 +93,7 @@
     <Compile Include="GUI\MinimaxSettings.Designer.cs">
       <DependentUpon>MinimaxSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\BitUtils.cs" />
     <Compile Include="Utils\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
       <SubType>Form</SubType>
@@ -181,6 +182,9 @@
       <DependentUpon>TicTacToe.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

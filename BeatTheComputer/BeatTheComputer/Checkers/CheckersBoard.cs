@@ -7,8 +7,11 @@ namespace BeatTheComputer.Checkers
 {
     abstract class CheckersBoard
     {
-        // TODO: not 100% sure I need to implement this in CheckersBoard
-        public abstract bool actionIsValid(CheckersAction action);
+        public bool actionIsValid(CheckersAction action, Player activePlayer)
+        {
+            return getValidActions(activePlayer).Contains(action);
+        }
+
         public abstract IList<IAction> getValidActions(Player activePlayer);
 
         public abstract Player currentWinner(Player activePlayer);

@@ -26,13 +26,13 @@ namespace BeatTheComputer.Checkers
                     Position pos = new Position(row, col);
                     CheckersPiece piece;
                     if (row < pieceRows && (row + col) % 2 == 0) {
-                        piece = new CheckersPiece(Player.ONE, pos);
+                        piece = new CheckersPiece(Player.ONE);
                         pieces[0].Add(pos, piece);
                     } else if (rows - row <= pieceRows && (row + col) % 2 == 0) {
-                        piece = new CheckersPiece(Player.TWO, pos);
+                        piece = new CheckersPiece(Player.TWO);
                         pieces[1].Add(pos, piece);
                     } else {
-                        piece = new CheckersPiece(Player.NONE, pos);
+                        piece = new CheckersPiece(Player.NONE);
                     }
                     board[row, col] = piece;
                 }
@@ -43,25 +43,92 @@ namespace BeatTheComputer.Checkers
 
         private CheckersScalableBoard() { }
 
-        public override bool actionIsValid(CheckersAction action)
-        {
-            throw new NotImplementedException();
-        }
-
         public override IList<IAction> getValidActions(Player activePlayer)
         {
             if (validActions == null) {
                 validActions = new IndexedSet<IAction>();
                 Dictionary<Position, CheckersPiece> myPieces = piecesOf(activePlayer);
 
-                foreach (CheckersPiece piece in myPieces.Values) {
-                    IList<IAction> subset = piece.getActions(this);
+                foreach (KeyValuePair<Position, CheckersPiece> entry in myPieces) {
+                    IList<IAction> subset = getActions(entry.Key, entry.Value);
                     for (int i = 0; i < subset.Count; i++) {
                         validActions.Add(subset[i]);
                     }
                 }
             }
             return validActions;
+        }
+
+        private IList<IAction> getActions(Position pos, CheckersPiece piece)
+        {
+            IList<IAction> actions = new IndexedSet<IAction>();
+            if (piece.Player == Player.NONE) {
+                throw new InvalidOperationException("Empty piece has no actions");
+            }
+
+            Dictionary<Position, CheckersAction> moves = new Dictionary<Position, CheckersAction>();
+
+            foreach (Position dir in piece.moveDirs()) {
+                Position movePos = pos + dir;
+                if (movePos.inBounds(Rows, Cols) && this[movePos].Player == Player.NONE) {
+                    tryAddMove(new CheckersAction(promotionRow(piece.Player), pos, movePos), moves);
+                }
+            }
+
+            addJumps(moves, pos, piece);
+
+            foreach (IAction action in moves.Values) {
+                actions.Add(action);
+            }
+
+            return actions;
+        }
+
+        private void addJumps(Dictionary<Position, CheckersAction> moves, Position start, CheckersPiece piece)
+        {
+            List<Position> moveSoFar = new List<Position>();
+            moveSoFar.Add(start);
+
+            addJumpsHelper(moveSoFar, new HashSet<Position>(), moves, piece);
+        }
+
+        private void addJumpsHelper(List<Position> moveSoFar, ISet<Position> alreadyJumped, Dictionary<Position, CheckersAction> moves, CheckersPiece piece)
+        {
+            Position start = moveSoFar[moveSoFar.Count - 1];
+            if (moveSoFar.Count > 1 && this[start].Player != Player.NONE) {
+                return;
+            } else if (moveSoFar.Count > 1) {
+                tryAddMove(new CheckersAction(promotionRow(piece.Player), moveSoFar), moves);
+            }
+
+            foreach (Position dir in piece.moveDirs()) {
+                Position movePos = start + dir;
+                Position jumpPos = movePos + dir;
+                if (jumpPos.inBounds(Rows, Cols) && this[movePos].Player == piece.Player.Opponent && !alreadyJumped.Contains(movePos)) {
+                    moveSoFar.Add(jumpPos);
+                    alreadyJumped.Add(movePos);
+
+                    addJumpsHelper(moveSoFar, alreadyJumped, moves, piece);
+
+                    moveSoFar.RemoveAt(moveSoFar.Count - 1);
+                    alreadyJumped.Remove(movePos);
+                }
+            }
+        }
+
+        private int promotionRow(Player player)
+        {
+            return (2 - player.ID) * (Cols - 1);
+        }
+
+        private bool tryAddMove(CheckersAction move, Dictionary<Position, CheckersAction> moves)
+        {
+            CheckersAction currentMove;
+            if (!moves.TryGetValue(move.Destination, out currentMove) || move.NumJumps > currentMove.NumJumps) {
+                moves[move.Destination] = move;
+                return true;
+            }
+            return false;
         }
 
         public override Player currentWinner(Player activePlayer)
@@ -83,7 +150,7 @@ namespace BeatTheComputer.Checkers
 
         public override void applyAction(CheckersAction action)
         {
-            movePiece(action.Start, action.Destination);
+            movePiece(action.Start, action.Destination, action.LeadsToPromotion);
             if (action.NumJumps > 0) {
                 foreach (Position jump in action.Jumps) {
                     removePieceAt(jump);
@@ -93,10 +160,10 @@ namespace BeatTheComputer.Checkers
             validActions = null; // TODO: could I save some of the computed actions?
         }
 
-        private void movePiece(Position start, Position destination)
+        private void movePiece(Position start, Position destination, bool promote)
         {
-            CheckersPiece current = this[start].move(destination);
-            if (!current.Promoted && (destination.Row == 0 || destination.Row == Rows - 1)) {
+            CheckersPiece current = this[start];
+            if (promote) {
                 current = current.promote();
             }
 
@@ -104,7 +171,7 @@ namespace BeatTheComputer.Checkers
             pieces.Remove(start);
             pieces.Add(destination, current);
 
-            board[start.Row, start.Col] = new CheckersPiece(Player.NONE, start);
+            board[start.Row, start.Col] = new CheckersPiece(Player.NONE);
             board[destination.Row, destination.Col] = current;
         }
 
@@ -113,7 +180,7 @@ namespace BeatTheComputer.Checkers
             Player player = board[pos.Row, pos.Col].Player;
             if (player != Player.NONE) {
                 piecesOf(player).Remove(pos);
-                board[pos.Row, pos.Col] = new CheckersPiece(Player.NONE, pos);
+                board[pos.Row, pos.Col] = new CheckersPiece(Player.NONE);
             }
         }
 

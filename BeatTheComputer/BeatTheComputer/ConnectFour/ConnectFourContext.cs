@@ -14,11 +14,11 @@ namespace BeatTheComputer.ConnectFour
             validateArguments(rows, cols);
 
             if (ConnectFourBitboard.fits(rows, cols)) {
-               board = new ConnectFourBitboard(rows, cols);
+                board = new ConnectFourBitboard(rows, cols);
             } else {
                 board = new ConnectFourScalableBoard(rows, cols);
             }
-
+            
             activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;

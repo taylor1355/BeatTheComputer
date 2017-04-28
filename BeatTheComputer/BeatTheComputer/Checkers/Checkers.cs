@@ -213,15 +213,19 @@ namespace BeatTheComputer.Checkers
                         availableActions = null;
                     }
 
-                    ICollection<IAction> actions = context.Board[pos].getActions(context.Board);
-
-                    if (actions.Count > 0) {
-                        availableActions = new Dictionary<Position, CheckersAction>();
-                        foreach (CheckersAction action in actions) {
+                    ICollection<IAction> allActions = context.Board.getValidActions(controller.Turn);
+                    availableActions = new Dictionary<Position, CheckersAction>();
+                    foreach (CheckersAction action in allActions) {
+                        if (action.Start == pos) {
                             availableActions.Add(action.Destination, action);
                             setHighlight(action.Destination, Highlight.Destination);
                         }
+                    }
+
+                    if (availableActions.Count > 0) {
                         setHighlight(pos, Highlight.Selected);
+                    } else {
+                        availableActions = null;
                     }
                 } else if (availableActions != null) {
                     if (availableActions.ContainsKey(pos)) {
