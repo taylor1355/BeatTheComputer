@@ -20,8 +20,8 @@ namespace BeatTheComputer.GUI
         private void CheckersSettings_Load(object sender, EventArgs e)
         {
             CheckersContext checkers = (CheckersContext) checkersWrapper.Reference;
-            rowsField.Text = checkers.Rows.ToString();
-            colsField.Text = checkers.Cols.ToString();
+            rowsField.Text = checkers.Board.Rows.ToString();
+            colsField.Text = checkers.Board.Cols.ToString();
             pieceRowsField.Text = checkers.PieceRows.ToString();
             moveLimitField.Text = checkers.MoveLimit.ToString();
         }
