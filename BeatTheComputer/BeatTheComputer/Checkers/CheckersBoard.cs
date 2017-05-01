@@ -42,5 +42,10 @@ namespace BeatTheComputer.Checkers
 
             return true;
         }
+
+        protected int getPromotionRow(Player player)
+        {
+            return (2 - player.ID) * (Rows - 1);
+        }
     }
 }

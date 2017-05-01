@@ -74,7 +74,7 @@ namespace BeatTheComputer.Checkers
 
                 ulong empty = ~(upMovers | downMovers | opponents);
 
-                int promotionRow = (2 - activePlayer.ID) * (cols - 1);
+                int promotionRow = getPromotionRow(activePlayer);
 
                 // generate moves
                 ulong upLeftMovers = ((upMovers << (cols - 1)) & leftLegal & empty) >> (cols - 1);
@@ -100,32 +100,37 @@ namespace BeatTheComputer.Checkers
                 // generate jumps
                 Queue<CheckersAction> jumpQueue = new Queue<CheckersAction>();
 
-                ulong upLeftJumpers = (((upMovers << (cols - 1)) & opponents) >> (cols - 1)) & (((upMovers << 2 * (cols - 1)) & leftLegal & empty) >> 2 * (cols - 1));
+                ulong upLeftJumpers = (((upMovers << (cols - 1)) & leftLegal & opponents) >> (cols - 1)) & (((upMovers << 2 * (cols - 1)) & leftLegal & empty) >> 2 * (cols - 1));
                 foreach (int index in BitUtils.getSetBits(upLeftJumpers)) {
                     jumpQueue.Enqueue(new CheckersAction(promotionRow, positionOf(index), positionOf(index + 2 * (cols - 1))));
                 }
 
-                ulong upRightJumpers = (((upMovers << (cols + 1)) & opponents) >> (cols + 1)) & (((upMovers << 2 * (cols + 1)) & rightLegal & empty) >> 2 * (cols + 1));
+                ulong upRightJumpers = (((upMovers << (cols + 1)) & rightLegal & opponents) >> (cols + 1)) & (((upMovers << 2 * (cols + 1)) & rightLegal & empty) >> 2 * (cols + 1));
                 foreach (int index in BitUtils.getSetBits(upRightJumpers)) {
                     jumpQueue.Enqueue(new CheckersAction(promotionRow, positionOf(index), positionOf(index + 2 * (cols + 1))));
                 }
 
-                ulong downLeftJumpers = (((downMovers >> (cols + 1)) & opponents) << (cols + 1)) & (((downMovers >> 2 * (cols + 1)) & leftLegal & empty) << 2 * (cols + 1));
+                ulong downLeftJumpers = (((downMovers >> (cols + 1)) & leftLegal & opponents) << (cols + 1)) & (((downMovers >> 2 * (cols + 1)) & leftLegal & empty) << 2 * (cols + 1));
                 foreach (int index in BitUtils.getSetBits(downLeftJumpers)) {
                     jumpQueue.Enqueue(new CheckersAction(promotionRow, positionOf(index), positionOf(index - 2 * (cols + 1))));
                 }
 
-                ulong downRightJumpers = (((downMovers >> (cols - 1)) & opponents) << (cols - 1)) & (((downMovers >> 2 * (cols - 1)) & rightLegal & empty) << 2 * (cols - 1));
+                ulong downRightJumpers = (((downMovers >> (cols - 1)) & rightLegal & opponents) << (cols - 1)) & (((downMovers >> 2 * (cols - 1)) & rightLegal & empty) << 2 * (cols - 1));
                 foreach (int index in BitUtils.getSetBits(downRightJumpers)) {
                     jumpQueue.Enqueue(new CheckersAction(promotionRow, positionOf(index), positionOf(index - 2 * (cols - 1))));
                 }
 
-                Dictionary<Position, CheckersAction> jumps = new Dictionary<Position, CheckersAction>();
+                Dictionary<Position, Dictionary<Position, CheckersAction>> jumps = new Dictionary<Position, Dictionary<Position, CheckersAction>>();
 
                 while (jumpQueue.Count > 0) {
                     CheckersAction current = jumpQueue.Dequeue();
-                    if (!jumps.ContainsKey(current.Destination) || current.NumJumps > jumps[current.Destination].NumJumps) {
-                        jumps[current.Destination] = current;
+
+                    if (!jumps.ContainsKey(current.Start)) {
+                        jumps[current.Start] = new Dictionary<Position, CheckersAction>();
+                    }
+
+                    if (!jumps[current.Start].ContainsKey(current.Destination) || current.NumJumps > jumps[current.Start][current.Destination].NumJumps) {
+                        jumps[current.Start][current.Destination] = current;
                     }
 
                     CheckersBitboard modifiedBoard = (CheckersBitboard) this.clone();
@@ -142,7 +147,7 @@ namespace BeatTheComputer.Checkers
 
                     ulong newOpponents;
                     ulong newEmpty;
-
+                    
                     if (activePlayer == Player.ONE) {
                         upMover = true;
                         newOpponents = modifiedBoard.pieces[1] | modifiedBoard.kings[1];
@@ -157,31 +162,33 @@ namespace BeatTheComputer.Checkers
 
                     if (upMover) {
                         // check for up left jumpers
-                        if (((((posMask << (cols - 1)) & newOpponents) >> (cols - 1)) & (((posMask << 2 * (cols - 1)) & leftLegal & newEmpty) >> 2 * (cols - 1))) > 0) {
+                        if (((((posMask << (cols - 1)) & leftLegal & newOpponents) >> (cols - 1)) & (((posMask << 2 * (cols - 1)) & leftLegal & newEmpty) >> 2 * (cols - 1))) > 0) {
                             jumpQueue.Enqueue(new CheckersAction(promotionRow, current, positionOf(index + 2 * (cols - 1))));
                         }
 
                         // check for up right jumpers
-                        if (((((posMask << (cols + 1)) & newOpponents) >> (cols + 1)) & (((posMask << 2 * (cols + 1)) & rightLegal & newEmpty) >> 2 * (cols + 1))) > 0) {
+                        if (((((posMask << (cols + 1)) & rightLegal & newOpponents) >> (cols + 1)) & (((posMask << 2 * (cols + 1)) & rightLegal & newEmpty) >> 2 * (cols + 1))) > 0) {
                             jumpQueue.Enqueue(new CheckersAction(promotionRow, current, positionOf(index + 2 * (cols + 1))));
                         }
                     }
 
                     if (downMover) {
                         // check for down left jumpers
-                        if (((((posMask >> (cols + 1)) & newOpponents) << (cols + 1)) & (((posMask >> 2 * (cols + 1)) & leftLegal & newEmpty) << 2 * (cols + 1))) > 0) {
+                        if (((((posMask >> (cols + 1)) & leftLegal & newOpponents) << (cols + 1)) & (((posMask >> 2 * (cols + 1)) & leftLegal & newEmpty) << 2 * (cols + 1))) > 0) {
                             jumpQueue.Enqueue(new CheckersAction(promotionRow, current, positionOf(index - 2 * (cols + 1))));
                         }
 
                         // check for down right jumpers
-                        if (((((posMask >> (cols - 1)) & newOpponents) << (cols - 1)) & (((posMask >> 2 * (cols - 1)) & rightLegal & newEmpty) << 2 * (cols - 1))) > 0) {
+                        if (((((posMask >> (cols - 1)) & rightLegal & newOpponents) << (cols - 1)) & (((posMask >> 2 * (cols - 1)) & rightLegal & newEmpty) << 2 * (cols - 1))) > 0) {
                             jumpQueue.Enqueue(new CheckersAction(promotionRow, current, positionOf(index - 2 * (cols - 1))));
                         }
                     }
                 }
 
-                foreach (CheckersAction jump in jumps.Values) {
-                    validActions.Add(jump);
+                foreach (Dictionary<Position, CheckersAction> pieceJumps in jumps.Values) {
+                    foreach (CheckersAction jump in pieceJumps.Values) {
+                        validActions.Add(jump);
+                    }
                 }
             }
             return validActions;

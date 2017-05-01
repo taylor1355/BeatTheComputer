@@ -71,7 +71,7 @@ namespace BeatTheComputer.Checkers
             foreach (Position dir in piece.moveDirs()) {
                 Position movePos = pos + dir;
                 if (movePos.inBounds(Rows, Cols) && this[movePos].Player == Player.NONE) {
-                    tryAddMove(new CheckersAction(promotionRow(piece.Player), pos, movePos), moves);
+                    tryAddMove(new CheckersAction(getPromotionRow(piece.Player), pos, movePos), moves);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace BeatTheComputer.Checkers
             if (moveSoFar.Count > 1 && this[start].Player != Player.NONE) {
                 return;
             } else if (moveSoFar.Count > 1) {
-                tryAddMove(new CheckersAction(promotionRow(piece.Player), moveSoFar), moves);
+                tryAddMove(new CheckersAction(getPromotionRow(piece.Player), moveSoFar), moves);
             }
 
             foreach (Position dir in piece.moveDirs()) {
@@ -114,11 +114,6 @@ namespace BeatTheComputer.Checkers
                     alreadyJumped.Remove(movePos);
                 }
             }
-        }
-
-        private int promotionRow(Player player)
-        {
-            return (2 - player.ID) * (Cols - 1);
         }
 
         private bool tryAddMove(CheckersAction move, Dictionary<Position, CheckersAction> moves)
