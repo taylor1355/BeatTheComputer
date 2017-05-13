@@ -41,7 +41,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(38, 163);
+            this.cancel.Location = new System.Drawing.Point(51, 142);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 23;
@@ -51,7 +51,7 @@
             // 
             // apply
             // 
-            this.apply.Location = new System.Drawing.Point(119, 163);
+            this.apply.Location = new System.Drawing.Point(132, 142);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(75, 23);
             this.apply.TabIndex = 24;
@@ -61,7 +61,7 @@
             // 
             // colsField
             // 
-            this.colsField.Location = new System.Drawing.Point(119, 59);
+            this.colsField.Location = new System.Drawing.Point(132, 54);
             this.colsField.MaxLength = 9;
             this.colsField.Name = "colsField";
             this.colsField.Size = new System.Drawing.Size(58, 20);
@@ -69,7 +69,7 @@
             // 
             // rowsField
             // 
-            this.rowsField.Location = new System.Drawing.Point(119, 33);
+            this.rowsField.Location = new System.Drawing.Point(132, 28);
             this.rowsField.MaxLength = 9;
             this.rowsField.Name = "rowsField";
             this.rowsField.Size = new System.Drawing.Size(58, 20);
@@ -78,7 +78,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(63, 62);
+            this.label4.Location = new System.Drawing.Point(76, 57);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 22;
@@ -87,7 +87,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(76, 36);
+            this.label2.Location = new System.Drawing.Point(89, 31);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 21;
@@ -95,7 +95,7 @@
             // 
             // moveLimitField
             // 
-            this.moveLimitField.Location = new System.Drawing.Point(119, 111);
+            this.moveLimitField.Location = new System.Drawing.Point(132, 106);
             this.moveLimitField.MaxLength = 9;
             this.moveLimitField.Name = "moveLimitField";
             this.moveLimitField.Size = new System.Drawing.Size(58, 20);
@@ -103,7 +103,7 @@
             // 
             // pieceRowsField
             // 
-            this.pieceRowsField.Location = new System.Drawing.Point(119, 85);
+            this.pieceRowsField.Location = new System.Drawing.Point(132, 80);
             this.pieceRowsField.MaxLength = 9;
             this.pieceRowsField.Name = "pieceRowsField";
             this.pieceRowsField.Size = new System.Drawing.Size(58, 20);
@@ -112,7 +112,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(52, 111);
+            this.label1.Location = new System.Drawing.Point(65, 107);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 28;
@@ -120,18 +120,18 @@
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(46, 85);
+            this.label3.Location = new System.Drawing.Point(48, 76);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.Size = new System.Drawing.Size(78, 26);
             this.label3.TabIndex = 27;
-            this.label3.Text = "Piece Rows:";
+            this.label3.Text = "Starting Rows of Pieces:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // CheckersSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(240, 212);
+            this.ClientSize = new System.Drawing.Size(259, 193);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.moveLimitField);
@@ -143,7 +143,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Name = "CheckersSettings";
-            this.Text = "Settings";
+            this.Text = "Game Settings";
             this.Load += new System.EventHandler(this.CheckersSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

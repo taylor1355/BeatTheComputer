@@ -93,6 +93,18 @@
     <Compile Include="GUI\MinimaxSettings.Designer.cs">
       <DependentUpon>MinimaxSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\SimulationMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\SimulationMonitor.Designer.cs">
+      <DependentUpon>SimulationMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\SimulationSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\SimulationSetup.Designer.cs">
+      <DependentUpon>SimulationSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\BitUtils.cs" />
     <Compile Include="Utils\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
@@ -167,6 +179,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Bao\Bao.resx">
       <DependentUpon>Bao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SimulationMonitor.resx">
+      <DependentUpon>SimulationMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SimulationSetup.resx">
+      <DependentUpon>SimulationSetup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

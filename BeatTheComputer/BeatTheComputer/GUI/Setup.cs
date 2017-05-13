@@ -16,7 +16,7 @@ namespace BeatTheComputer.GUI
 {
     public partial class Setup : Form
     {
-        private IGameContext context;
+        private IGameContext game;
         private IBehavior player1;
         private IBehavior player2;
 
@@ -66,7 +66,7 @@ namespace BeatTheComputer.GUI
 
         private void gameList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            context = (IGameContext) gameList.SelectedItem;
+            game = (IGameContext) gameList.SelectedItem;
         }
 
         private void p1Settings_Click(object sender, EventArgs e)
@@ -94,18 +94,18 @@ namespace BeatTheComputer.GUI
 
         private void gameSettings_Click(object sender, EventArgs e)
         {
-            ObjectWrapper<IGameContext> gameWrapper = new ObjectWrapper<IGameContext>(context);
-            if (gameToSettingTypes.ContainsKey(context.GetType())) {
-                Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[context.GetType()], gameWrapper);
+            ObjectWrapper<IGameContext> gameWrapper = new ObjectWrapper<IGameContext>(game);
+            if (gameToSettingTypes.ContainsKey(game.GetType())) {
+                Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[game.GetType()], gameWrapper);
                 settings.ShowDialog();
-                context = gameWrapper.Reference;
+                game = gameWrapper.Reference;
             }
         }
 
         private void playGame_Click(object sender, EventArgs e)
         {
-            GameController controller = new GameController(context.clone(), player1.clone(), player2.clone());
-            Form form = (Form) Activator.CreateInstance(gameToFormTypes[context.GetType()], controller);
+            GameController controller = new GameController(game.clone(), player1.clone(), player2.clone());
+            Form form = (Form) Activator.CreateInstance(gameToFormTypes[game.GetType()], controller);
             form.Show();
         }
 
@@ -119,7 +119,7 @@ namespace BeatTheComputer.GUI
                 double result = -1;
                 await Task.Run(() => {
                     timer = Stopwatch.StartNew();
-                    result = Benchmark.compare(player1.clone(), player2.clone(), context.clone(), simulations, false);
+                    result = Benchmark.compare(player1.clone(), player2.clone(), game.clone(), simulations, false);
                     timer.Stop();
                 });
 
