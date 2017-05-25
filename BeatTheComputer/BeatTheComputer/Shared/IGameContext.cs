@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.AI;
 
 using System;
+using System.Threading;
 using System.Collections.Generic;
 
 namespace BeatTheComputer.Shared
@@ -10,6 +11,7 @@ namespace BeatTheComputer.Shared
         IList<IAction> getValidActions();
         IGameContext applyAction(IAction action);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2);
+        GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, CancellationToken interrupt);
 
         //a heuristic between [0, 1] that should approach 1 the better player 1 is doing and 0 the better player 2 is doing
         double heuristicEval();

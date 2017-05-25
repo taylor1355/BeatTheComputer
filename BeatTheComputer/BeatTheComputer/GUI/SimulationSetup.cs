@@ -2,13 +2,6 @@
 using BeatTheComputer.AI;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BeatTheComputer.GUI
@@ -19,16 +12,20 @@ namespace BeatTheComputer.GUI
         private IBehavior player1;
         private IBehavior player2;
 
-        private int numTrials;
+        private int simulations;
         private bool parallel;
         private bool alternateFirst;
 
-        public SimulationSetup()
+        public SimulationSetup(IGameContext game, IBehavior player1, IBehavior player2)
         {
             InitializeComponent();
 
-            numTrials = 10;
-            trialsField.Text = numTrials.ToString();
+            this.game = game.clone();
+            this.player1 = player1.clone();
+            this.player2 = player2.clone();
+
+            simulations = 10;
+            simulationsField.Text = simulations.ToString();
 
             parallel = true;
             parallelToggle.Checked = parallel;
@@ -37,25 +34,17 @@ namespace BeatTheComputer.GUI
             alternateToggle.Checked = alternateFirst;
         }
 
-        public void setPlayer(Player player, IBehavior newBehavior)
-        {
-            if (player == Player.ONE) {
-                player1 = newBehavior;
-            } else if (player == Player.TWO) {
-                player2 = newBehavior;
-            } else {
-                throw new ArgumentException("Invalid player");
-            }
-        }
-
-        private void SimulationSetup_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void run_Click(object sender, EventArgs e)
         {
-            
+            if (!int.TryParse(simulationsField.Text, out simulations) || simulations <= 0) {
+                MessageBox.Show("Simulations must be a positive integer");
+                return;
+            }
+            parallel = parallelToggle.Checked;
+            alternateFirst = alternateToggle.Checked;
+
+            SimulationMonitor monitor = new SimulationMonitor(game.clone(), player1.clone(), player2.clone(), simulations, parallel, alternateFirst);
+            monitor.Show();
         }
     }
 }

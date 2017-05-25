@@ -30,18 +30,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.run = new System.Windows.Forms.Button();
             this.alternateToggle = new System.Windows.Forms.CheckBox();
-            this.trialsField = new System.Windows.Forms.TextBox();
+            this.simulationsField = new System.Windows.Forms.TextBox();
             this.parallelToggle = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(87, 37);
+            this.label1.Location = new System.Drawing.Point(80, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Trials:";
+            this.label1.Text = "Simulations:";
             // 
             // run
             // 
@@ -62,13 +62,13 @@
             this.alternateToggle.Text = "Alternate Who Goes First";
             this.alternateToggle.UseVisualStyleBackColor = true;
             // 
-            // trialsField
+            // simulationsField
             // 
-            this.trialsField.Location = new System.Drawing.Point(128, 34);
-            this.trialsField.MaxLength = 9;
-            this.trialsField.Name = "trialsField";
-            this.trialsField.Size = new System.Drawing.Size(58, 20);
-            this.trialsField.TabIndex = 29;
+            this.simulationsField.Location = new System.Drawing.Point(149, 34);
+            this.simulationsField.MaxLength = 9;
+            this.simulationsField.Name = "simulationsField";
+            this.simulationsField.Size = new System.Drawing.Size(58, 20);
+            this.simulationsField.TabIndex = 29;
             // 
             // parallelToggle
             // 
@@ -86,13 +86,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 195);
             this.Controls.Add(this.parallelToggle);
-            this.Controls.Add(this.trialsField);
+            this.Controls.Add(this.simulationsField);
             this.Controls.Add(this.alternateToggle);
             this.Controls.Add(this.run);
             this.Controls.Add(this.label1);
             this.Name = "SimulationSetup";
             this.Text = "Simulation Setup";
-            this.Load += new System.EventHandler(this.SimulationSetup_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -103,7 +102,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button run;
         private System.Windows.Forms.CheckBox alternateToggle;
-        private System.Windows.Forms.TextBox trialsField;
+        private System.Windows.Forms.TextBox simulationsField;
         private System.Windows.Forms.CheckBox parallelToggle;
     }
 }

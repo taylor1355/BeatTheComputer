@@ -27,112 +27,109 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.button1 = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
+            this.simulationsLbl = new System.Windows.Forms.Label();
+            this.p1WinsLbl = new System.Windows.Forms.Label();
+            this.p2WinsLbl = new System.Windows.Forms.Label();
+            this.tiesLbl = new System.Windows.Forms.Label();
+            this.timeElapsedLbl = new System.Windows.Forms.Label();
+            this.simulationTimeLbl = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.cancelBtn = new System.Windows.Forms.Button();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // label1
+            // simulationsLbl
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(49, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Trials Completed:";
+            this.simulationsLbl.AutoSize = true;
+            this.simulationsLbl.Location = new System.Drawing.Point(75, 23);
+            this.simulationsLbl.Name = "simulationsLbl";
+            this.simulationsLbl.Size = new System.Drawing.Size(63, 13);
+            this.simulationsLbl.TabIndex = 0;
+            this.simulationsLbl.Text = "Simulations:";
             // 
-            // label2
+            // p1WinsLbl
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(63, 77);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Player 1 Wins:";
+            this.p1WinsLbl.AutoSize = true;
+            this.p1WinsLbl.Location = new System.Drawing.Point(63, 47);
+            this.p1WinsLbl.Name = "p1WinsLbl";
+            this.p1WinsLbl.Size = new System.Drawing.Size(75, 13);
+            this.p1WinsLbl.TabIndex = 1;
+            this.p1WinsLbl.Text = "Player 1 Wins:";
             // 
-            // label3
+            // p2WinsLbl
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(63, 101);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(75, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Player 2 Wins:";
+            this.p2WinsLbl.AutoSize = true;
+            this.p2WinsLbl.Location = new System.Drawing.Point(63, 71);
+            this.p2WinsLbl.Name = "p2WinsLbl";
+            this.p2WinsLbl.Size = new System.Drawing.Size(75, 13);
+            this.p2WinsLbl.TabIndex = 2;
+            this.p2WinsLbl.Text = "Player 2 Wins:";
             // 
-            // label4
+            // tiesLbl
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(108, 125);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(30, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Ties:";
+            this.tiesLbl.AutoSize = true;
+            this.tiesLbl.Location = new System.Drawing.Point(108, 95);
+            this.tiesLbl.Name = "tiesLbl";
+            this.tiesLbl.Size = new System.Drawing.Size(30, 13);
+            this.tiesLbl.TabIndex = 3;
+            this.tiesLbl.Text = "Ties:";
             // 
-            // label5
+            // timeElapsedLbl
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(50, 53);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(88, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Trials Remaining:";
+            this.timeElapsedLbl.AutoSize = true;
+            this.timeElapsedLbl.Location = new System.Drawing.Point(46, 152);
+            this.timeElapsedLbl.Name = "timeElapsedLbl";
+            this.timeElapsedLbl.Size = new System.Drawing.Size(74, 13);
+            this.timeElapsedLbl.TabIndex = 5;
+            this.timeElapsedLbl.Text = "Time Elapsed:";
             // 
-            // label6
+            // simulationTimeLbl
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(44, 188);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(74, 13);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Time Elapsed:";
+            this.simulationTimeLbl.AutoSize = true;
+            this.simulationTimeLbl.Location = new System.Drawing.Point(17, 166);
+            this.simulationTimeLbl.Name = "simulationTimeLbl";
+            this.simulationTimeLbl.Size = new System.Drawing.Size(103, 13);
+            this.simulationTimeLbl.TabIndex = 6;
+            this.simulationTimeLbl.Text = "Time Per Simulation:";
             // 
-            // label7
+            // progressBar
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(44, 203);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "Time Per Trial:";
+            this.progressBar.Location = new System.Drawing.Point(27, 124);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(263, 23);
+            this.progressBar.TabIndex = 7;
             // 
-            // progressBar1
+            // cancelBtn
             // 
-            this.progressBar1.Location = new System.Drawing.Point(27, 160);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(232, 23);
-            this.progressBar1.TabIndex = 7;
+            this.cancelBtn.Location = new System.Drawing.Point(215, 155);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(75, 23);
+            this.cancelBtn.TabIndex = 8;
+            this.cancelBtn.Text = "Cancel";
+            this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
-            // button1
+            // timer
             // 
-            this.button1.Location = new System.Drawing.Point(184, 189);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Cancel";
-            this.button1.UseVisualStyleBackColor = true;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // SimulationMonitor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 231);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(320, 197);
+            this.Controls.Add(this.cancelBtn);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.simulationTimeLbl);
+            this.Controls.Add(this.timeElapsedLbl);
+            this.Controls.Add(this.tiesLbl);
+            this.Controls.Add(this.p2WinsLbl);
+            this.Controls.Add(this.p1WinsLbl);
+            this.Controls.Add(this.simulationsLbl);
             this.Name = "SimulationMonitor";
             this.Text = "Simulation Monitor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SimulationMonitor_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -140,14 +137,14 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label simulationsLbl;
+        private System.Windows.Forms.Label p1WinsLbl;
+        private System.Windows.Forms.Label p2WinsLbl;
+        private System.Windows.Forms.Label tiesLbl;
+        private System.Windows.Forms.Label timeElapsedLbl;
+        private System.Windows.Forms.Label simulationTimeLbl;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.Timer timer;
     }
 }

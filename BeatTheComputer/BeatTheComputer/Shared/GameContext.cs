@@ -1,6 +1,7 @@
 ﻿using BeatTheComputer.AI;
 
 using System.Collections.Generic;
+using System.Threading;
 using System;
 
 namespace BeatTheComputer.Shared
@@ -17,6 +18,11 @@ namespace BeatTheComputer.Shared
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
+            return simulate(behavior1, behavior2, CancellationToken.None);
+        }
+
+        public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, CancellationToken interrupt)
+        {
             if (GameDecided) {
                 return GameOutcome;
             }
@@ -26,12 +32,12 @@ namespace BeatTheComputer.Shared
 
             do {
                 if (simulation.ActivePlayer == Player.ONE) {
-                    lastAction = behavior1.requestAction(simulation, lastAction);
+                    lastAction = behavior1.requestAction(simulation, lastAction, interrupt);
                 } else {
-                    lastAction = behavior2.requestAction(simulation, lastAction);
+                    lastAction = behavior2.requestAction(simulation, lastAction, interrupt);
                 }
                 simulation.applyAction(lastAction);
-            } while (!simulation.GameDecided);
+            } while (!simulation.GameDecided && !interrupt.IsCancellationRequested);
 
             return simulation.GameOutcome;
         }

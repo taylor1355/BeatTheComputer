@@ -109,25 +109,15 @@ namespace BeatTheComputer.GUI
             form.Show();
         }
 
-        async private void runSimulations_Click(object sender, EventArgs e)
+        private void runSimulations_Click(object sender, EventArgs e)
         {
             if (player1 is DummyBehavior || player2 is DummyBehavior) {
                 MessageBox.Show("Can't run simulations with a human");
             } else {
-                Stopwatch timer = null;
-                int simulations = 10;
-                double result = -1;
-                await Task.Run(() => {
-                    timer = Stopwatch.StartNew();
-                    result = Benchmark.compare(player1.clone(), player2.clone(), game.clone(), simulations, false);
-                    timer.Stop();
-                });
-
-                string games = "Simulations: " + simulations + "\n";
-                string time = "Time: " + ((double) timer.ElapsedMilliseconds) / 1000 + " sec\n";
-                string timePer = "Avg Time per Simulation: " + ((double) timer.ElapsedMilliseconds) / simulations + " ms\n";
-                string winRate = "Player 1 win rate: " + result + "\n";
-                MessageBox.Show(games + time + timePer + winRate);
+                SimulationSetup simSetup = new SimulationSetup(game, player1, player2);
+                //simSetup.setPlayer(Player.ONE, player1);
+                //simSetup.setPlayer(Player.TWO, player2);
+                simSetup.Show();
             }
         }
 
