@@ -7,10 +7,8 @@ using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace BeatTheComputer.GUI
 {
@@ -23,6 +21,8 @@ namespace BeatTheComputer.GUI
         private Dictionary<Type, Type> gameToFormTypes;
         private Dictionary<Type, Type> gameToSettingTypes;
         private Dictionary<Type, Type> behaviorToSettingTypes;
+
+        private SimulationSetup simSetup;
 
         public Setup()
         {
@@ -40,6 +40,8 @@ namespace BeatTheComputer.GUI
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));
             behaviorToSettingTypes.Add(typeof(Minimax), typeof(MinimaxSettings));
+
+            simSetup = null;
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
@@ -57,16 +59,19 @@ namespace BeatTheComputer.GUI
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player1 = (IBehavior) p1List.SelectedItem;
+            updateSimSetup();
         }
 
         private void p2List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player2 = (IBehavior) p2List.SelectedItem;
+            updateSimSetup();
         }
 
         private void gameList_SelectedIndexChanged(object sender, EventArgs e)
         {
             game = (IGameContext) gameList.SelectedItem;
+            updateSimSetup();
         }
 
         private void p1Settings_Click(object sender, EventArgs e)
@@ -74,6 +79,7 @@ namespace BeatTheComputer.GUI
             ObjectWrapper<IBehavior> p1Wrapper = new ObjectWrapper<IBehavior>(player1);
             openBehaviorSettings(p1Wrapper);
             player1 = p1Wrapper.Reference;
+            updateSimSetup();
         }
 
         private void p2Settings_Click(object sender, EventArgs e)
@@ -81,6 +87,7 @@ namespace BeatTheComputer.GUI
             ObjectWrapper<IBehavior> p2Wrapper = new ObjectWrapper<IBehavior>(player2);
             openBehaviorSettings(p2Wrapper);
             player2 = p2Wrapper.Reference;
+            updateSimSetup();
         }
 
         private void openBehaviorSettings(ObjectWrapper<IBehavior> behaviorWrapper)
@@ -99,6 +106,7 @@ namespace BeatTheComputer.GUI
                 Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[game.GetType()], gameWrapper);
                 settings.ShowDialog();
                 game = gameWrapper.Reference;
+                updateSimSetup();
             }
         }
 
@@ -113,11 +121,20 @@ namespace BeatTheComputer.GUI
         {
             if (player1 is DummyBehavior || player2 is DummyBehavior) {
                 MessageBox.Show("Can't run simulations with a human");
+            } else if(simSetup != null && !simSetup.IsDisposed) {
+                simSetup.BringToFront();
             } else {
-                SimulationSetup simSetup = new SimulationSetup(game, player1, player2);
-                //simSetup.setPlayer(Player.ONE, player1);
-                //simSetup.setPlayer(Player.TWO, player2);
+                simSetup = new SimulationSetup(game, player1, player2);
                 simSetup.Show();
+            }
+        }
+
+        private void updateSimSetup()
+        {
+            if (simSetup != null && !simSetup.IsDisposed) {
+                simSetup.setGame(game);
+                simSetup.setPlayer1(player1);
+                simSetup.setPlayer2(player2);
             }
         }
 

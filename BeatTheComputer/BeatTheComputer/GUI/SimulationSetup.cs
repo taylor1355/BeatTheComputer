@@ -34,6 +34,21 @@ namespace BeatTheComputer.GUI
             alternateToggle.Checked = alternateFirst;
         }
 
+        public void setGame(IGameContext game)
+        {
+            this.game = game.clone();
+        }
+
+        public void setPlayer1(IBehavior player1)
+        {
+            this.player1 = player1.clone();
+        }
+
+        public void setPlayer2(IBehavior player2)
+        {
+            this.player2 = player2.clone();
+        }
+
         private void run_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(simulationsField.Text, out simulations) || simulations <= 0) {
