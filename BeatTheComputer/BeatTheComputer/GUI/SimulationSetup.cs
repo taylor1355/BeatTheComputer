@@ -51,7 +51,10 @@ namespace BeatTheComputer.GUI
 
         private void run_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(simulationsField.Text, out simulations) || simulations <= 0) {
+            if (player1 is DummyBehavior || player2 is DummyBehavior) {
+                MessageBox.Show("Can't run simulations with a human");
+                return;
+            } else if (!int.TryParse(simulationsField.Text, out simulations) || simulations <= 0) {
                 MessageBox.Show("Simulations must be a positive integer");
                 return;
             }

@@ -35,13 +35,13 @@ namespace BeatTheComputer.GUI
 
             interruptSource = new CancellationTokenSource();
 
+            runSimulations(game, player1, player2, numSimulations, parallel, alternate);
+
             stopwatch = Stopwatch.StartNew();
             timer.Start();
 
             progressBar.Maximum = numSimulations;
             updateUI();
-
-            runSimulations(game, player1, player2, numSimulations, parallel, alternate);
         }
 
         private void SimulationMonitor_FormClosing(object sender, FormClosingEventArgs e)
@@ -65,18 +65,21 @@ namespace BeatTheComputer.GUI
         public void simulationFinished(GameOutcome result)
         {
             lock (simulationFinishedLock) {
-                completedSimulations++;
-                if (completedSimulations == totalSimulations) {
-                    timer.Stop();
-                    updateUI();
-                }
-
                 if (result == GameOutcome.WIN) {
                     p1Wins++;
                 } else if (result == GameOutcome.LOSS) {
                     p2Wins++;
-                } else {
+                } else if (result == GameOutcome.TIE) {
                     ties++;
+                } else {
+                    throw new ApplicationException("Unexpected GameOutcome result");
+                }
+
+                completedSimulations++;
+                if (completedSimulations == totalSimulations) {
+                    stopwatch.Stop();
+                    timer.Stop();
+                    updateUI();
                 }
             }
         }
@@ -102,7 +105,7 @@ namespace BeatTheComputer.GUI
 
             timeElapsedLbl.Text = "Time Elapsed: " + humanReadableTime(stopwatch.Elapsed);
 
-            TimeSpan timePerSimulation = TimeSpan.FromTicks(stopwatch.ElapsedTicks / (completedSimulations + 1));
+            TimeSpan timePerSimulation = TimeSpan.FromTicks(stopwatch.Elapsed.Ticks / Math.Min(completedSimulations + 1, totalSimulations));
             simulationTimeLbl.Text = "Time Per Simulation: " + humanReadableTime(timePerSimulation);
         }
 

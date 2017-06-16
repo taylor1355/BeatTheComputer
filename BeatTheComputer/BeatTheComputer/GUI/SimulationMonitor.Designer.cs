@@ -127,6 +127,8 @@
             this.Controls.Add(this.p2WinsLbl);
             this.Controls.Add(this.p1WinsLbl);
             this.Controls.Add(this.simulationsLbl);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "SimulationMonitor";
             this.Text = "Simulation Monitor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SimulationMonitor_FormClosing);

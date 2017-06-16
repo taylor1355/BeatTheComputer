@@ -119,10 +119,11 @@ namespace BeatTheComputer.GUI
 
         private void runSimulations_Click(object sender, EventArgs e)
         {
-            if (player1 is DummyBehavior || player2 is DummyBehavior) {
-                MessageBox.Show("Can't run simulations with a human");
-            } else if(simSetup != null && !simSetup.IsDisposed) {
+
+            if (simSetup != null && !simSetup.IsDisposed) {
                 simSetup.BringToFront();
+            } else if (player1 is DummyBehavior || player2 is DummyBehavior) {
+                MessageBox.Show("Can't run simulations with a human");
             } else {
                 simSetup = new SimulationSetup(game, player1, player2);
                 simSetup.Show();

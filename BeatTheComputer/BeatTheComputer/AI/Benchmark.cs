@@ -12,8 +12,8 @@ namespace BeatTheComputer.AI
         {
             if (parallel) {
                 Parallel.For(0, simulations, (i, loopState) => {
-                    IBehavior player1 = getPlayer(behavior1, behavior2, Player.ONE, i, alternate).clone();
-                    IBehavior player2 = getPlayer(behavior1, behavior2, Player.TWO, i, alternate).clone();
+                    IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
+                    IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
                     GameOutcome result = context.simulate(player1, player2, interrupt);
                     if (interrupt.IsCancellationRequested) {
                         loopState.Stop();
@@ -22,8 +22,8 @@ namespace BeatTheComputer.AI
                 });
             } else {
                 for (int i = 0; i < simulations; i++) {
-                    IBehavior player1 = getPlayer(behavior1, behavior2, Player.ONE, i, alternate).clone();
-                    IBehavior player2 = getPlayer(behavior1, behavior2, Player.TWO, i, alternate).clone();
+                    IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
+                    IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
                     GameOutcome result = context.simulate(player1, player2, interrupt);
                     if (interrupt.IsCancellationRequested) {
                         break;
@@ -34,7 +34,7 @@ namespace BeatTheComputer.AI
         }
 
         private static object getPlayerLock = new object();
-        private static IBehavior getPlayer(IBehavior player1, IBehavior player2, Player role, int simulationNum, bool alternate)
+        private static IBehavior getPlayer(Player role, IBehavior player1, IBehavior player2, int simulationNum, bool alternate)
         {
             lock (getPlayerLock) {
                 if (role == Player.ONE) {
