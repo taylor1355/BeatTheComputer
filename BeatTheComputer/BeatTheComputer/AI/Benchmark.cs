@@ -1,5 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,12 +44,14 @@ namespace BeatTheComputer.AI
                     } else {
                         return player2;
                     }
-                } else {
+                } else if (role == Player.TWO) {
                     if (!alternate || simulationNum % 2 == 1) {
                         return player2;
                     } else {
                         return player1;
                     }
+                } else {
+                    throw new ArgumentException("Role should either be Player.ONE or Player.TWO");
                 }
             }
         }

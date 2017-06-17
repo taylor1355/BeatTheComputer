@@ -14,6 +14,8 @@ namespace BeatTheComputer.GUI
 {
     public partial class Setup : Form
     {
+        private Random rand;
+
         private IGameContext game;
         private IBehavior player1;
         private IBehavior player2;
@@ -27,6 +29,8 @@ namespace BeatTheComputer.GUI
         public Setup()
         {
             InitializeComponent();
+
+            rand = new Random();
 
             gameToFormTypes = new Dictionary<Type, Type>();
             gameToFormTypes.Add(typeof(TicTacToeContext), typeof(TicTacToe.TicTacToe));
@@ -125,7 +129,7 @@ namespace BeatTheComputer.GUI
             } else if (player1 is DummyBehavior || player2 is DummyBehavior) {
                 MessageBox.Show("Can't run simulations with a human");
             } else {
-                simSetup = new SimulationSetup(game, player1, player2);
+                simSetup = new SimulationSetup(game.clone(), player1.clone(), player2.clone());
                 simSetup.Show();
             }
         }
@@ -143,10 +147,10 @@ namespace BeatTheComputer.GUI
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(new Random(rand.Next())), 1, 7500, int.MaxValue, 1.41, true));
             behaviorsList.Add(new Minimax(7500, 1000, true));
-            behaviorsList.Add(new PlayRandom());
-            behaviorsList.Add(new PlayMostlyRandom());
+            behaviorsList.Add(new PlayRandom(new Random(rand.Next())));
+            behaviorsList.Add(new PlayMostlyRandom(new Random(rand.Next())));
             return behaviorsList.ToArray();
         }
 

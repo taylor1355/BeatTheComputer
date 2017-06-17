@@ -67,10 +67,7 @@ namespace BeatTheComputer.Shared
         public bool Equals(IGameContext context) { return equalTo(context); }
         public override bool Equals(object obj) { return equalTo(obj); }
         public abstract bool equalTo(object obj);
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override int GetHashCode() { throw new NotImplementedException(); }
 
         public abstract IGameContext clone();
     }
