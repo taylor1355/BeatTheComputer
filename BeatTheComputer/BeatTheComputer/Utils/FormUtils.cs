@@ -3,11 +3,9 @@ using System.Windows.Forms;
 
 namespace BeatTheComputer.Utils
 {
-    class FormUtils
+    static class FormUtils
     {
         public delegate Control ControlFactory(Point drawPos, Position gridPos);
-
-        private FormUtils() { }
 
         public static void createControlGrid(ControlFactory factory, ContainerControl container, Control[,] grid, int padding = 0)
         {

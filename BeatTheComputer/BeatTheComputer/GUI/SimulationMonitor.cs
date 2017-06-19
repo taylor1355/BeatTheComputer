@@ -1,5 +1,6 @@
 ﻿using BeatTheComputer.Shared;
 using BeatTheComputer.AI;
+using BeatTheComputer.Utils;
 
 using System;
 using System.Threading;
@@ -96,36 +97,17 @@ namespace BeatTheComputer.GUI
                 return;
             }
 
-            simulationsLbl.Text = "Simulations: " + completedSimulations + " / " + totalSimulations;
-            p1WinsLbl.Text = "Player 1 Wins: " + p1Wins.ToString();
-            p2WinsLbl.Text = "Player 2 Wins: " + p2Wins.ToString();
-            tiesLbl.Text = "Ties: " + ties.ToString();
+            simulationsLbl.Text = "Simulations: " + FormatUtils.humanReadableNumber(completedSimulations) + " / " + FormatUtils.humanReadableNumber(totalSimulations);
+            p1WinsLbl.Text = "Player 1 Wins: " + FormatUtils.humanReadableNumber(p1Wins);
+            p2WinsLbl.Text = "Player 2 Wins: " + FormatUtils.humanReadableNumber(p2Wins);
+            tiesLbl.Text = "Ties: " + FormatUtils.humanReadableNumber(ties);
 
             progressBar.Value = completedSimulations;
 
-            timeElapsedLbl.Text = "Time Elapsed: " + humanReadableTime(stopwatch.Elapsed);
+            timeElapsedLbl.Text = "Time Elapsed: " + FormatUtils.humanReadableTime(stopwatch.Elapsed);
 
             TimeSpan timePerSimulation = TimeSpan.FromTicks(stopwatch.Elapsed.Ticks / Math.Min(completedSimulations + 1, totalSimulations));
-            simulationTimeLbl.Text = "Time Per Simulation: " + humanReadableTime(timePerSimulation);
-        }
-
-        private String humanReadableTime(TimeSpan time)
-        {
-            if (time.TotalMilliseconds < 1) {
-                return time.TotalMilliseconds.ToString("0.000") + " ms";
-            } else if (time.TotalMilliseconds < 10) {
-                return time.TotalMilliseconds.ToString("0.00") + " ms";
-            } else if (time.TotalMilliseconds < 1000) {
-                return time.TotalMilliseconds.ToString("0") + " ms";
-            } else if(time.TotalSeconds < 10) {
-                return time.TotalSeconds.ToString("0.00") + " sec";
-            } else if (time.TotalSeconds < 60) {
-                return time.TotalSeconds.ToString("0.0") + " sec";
-            } else if (time.TotalMinutes < 60) {
-                return time.Minutes + ":" + time.Seconds.ToString("00");
-            } else {
-                return time.Hours + ":" + time.Minutes.ToString("00") + ":" + time.Seconds.ToString("00");
-            }
+            simulationTimeLbl.Text = "Time Per Simulation: " + FormatUtils.humanReadableTime(timePerSimulation);
         }
     }
 }

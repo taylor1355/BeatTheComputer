@@ -106,6 +106,7 @@
       <DependentUpon>SimulationSetup.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\BitUtils.cs" />
+    <Compile Include="Utils\FormatUtils.cs" />
     <Compile Include="Utils\Position.cs" />
     <Compile Include="ConnectFour\ConnectFour.cs">
       <SubType>Form</SubType>

@@ -2,7 +2,7 @@
 
 namespace BeatTheComputer.Utils
 {
-    class BitUtils
+    static class BitUtils
     {
         // a mapping of powers of 2 to their base 2 logarithms (1->0, 2->1, 4->2, ...)
         private static Dictionary<ulong, int> powersOf2Log;
@@ -19,8 +19,6 @@ namespace BeatTheComputer.Utils
                 log++;
             }
         }
-
-        private BitUtils() { }
 
         public static int nthBit(int n, ulong bitVector)
         {

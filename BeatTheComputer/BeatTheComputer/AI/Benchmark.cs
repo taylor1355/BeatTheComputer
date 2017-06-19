@@ -18,8 +18,10 @@ namespace BeatTheComputer.AI
                     GameOutcome result = context.simulate(player1, player2, interrupt);
                     if (interrupt.IsCancellationRequested) {
                         loopState.Stop();
+                    } else {
+                        callback.Invoke(result);
                     }
-                    callback.Invoke(result);
+                    
                 });
             } else {
                 for (int i = 0; i < simulations; i++) {
