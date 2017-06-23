@@ -1,5 +1,5 @@
 ﻿using BeatTheComputer.AI;
-using BeatTheComputer.Shared;
+using BeatTheComputer.Core;
 
 using System.Threading;
 using System.Threading.Tasks;

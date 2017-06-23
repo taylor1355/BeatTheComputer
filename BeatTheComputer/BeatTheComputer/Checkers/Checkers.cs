@@ -1,5 +1,5 @@
 ﻿using BeatTheComputer.GUI;
-using BeatTheComputer.Shared;
+using BeatTheComputer.Core;
 using BeatTheComputer.Utils;
 
 using System;

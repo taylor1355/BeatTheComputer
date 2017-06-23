@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
 using BeatTheComputer.AI.Minimax;

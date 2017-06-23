@@ -1,5 +1,5 @@
 ﻿using BeatTheComputer.Checkers;
-using BeatTheComputer.Shared;
+using BeatTheComputer.Core;
 
 using System;
 using System.Windows.Forms;

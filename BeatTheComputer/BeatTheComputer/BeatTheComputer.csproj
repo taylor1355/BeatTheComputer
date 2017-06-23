@@ -138,14 +138,14 @@
     <Compile Include="Bao\Pit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shared\GameContext.cs" />
+    <Compile Include="Core\GameContext.cs" />
     <Compile Include="GUI\GameController.cs" />
-    <Compile Include="Shared\GameOutcome.cs" />
-    <Compile Include="Shared\IGameContext.cs" />
-    <Compile Include="Shared\IAction.cs" />
+    <Compile Include="Core\GameOutcome.cs" />
+    <Compile Include="Core\IGameContext.cs" />
+    <Compile Include="Core\IAction.cs" />
     <Compile Include="AI\IBehavior.cs" />
-    <Compile Include="Shared\Player.cs" />
-    <Compile Include="Shared\GameOutcomeUtils.cs" />
+    <Compile Include="Core\Player.cs" />
+    <Compile Include="Core\GameOutcomeUtils.cs" />
     <Compile Include="TicTacToe\TicTacToe.cs">
       <SubType>Form</SubType>
     </Compile>
