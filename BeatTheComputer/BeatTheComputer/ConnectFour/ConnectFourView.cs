@@ -35,7 +35,7 @@ namespace BeatTheComputer.ConnectFour
             holeLength = 100;
 
             FormUtils.ControlFactory factory = new FormUtils.ControlFactory(holeFactory);
-            FormUtils.createControlGrid(factory, form, holes, padding);
+            FormUtils.createControlGrid(factory, form.Canvas, holes, padding);
 
             form.Refresh();
         }

@@ -7,7 +7,7 @@ namespace BeatTheComputer.Utils
     {
         public delegate Control ControlFactory(Point drawPos, Position gridPos);
 
-        public static void createControlGrid(ControlFactory factory, ContainerControl container, Control[,] grid, int padding = 0)
+        public static void createControlGrid(ControlFactory factory, Control container, Control[,] grid, int padding = 0)
         {
             int rows = grid.GetLength(0);
             int cols = grid.GetLength(1);

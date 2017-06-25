@@ -60,7 +60,7 @@ namespace BeatTheComputer.Checkers
             oddColor = Color.Tan;
 
             FormUtils.ControlFactory factory = new FormUtils.ControlFactory(squareFactory);
-            FormUtils.createControlGrid(factory, form, squares);
+            FormUtils.createControlGrid(factory, form.Canvas, squares);
 
             form.Refresh();
         }

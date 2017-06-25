@@ -28,14 +28,14 @@ namespace BeatTheComputer.TicTacToe
         {
             TicTacToeContext tttContext = (TicTacToeContext) controller.Context;
 
-            int padding = 0;
+            int padding = 10;
             int rows = tttContext.Rows;
             int cols = tttContext.Cols;
             squares = new PictureBox[rows, cols];
             squareLength = 100;
 
             FormUtils.ControlFactory factory = new FormUtils.ControlFactory(squareFactory);
-            FormUtils.createControlGrid(factory, form, squares, padding);
+            FormUtils.createControlGrid(factory, form.Canvas, squares, padding);
 
             form.Refresh();
         }
