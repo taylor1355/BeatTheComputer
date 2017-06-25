@@ -60,21 +60,17 @@
     <Compile Include="AI\Minimax\MinimaxTree.cs" />
     <Compile Include="AI\PlayRandom.cs" />
     <Compile Include="AI\PlayMostlyRandom.cs" />
-    <Compile Include="Checkers\Checkers.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Checkers\Checkers.Designer.cs">
-      <DependentUpon>Checkers.cs</DependentUpon>
-    </Compile>
     <Compile Include="Checkers\CheckersAction.cs" />
     <Compile Include="Checkers\CheckersBitboard.cs" />
     <Compile Include="Checkers\CheckersBoard.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
+    <Compile Include="Checkers\CheckersView.cs" />
     <Compile Include="Checkers\CheckersScalableBoard.cs" />
     <Compile Include="Checkers\CheckersPiece.cs" />
     <Compile Include="ConnectFour\ConnectFourBitboard.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourScalableBoard.cs" />
+    <Compile Include="ConnectFour\ConnectFourView.cs" />
     <Compile Include="GUI\CheckersSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +83,13 @@
     <Compile Include="GUI\ConnectFourSettings.Designer.cs">
       <DependentUpon>ConnectFourSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\GameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\GameForm.Designer.cs">
+      <DependentUpon>GameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GameView.cs" />
     <Compile Include="GUI\GameMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -111,15 +114,10 @@
     <Compile Include="GUI\SimulationSetup.Designer.cs">
       <DependentUpon>SimulationSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="TicTacToe\TicTacToeView.cs" />
     <Compile Include="Utils\BitUtils.cs" />
     <Compile Include="Utils\FormatUtils.cs" />
     <Compile Include="Utils\Position.cs" />
-    <Compile Include="ConnectFour\ConnectFour.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ConnectFour\ConnectFour.Designer.cs">
-      <DependentUpon>ConnectFour.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConnectFour\ConnectFourAction.cs" />
     <Compile Include="ConnectFour\ConnectFourContext.cs" />
     <Compile Include="GUI\MCTSSettings.cs">
@@ -152,28 +150,19 @@
     <Compile Include="AI\IBehavior.cs" />
     <Compile Include="Core\Player.cs" />
     <Compile Include="Core\GameOutcomeUtils.cs" />
-    <Compile Include="TicTacToe\TicTacToe.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TicTacToe\TicTacToe.Designer.cs">
-      <DependentUpon>TicTacToe.cs</DependentUpon>
-    </Compile>
     <Compile Include="TicTacToe\TicTacToeAction.cs" />
     <Compile Include="TicTacToe\TicTacToeContext.cs" />
     <Compile Include="Utils\BoardUtils.cs" />
     <Compile Include="Utils\FormUtils.cs" />
     <Compile Include="Utils\IndexedSet.cs" />
-    <EmbeddedResource Include="Checkers\Checkers.resx">
-      <DependentUpon>Checkers.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ConnectFour\ConnectFour.resx">
-      <DependentUpon>ConnectFour.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\CheckersSettings.resx">
       <DependentUpon>CheckersSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ConnectFourSettings.resx">
       <DependentUpon>ConnectFourSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GameForm.resx">
+      <DependentUpon>GameForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\GameMenu.resx">
       <DependentUpon>GameMenu.cs</DependentUpon>
@@ -206,9 +195,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="TicTacToe\TicTacToe.resx">
-      <DependentUpon>TicTacToe.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

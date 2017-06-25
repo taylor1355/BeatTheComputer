@@ -20,7 +20,7 @@ namespace BeatTheComputer.GUI
         private IBehavior player1;
         private IBehavior player2;
 
-        private Dictionary<Type, Type> gameToFormTypes;
+        private Dictionary<Type, Type> gameToViewTypes;
         private Dictionary<Type, Type> gameToSettingTypes;
         private Dictionary<Type, Type> behaviorToSettingTypes;
 
@@ -32,10 +32,10 @@ namespace BeatTheComputer.GUI
 
             rand = new Random();
 
-            gameToFormTypes = new Dictionary<Type, Type>();
-            gameToFormTypes.Add(typeof(TicTacToeContext), typeof(TicTacToe.TicTacToe));
-            gameToFormTypes.Add(typeof(ConnectFourContext), typeof(ConnectFour.ConnectFour));
-            gameToFormTypes.Add(typeof(CheckersContext), typeof(Checkers.Checkers));
+            gameToViewTypes = new Dictionary<Type, Type>();
+            gameToViewTypes.Add(typeof(TicTacToeContext), typeof(TicTacToeView));
+            gameToViewTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourView));
+            gameToViewTypes.Add(typeof(CheckersContext), typeof(CheckersView));
 
             gameToSettingTypes = new Dictionary<Type, Type>();
             gameToSettingTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourSettings));
@@ -117,7 +117,8 @@ namespace BeatTheComputer.GUI
         private void playGame_Click(object sender, EventArgs e)
         {
             GameController controller = new GameController(game.clone(), player1.clone(), player2.clone());
-            Form form = (Form) Activator.CreateInstance(gameToFormTypes[game.GetType()], controller);
+            GameView view = (GameView) Activator.CreateInstance(gameToViewTypes[game.GetType()], controller);
+            GameForm form = new GameForm(controller, view);
             form.Show();
         }
 
