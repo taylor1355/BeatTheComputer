@@ -26,8 +26,9 @@ namespace BeatTheComputer.TicTacToe
 
         public void initGraphics(GameForm form)
         {
-            TicTacToeContext tttContext = (TicTacToeContext) controller.Context;
+            form.Text = "Tic Tac Toe";
 
+            TicTacToeContext tttContext = (TicTacToeContext) controller.Context;
             int padding = 10;
             int rows = tttContext.Rows;
             int cols = tttContext.Cols;

@@ -45,7 +45,7 @@ namespace BeatTheComputer.Checkers
 
         public void initGraphics(GameForm form)
         {
-            CheckersContext cContext = (CheckersContext) controller.Context;
+            form.Text = "Checkers";
 
             highlightColors = new Dictionary<Highlight, Color>();
             highlightColors.Add(Highlight.Selected, Color.Orange);
@@ -54,6 +54,7 @@ namespace BeatTheComputer.Checkers
 
             highlightedSquares = new Dictionary<Position, Highlight>();
 
+            CheckersContext cContext = (CheckersContext) controller.Context;
             squares = new PictureBox[cContext.Board.Rows, cContext.Board.Cols];
             squareLength = 100;
             evenColor = Color.Brown;

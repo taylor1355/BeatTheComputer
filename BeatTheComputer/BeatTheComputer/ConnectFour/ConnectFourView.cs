@@ -26,8 +26,9 @@ namespace BeatTheComputer.ConnectFour
 
         public void initGraphics(GameForm form)
         {
-            ConnectFourContext c4Context = (ConnectFourContext) controller.Context;
+            form.Text = "Connect Four";
 
+            ConnectFourContext c4Context = (ConnectFourContext) controller.Context;
             int padding = 10;
             int rows = c4Context.Board.Rows;
             int cols = c4Context.Board.Cols;
