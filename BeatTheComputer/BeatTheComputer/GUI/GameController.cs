@@ -8,7 +8,7 @@ namespace BeatTheComputer.GUI
 {
     public class GameController
     {
-        public delegate void UpdateView(IGameContext context);
+        public delegate void UpdateView();
 
         IGameContext context;
         IBehavior player1;
@@ -48,7 +48,7 @@ namespace BeatTheComputer.GUI
                 turn = Player.NONE;
                 context.applyAction(action);
                 lastAction = action;
-                updateViewMethod(context);
+                updateViewMethod();
                 if (!context.GameDecided) {
                     turn = context.ActivePlayer;
                     tryComputerTurn();

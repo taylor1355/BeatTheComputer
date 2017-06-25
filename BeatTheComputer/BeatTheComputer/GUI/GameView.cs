@@ -4,7 +4,7 @@ namespace BeatTheComputer.GUI
 {
     public interface GameView
     {
-        void initGraphics(IGameContext context, GameForm form);
-        void updateGraphics(GameController controller, GameForm form);
+        void initGraphics(GameForm form);
+        void updateGraphics(GameForm form);
     }
 }

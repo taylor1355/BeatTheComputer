@@ -24,9 +24,9 @@ namespace BeatTheComputer.TicTacToe
             this.controller = controller;
         }
 
-        public void initGraphics(IGameContext context, GameForm form)
+        public void initGraphics(GameForm form)
         {
-            TicTacToeContext tttContext = (TicTacToeContext) context;
+            TicTacToeContext tttContext = (TicTacToeContext) controller.Context;
 
             int padding = 0;
             int rows = tttContext.Rows;
@@ -40,7 +40,7 @@ namespace BeatTheComputer.TicTacToe
             form.Refresh();
         }
 
-        public void updateGraphics(GameController controller, GameForm form)
+        public void updateGraphics(GameForm form)
         {
             TicTacToeContext tttContext = (TicTacToeContext) controller.Context;
             for (int row = 0; row < squares.GetLength(0); row++) {

@@ -24,9 +24,9 @@ namespace BeatTheComputer.ConnectFour
             this.controller = controller;
         }
 
-        public void initGraphics(IGameContext context, GameForm form)
+        public void initGraphics(GameForm form)
         {
-            ConnectFourContext c4Context = (ConnectFourContext) context;
+            ConnectFourContext c4Context = (ConnectFourContext) controller.Context;
 
             int padding = 10;
             int rows = c4Context.Board.Rows;
@@ -40,7 +40,7 @@ namespace BeatTheComputer.ConnectFour
             form.Refresh();
         }
 
-        public void updateGraphics(GameController controller, GameForm form)
+        public void updateGraphics(GameForm form)
         {
             ConnectFourContext c4Context = (ConnectFourContext) controller.Context;
             for (int row = 0; row < holes.GetLength(0); row++) {

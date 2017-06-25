@@ -43,9 +43,9 @@ namespace BeatTheComputer.Checkers
             this.controller = controller;
         }
 
-        public void initGraphics(IGameContext context, GameForm form)
+        public void initGraphics(GameForm form)
         {
-            CheckersContext cContext = (CheckersContext) context;
+            CheckersContext cContext = (CheckersContext) controller.Context;
 
             highlightColors = new Dictionary<Highlight, Color>();
             highlightColors.Add(Highlight.Selected, Color.Orange);
@@ -65,7 +65,7 @@ namespace BeatTheComputer.Checkers
             form.Refresh();
         }
 
-        public void updateGraphics(GameController controller, GameForm form)
+        public void updateGraphics(GameForm form)
         {
             CheckersContext cContext = (CheckersContext) controller.Context;
             for (int row = 0; row < squares.GetLength(0); row++) {

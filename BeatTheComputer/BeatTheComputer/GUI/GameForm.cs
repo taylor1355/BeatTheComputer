@@ -22,7 +22,7 @@ namespace BeatTheComputer.GUI
 
         private void GameForm_Shown(object sender, EventArgs e)
         {
-            initGraphics(controller.Context);
+            initGraphics();
             controller.tryComputerTurn();
         }
 
@@ -31,14 +31,14 @@ namespace BeatTheComputer.GUI
             controller.stop();
         }
 
-        private void initGraphics(IGameContext context)
+        private void initGraphics()
         {
-            view.initGraphics(context, this);
+            view.initGraphics(this);
         }
 
-        private void updateGraphics(IGameContext context)
+        private void updateGraphics()
         {
-            view.updateGraphics(controller, this);
+            view.updateGraphics(this);
         }
     }
 }
