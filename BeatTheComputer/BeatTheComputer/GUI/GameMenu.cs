@@ -1,61 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace BeatTheComputer.GUI
 {
     public partial class GameMenu : MenuStrip
     {
-        private ToolStripMenuItem file;
-        private ToolStripMenuItem saveGame;
-        private ToolStripMenuItem exit;
+        public ToolStripMenuItem FileMenuItem { get; private set; }
+        public ToolStripMenuItem SaveGameMenuItem { get; private set; }
+        public ToolStripMenuItem ExitMenuItem { get; private set; }
 
-        //private ToolStripMenuItem view;
-        //private ToolStripMenuItem viewToolStrip;
-        //private ToolStripMenuItem viewStatistics;
-        //private ToolStripMenuItem viewThinking;
+        //public ToolStripMenuItem ViewMenuItem { get; private set; }
+        //public ToolStripMenuItem ViewToolStripMenuItem { get; private set; }
+        //public ToolStripMenuItem ViewStatisticsMenuItem { get; private set; }
+        //public ToolStripMenuItem ViewThinkingMenuItem { get; private set; }
 
-        private ToolStripMenuItem edit;
-        private ToolStripMenuItem undo;
-        private ToolStripMenuItem togglePause;
-        private ToolStripMenuItem editGame;
-        private ToolStripMenuItem editPlayer1;
-        private ToolStripMenuItem editPlayer2;
+        public ToolStripMenuItem EditMenuItem { get; private set; }
+        public ToolStripMenuItem UndoMenuItem { get; private set; }
+        public ToolStripMenuItem RedoMenuItem { get; private set; }
+        public ToolStripMenuItem TogglePauseMenuItem { get; private set; }
+        public ToolStripMenuItem EditGameMenuItem { get; private set; }
+        public ToolStripMenuItem EditPlayer1MenuItem { get; private set; }
+        public ToolStripMenuItem EditPlayer2MenuItem { get; private set; }
 
         public GameMenu() : base()
         {
             InitializeComponent();
 
             // Initializations
-            file = new ToolStripMenuItem("File");
-            saveGame = new ToolStripMenuItem("Save");
-            exit = new ToolStripMenuItem("Exit");
+            FileMenuItem = new ToolStripMenuItem("File");
+            SaveGameMenuItem = new ToolStripMenuItem("Save");
+            ExitMenuItem = new ToolStripMenuItem("Exit");
 
-            edit = new ToolStripMenuItem("Edit");
-            undo = new ToolStripMenuItem("Undo");
-            togglePause = new ToolStripMenuItem("Pause");
-            editGame = new ToolStripMenuItem("Game");
-            editPlayer1 = new ToolStripMenuItem("Player 1");
-            editPlayer2 = new ToolStripMenuItem("Player 2");
+            EditMenuItem = new ToolStripMenuItem("Edit");
+            UndoMenuItem = new ToolStripMenuItem("Undo");
+            RedoMenuItem = new ToolStripMenuItem("Redo");
+            TogglePauseMenuItem = new ToolStripMenuItem("Pause");
+            EditGameMenuItem = new ToolStripMenuItem("Game");
+            EditPlayer1MenuItem = new ToolStripMenuItem("Player 1");
+            EditPlayer2MenuItem = new ToolStripMenuItem("Player 2");
 
             // Creating Menu Structure
-            Items.Add(file);
-            Items.Add(edit);
+            Items.Add(FileMenuItem);
+            Items.Add(EditMenuItem);
 
-            file.DropDownItems.Add(saveGame);
-            file.DropDownItems.Add(exit);
+            FileMenuItem.DropDownItems.Add(SaveGameMenuItem);
+            FileMenuItem.DropDownItems.Add(ExitMenuItem);
 
-            edit.DropDownItems.Add(undo);
-            edit.DropDownItems.Add(togglePause);
-            edit.DropDownItems.Add(editGame);
-            edit.DropDownItems.Add(editPlayer1);
-            edit.DropDownItems.Add(editPlayer2);
+            EditMenuItem.DropDownItems.Add(UndoMenuItem);
+            EditMenuItem.DropDownItems.Add(RedoMenuItem);
+            EditMenuItem.DropDownItems.Add(TogglePauseMenuItem);
+            EditMenuItem.DropDownItems.Add(EditGameMenuItem);
+            EditMenuItem.DropDownItems.Add(EditPlayer1MenuItem);
+            EditMenuItem.DropDownItems.Add(EditPlayer2MenuItem);
 
         }
     }
