@@ -42,6 +42,26 @@ namespace BeatTheComputer.AI.MCTS
             children = null;
         }
 
+        private MCTSNode(MCTSNode cloneFrom)
+        {
+            exploreFactor = cloneFrom.exploreFactor;
+            rolloutBehavior = cloneFrom.rolloutBehavior;
+            tryToWin = cloneFrom.tryToWin;
+            activePlayer = cloneFrom.activePlayer;
+            outcome = cloneFrom.outcome;
+            p1Wins = cloneFrom.p1Wins;
+            visits = cloneFrom.visits;
+
+            if (cloneFrom.IsLeaf) {
+                children = null;
+            } else {
+                children = new Dictionary<IAction, MCTSNode>();
+                foreach (KeyValuePair<IAction, MCTSNode> entry in cloneFrom.children) {
+                    children.Add(entry.Key.clone(), entry.Value.clone());
+                }
+            }
+        }
+
         public double step(IGameContext context, int threads)
         {
             List<MCTSNode> visited = new List<MCTSNode>();
@@ -201,6 +221,11 @@ namespace BeatTheComputer.AI.MCTS
             } else {
                 throw new ArgumentException("Can't get wins of " + player.ToString());
             }
+        }
+
+        public MCTSNode clone()
+        {
+            return new MCTSNode(this);
         }
 
         public double Score {

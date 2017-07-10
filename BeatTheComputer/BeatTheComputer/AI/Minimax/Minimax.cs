@@ -56,6 +56,7 @@ namespace BeatTheComputer.AI.Minimax
             return "Minimax";
         }
 
+        //does not save game tree
         public override IBehavior clone()
         {
             return new Minimax(timeLimit, iterationLimit, tryToWin);

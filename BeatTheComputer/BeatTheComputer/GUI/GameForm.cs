@@ -52,17 +52,23 @@ namespace BeatTheComputer.GUI
 
         private void UndoMenuItem_Click(object sender, EventArgs e)
         {
-            // store a list of previous contexts to allow undo and redo
+            if (controller.canUndo()) {
+                controller.undo();
+            }
         }
 
         private void RedoMenuItem_Click(object sender, EventArgs e)
         {
-            // every time an action is played delete all contexts beyond the curr pointer, redo moves pointer forwards unless it is the tail
+            if (controller.canRedo()) {
+                controller.redo();
+            }
         }
 
         private void TogglePauseMenuItem_Click(object sender, EventArgs e)
         {
             // initially when paused just let current player keep thinking but suspend the next action until resumed
+            controller.togglePause();
+            menu.TogglePauseMenuItem.Text = togglePauseText();
         }
 
         private void EditGameMenuItem_Click(object sender, EventArgs e)
@@ -86,8 +92,11 @@ namespace BeatTheComputer.GUI
             menu.SaveGameMenuItem.Click += SaveGameMenuItem_Click;
             menu.ExitMenuItem.Click += ExitMenuItem_Click;
             menu.UndoMenuItem.Click += UndoMenuItem_Click;
+            menu.UndoMenuItem.Enabled = controller.canUndo();
             menu.RedoMenuItem.Click += RedoMenuItem_Click;
+            menu.RedoMenuItem.Enabled = controller.canRedo();
             menu.TogglePauseMenuItem.Click += TogglePauseMenuItem_Click;
+            menu.TogglePauseMenuItem.Text = togglePauseText();
             menu.EditGameMenuItem.Click += EditGameMenuItem_Click;
             menu.EditPlayer1MenuItem.Click += EditPlayer1MenuItem_Click;
             menu.EditPlayer2MenuItem.Click += EditPlayer2MenuItem_Click;
@@ -103,7 +112,19 @@ namespace BeatTheComputer.GUI
 
         private void updateGraphics()
         {
+            menu.UndoMenuItem.Enabled = controller.canUndo();
+            menu.RedoMenuItem.Enabled = controller.canRedo();
+
             view.updateGraphics(this);
+        }
+
+        private String togglePauseText()
+        {
+            if (controller.Paused) {
+                return "Resume";
+            } else {
+                return "Pause";
+            }
         }
 
         public new GameMenu Menu {

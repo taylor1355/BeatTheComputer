@@ -35,12 +35,14 @@ namespace BeatTheComputer.Checkers
         private Dictionary<Position, CheckersAction> availableActions;
 
         private GameController controller;
+        private int moves;
 
         public CheckersView(GameController controller)
         {
             availableActions = null;
 
             this.controller = controller;
+            moves = 0;
         }
 
         public void initGraphics(GameForm form)
@@ -68,28 +70,32 @@ namespace BeatTheComputer.Checkers
 
         public void updateGraphics(GameForm form)
         {
-            CheckersContext cContext = (CheckersContext) controller.Context;
-            for (int row = 0; row < squares.GetLength(0); row++) {
-                for (int col = 0; col < squares.GetLength(1); col++) {
-                    Bitmap correctImage = imageOf(new Position(row, col), cContext);
-                    if (squares[row, col].Image != correctImage) {
-                        squares[row, col].Image = correctImage;
-                        squares[row, col].Refresh();
+            if (moves != controller.Context.Moves) {
+                moves = controller.Context.Moves;
+
+                CheckersContext cContext = (CheckersContext) controller.Context;
+                for (int row = 0; row < squares.GetLength(0); row++) {
+                    for (int col = 0; col < squares.GetLength(1); col++) {
+                        Bitmap correctImage = imageOf(new Position(row, col), cContext);
+                        if (squares[row, col].Image != correctImage) {
+                            squares[row, col].Image = correctImage;
+                            squares[row, col].Refresh();
+                        }
                     }
                 }
-            }
 
-            if (controller.LastAction != null) {
                 resetHighlights(true);
-                highlightMove(controller.LastAction);
-            }
+                if (controller.LastAction != null) {
+                    highlightMove(controller.LastAction);
+                }
 
-            if (cContext.GameDecided) {
-                Player winner = cContext.WinningPlayer;
-                if (winner == Player.NONE) {
-                    MessageBox.Show("Tie");
-                } else {
-                    MessageBox.Show("Player " + winner + " wins!");
+                if (cContext.GameDecided) {
+                    Player winner = cContext.WinningPlayer;
+                    if (winner == Player.NONE) {
+                        MessageBox.Show("Tie");
+                    } else {
+                        MessageBox.Show("Player " + winner + " wins!");
+                    }
                 }
             }
         }
@@ -214,10 +220,11 @@ namespace BeatTheComputer.Checkers
                         availableActions = null;
                     }
                 } else if (availableActions != null) {
+                    resetHighlights(false);
                     if (availableActions.ContainsKey(pos)) {
                         controller.tryHumanTurn(availableActions[pos]);
                     } else {
-                        resetHighlights(false);
+                        
                     }
 
                     availableActions = null;

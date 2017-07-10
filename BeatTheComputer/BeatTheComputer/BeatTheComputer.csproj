@@ -71,6 +71,7 @@
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourScalableBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourView.cs" />
+    <Compile Include="Core\GameSnapshot.cs" />
     <Compile Include="GUI\CheckersSettings.cs">
       <SubType>Form</SubType>
     </Compile>
