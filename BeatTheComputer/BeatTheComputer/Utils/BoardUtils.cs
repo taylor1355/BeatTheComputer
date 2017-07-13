@@ -2,10 +2,8 @@
 
 namespace BeatTheComputer.Utils
 {
-    class BoardUtils
+    static class BoardUtils
     {
-        private BoardUtils() { }
-
         public static int rowCount<T>(T[,] board, T item, int row)
         {
             int count = 0;

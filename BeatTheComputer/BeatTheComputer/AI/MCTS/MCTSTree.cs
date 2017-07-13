@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 
 using System;
 using System.Threading;
@@ -16,6 +16,12 @@ namespace BeatTheComputer.AI.MCTS
         {
             root = new MCTSNode(rootContext.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
             this.rootContext = rootContext;
+        }
+
+        private MCTSTree(MCTSTree cloneFrom)
+        {
+            root = cloneFrom.root.clone();
+            rootContext = cloneFrom.rootContext.clone();
         }
 
         public Dictionary<IAction, double> run(int threads, double maxTime, int maxRollouts, IGameContext context, IAction myAction, IAction opponentAction, CancellationToken interrupt)
@@ -43,7 +49,7 @@ namespace BeatTheComputer.AI.MCTS
             while (root.Visits < 1 || (timer.ElapsedMilliseconds < maxTime && root.Visits < maxRollouts && !interrupt.IsCancellationRequested)) {
                 root.step(rootContext, threads);
             };
-
+            if (interrupt.IsCancellationRequested) return null;
             return root.getActionScores();
         }
 
@@ -62,6 +68,11 @@ namespace BeatTheComputer.AI.MCTS
             if (root.IsLeaf) {
                 root.step(rootContext, 1);
             }
+        }
+
+        public MCTSTree clone()
+        {
+            return new MCTSTree(this);
         }
     }
 }

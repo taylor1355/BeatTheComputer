@@ -37,7 +37,7 @@
             // 
             // colsField
             // 
-            this.colsField.Location = new System.Drawing.Point(97, 49);
+            this.colsField.Location = new System.Drawing.Point(121, 49);
             this.colsField.MaxLength = 9;
             this.colsField.Name = "colsField";
             this.colsField.Size = new System.Drawing.Size(58, 20);
@@ -45,7 +45,7 @@
             // 
             // rowsField
             // 
-            this.rowsField.Location = new System.Drawing.Point(97, 23);
+            this.rowsField.Location = new System.Drawing.Point(121, 23);
             this.rowsField.MaxLength = 9;
             this.rowsField.Name = "rowsField";
             this.rowsField.Size = new System.Drawing.Size(58, 20);
@@ -54,7 +54,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(41, 52);
+            this.label4.Location = new System.Drawing.Point(65, 52);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(50, 13);
             this.label4.TabIndex = 16;
@@ -63,7 +63,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(54, 26);
+            this.label2.Location = new System.Drawing.Point(78, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 15;
@@ -71,7 +71,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(26, 93);
+            this.cancel.Location = new System.Drawing.Point(50, 85);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 17;
@@ -81,7 +81,7 @@
             // 
             // apply
             // 
-            this.apply.Location = new System.Drawing.Point(107, 93);
+            this.apply.Location = new System.Drawing.Point(131, 85);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(75, 23);
             this.apply.TabIndex = 18;
@@ -93,7 +93,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(218, 133);
+            this.ClientSize = new System.Drawing.Size(251, 133);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.apply);
             this.Controls.Add(this.colsField);
@@ -101,7 +101,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Name = "ConnectFourSettings";
-            this.Text = "Settings";
+            this.Text = "Game Settings";
             this.Load += new System.EventHandler(this.ConnectFourSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

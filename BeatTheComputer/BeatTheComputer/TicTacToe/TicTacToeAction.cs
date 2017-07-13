@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 using BeatTheComputer.Utils;
 
 namespace BeatTheComputer.TicTacToe

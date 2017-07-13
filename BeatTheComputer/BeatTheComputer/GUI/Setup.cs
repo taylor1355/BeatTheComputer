@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
 using BeatTheComputer.AI.Minimax;
@@ -7,31 +7,35 @@ using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace BeatTheComputer.GUI
 {
     public partial class Setup : Form
     {
-        private IGameContext context;
+        private Random rand;
+
+        private IGameContext game;
         private IBehavior player1;
         private IBehavior player2;
 
-        private Dictionary<Type, Type> gameToFormTypes;
+        private Dictionary<Type, Type> gameToViewTypes;
         private Dictionary<Type, Type> gameToSettingTypes;
         private Dictionary<Type, Type> behaviorToSettingTypes;
+
+        private SimulationSetup simSetup;
 
         public Setup()
         {
             InitializeComponent();
 
-            gameToFormTypes = new Dictionary<Type, Type>();
-            gameToFormTypes.Add(typeof(TicTacToeContext), typeof(TicTacToe.TicTacToe));
-            gameToFormTypes.Add(typeof(ConnectFourContext), typeof(ConnectFour.ConnectFour));
-            gameToFormTypes.Add(typeof(CheckersContext), typeof(Checkers.Checkers));
+            rand = new Random();
+
+            gameToViewTypes = new Dictionary<Type, Type>();
+            gameToViewTypes.Add(typeof(TicTacToeContext), typeof(TicTacToeView));
+            gameToViewTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourView));
+            gameToViewTypes.Add(typeof(CheckersContext), typeof(CheckersView));
 
             gameToSettingTypes = new Dictionary<Type, Type>();
             gameToSettingTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourSettings));
@@ -40,6 +44,8 @@ namespace BeatTheComputer.GUI
             behaviorToSettingTypes = new Dictionary<Type, Type>();
             behaviorToSettingTypes.Add(typeof(MCTS), typeof(MCTSSettings));
             behaviorToSettingTypes.Add(typeof(Minimax), typeof(MinimaxSettings));
+
+            simSetup = null;
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
@@ -57,16 +63,19 @@ namespace BeatTheComputer.GUI
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player1 = (IBehavior) p1List.SelectedItem;
+            updateSimSetup();
         }
 
         private void p2List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player2 = (IBehavior) p2List.SelectedItem;
+            updateSimSetup();
         }
 
         private void gameList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            context = (IGameContext) gameList.SelectedItem;
+            game = (IGameContext) gameList.SelectedItem;
+            updateSimSetup();
         }
 
         private void p1Settings_Click(object sender, EventArgs e)
@@ -74,6 +83,7 @@ namespace BeatTheComputer.GUI
             ObjectWrapper<IBehavior> p1Wrapper = new ObjectWrapper<IBehavior>(player1);
             openBehaviorSettings(p1Wrapper);
             player1 = p1Wrapper.Reference;
+            updateSimSetup();
         }
 
         private void p2Settings_Click(object sender, EventArgs e)
@@ -81,6 +91,7 @@ namespace BeatTheComputer.GUI
             ObjectWrapper<IBehavior> p2Wrapper = new ObjectWrapper<IBehavior>(player2);
             openBehaviorSettings(p2Wrapper);
             player2 = p2Wrapper.Reference;
+            updateSimSetup();
         }
 
         private void openBehaviorSettings(ObjectWrapper<IBehavior> behaviorWrapper)
@@ -94,40 +105,42 @@ namespace BeatTheComputer.GUI
 
         private void gameSettings_Click(object sender, EventArgs e)
         {
-            ObjectWrapper<IGameContext> gameWrapper = new ObjectWrapper<IGameContext>(context);
-            if (gameToSettingTypes.ContainsKey(context.GetType())) {
-                Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[context.GetType()], gameWrapper);
+            ObjectWrapper<IGameContext> gameWrapper = new ObjectWrapper<IGameContext>(game);
+            if (gameToSettingTypes.ContainsKey(game.GetType())) {
+                Form settings = (Form) Activator.CreateInstance(gameToSettingTypes[game.GetType()], gameWrapper);
                 settings.ShowDialog();
-                context = gameWrapper.Reference;
+                game = gameWrapper.Reference;
+                updateSimSetup();
             }
         }
 
         private void playGame_Click(object sender, EventArgs e)
         {
-            GameController controller = new GameController(context.clone(), player1.clone(), player2.clone());
-            Form form = (Form) Activator.CreateInstance(gameToFormTypes[context.GetType()], controller);
+            GameController controller = new GameController(game.clone(), player1.clone(), player2.clone());
+            GameView view = (GameView) Activator.CreateInstance(gameToViewTypes[game.GetType()], controller);
+            GameForm form = new GameForm(controller, view);
             form.Show();
         }
 
-        async private void runSimulations_Click(object sender, EventArgs e)
+        private void runSimulations_Click(object sender, EventArgs e)
         {
-            if (player1 is DummyBehavior || player2 is DummyBehavior) {
+
+            if (simSetup != null && !simSetup.IsDisposed) {
+                simSetup.BringToFront();
+            } else if (player1 is DummyBehavior || player2 is DummyBehavior) {
                 MessageBox.Show("Can't run simulations with a human");
             } else {
-                Stopwatch timer = null;
-                int simulations = 10;
-                double result = -1;
-                await Task.Run(() => {
-                    timer = Stopwatch.StartNew();
-                    result = Benchmark.compare(player1.clone(), player2.clone(), context.clone(), simulations, false);
-                    timer.Stop();
-                });
+                simSetup = new SimulationSetup(game.clone(), player1.clone(), player2.clone());
+                simSetup.Show();
+            }
+        }
 
-                string games = "Simulations: " + simulations + "\n";
-                string time = "Time: " + ((double) timer.ElapsedMilliseconds) / 1000 + " sec\n";
-                string timePer = "Avg Time per Simulation: " + ((double) timer.ElapsedMilliseconds) / simulations + " ms\n";
-                string winRate = "Player 1 win rate: " + result + "\n";
-                MessageBox.Show(games + time + timePer + winRate);
+        private void updateSimSetup()
+        {
+            if (simSetup != null && !simSetup.IsDisposed) {
+                simSetup.setGame(game);
+                simSetup.setPlayer1(player1);
+                simSetup.setPlayer2(player2);
             }
         }
 
@@ -135,10 +148,10 @@ namespace BeatTheComputer.GUI
         {
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
-            behaviorsList.Add(new MCTS(new PlayRandom(), 1, 7500, int.MaxValue, 1.41, true));
+            behaviorsList.Add(new MCTS(new PlayRandom(new Random(rand.Next())), 1, 7500, int.MaxValue, 1.41, true));
             behaviorsList.Add(new Minimax(7500, 1000, true));
-            behaviorsList.Add(new PlayRandom());
-            behaviorsList.Add(new PlayMostlyRandom());
+            behaviorsList.Add(new PlayRandom(new Random(rand.Next())));
+            behaviorsList.Add(new PlayMostlyRandom(new Random(rand.Next())));
             return behaviorsList.ToArray();
         }
 

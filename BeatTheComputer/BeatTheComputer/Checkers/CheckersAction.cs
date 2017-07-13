@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 using BeatTheComputer.Utils;
 
 using System;
@@ -65,6 +65,20 @@ namespace BeatTheComputer.Checkers
             jumps[jumps.Length - 1] = (prevJumps.destination + newDestination) / 2;
         }
 
+        private CheckersAction(CheckersAction cloneFrom)
+        {
+            start = cloneFrom.start;
+            destination = cloneFrom.destination;
+
+            if (cloneFrom.NumJumps == 0) {
+                jumps = null;
+            } else {
+                jumps = (Position[]) cloneFrom.jumps.Clone();
+            }
+
+            leadsToPromotion = cloneFrom.leadsToPromotion;
+        }
+
         public bool isValid(IGameContext context)
         {
             return context.getValidActions().Contains(this);
@@ -104,6 +118,11 @@ namespace BeatTheComputer.Checkers
         public override int GetHashCode()
         {
             return NumJumps + start.GetHashCode() * 53 + destination.GetHashCode() * 193;
+        }
+
+        public IAction clone()
+        {
+            return new CheckersAction(this);
         }
 
         public Position Start {

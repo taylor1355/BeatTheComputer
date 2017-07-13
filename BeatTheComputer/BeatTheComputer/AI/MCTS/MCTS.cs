@@ -1,4 +1,4 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 
 using System.Threading;
 using System.Collections.Generic;
@@ -29,6 +29,28 @@ namespace BeatTheComputer.AI.MCTS
             myLastAction = null;
         }
 
+        private MCTS(MCTS cloneFrom)
+        {
+            rolloutBehavior = cloneFrom.rolloutBehavior.clone();
+            threads = cloneFrom.threads;
+            timeLimit = cloneFrom.timeLimit;
+            rolloutLimit = cloneFrom.rolloutLimit;
+            exploreFactor = cloneFrom.exploreFactor;
+            tryToWin = cloneFrom.tryToWin;
+
+            if (cloneFrom.tree == null) {
+                tree = null;
+            } else {
+                tree = cloneFrom.tree.clone();
+            }
+
+            if (cloneFrom.myLastAction == null) {
+                cloneFrom = null;
+            } else {
+                myLastAction = cloneFrom.myLastAction.clone();
+            }
+        }
+
         public override IAction requestAction(IGameContext context, IAction opponentAction, CancellationToken interrupt)
         {
             if (tree == null) {
@@ -36,6 +58,7 @@ namespace BeatTheComputer.AI.MCTS
             }
 
             Dictionary<IAction, double> actionScores = tree.run(threads, timeLimit, rolloutLimit, context, myLastAction, opponentAction, interrupt);
+            if (actionScores == null) return null;
 
             IAction bestAction = null;
             foreach (IAction action in actionScores.Keys) {
@@ -52,10 +75,9 @@ namespace BeatTheComputer.AI.MCTS
             return "Monte Carlo Tree Search";
         }
 
-        //does not save game tree
         public override IBehavior clone()
         {
-            return new MCTS(rolloutBehavior.clone(), threads, timeLimit, rolloutLimit, exploreFactor, tryToWin);
+            return new MCTS(this);
         }
 
         public IBehavior RolloutBehavior {

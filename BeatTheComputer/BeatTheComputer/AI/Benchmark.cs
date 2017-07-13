@@ -1,54 +1,60 @@
-﻿using BeatTheComputer.Shared;
+﻿using BeatTheComputer.Core;
 
-using System.Linq;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BeatTheComputer.AI
 {
     class Benchmark
     {
-        public static double compare(IBehavior behavior1, IBehavior behavior2, IGameContext context, int trials, bool parallel = true)
+        public delegate void Callback(GameOutcome result);
+        public static void simulateGames(IBehavior behavior1, IBehavior behavior2, IGameContext context, int simulations, bool parallel, bool alternate, Callback callback, CancellationToken interrupt)
         {
-            if (trials % 2 == 1) {
-                trials++;
-            }
-
-            double[] scores = new double[trials];
-
             if (parallel) {
-                Parallel.For(0, trials, i => {
-                    if (i % 2 == 0) {
-                        //behavior1 goes first
-                        scores[i] = getGameScore(behavior1.clone(), behavior2.clone(), context.clone(), GameOutcome.WIN);
+                Parallel.For(0, simulations, (i, loopState) => {
+                    IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
+                    IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
+                    GameOutcome result = context.simulate(player1, player2, interrupt);
+                    if (interrupt.IsCancellationRequested) {
+                        loopState.Stop();
                     } else {
-                        //behavior1 goes second
-                        scores[i] = getGameScore(behavior2.clone(), behavior1.clone(), context.clone(), GameOutcome.LOSS);
+                        callback.Invoke(result);
                     }
+                    
                 });
             } else {
-                for (int i = 0; i < trials; i++) {
-                    if (i % 2 == 0) {
-                        //behavior1 goes first
-                        scores[i] = getGameScore(behavior1.clone(), behavior2.clone(), context.clone(), GameOutcome.WIN);
-                    } else {
-                        //behavior1 goes second
-                        scores[i] = getGameScore(behavior2.clone(), behavior1.clone(), context.clone(), GameOutcome.LOSS);
+                for (int i = 0; i < simulations; i++) {
+                    IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
+                    IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
+                    GameOutcome result = context.simulate(player1, player2, interrupt);
+                    if (interrupt.IsCancellationRequested) {
+                        break;
                     }
+                    callback.Invoke(result);
                 }
             }
-
-            return scores.Average();
         }
 
-        private static double getGameScore(IBehavior behavior1, IBehavior behavior2, IGameContext context, GameOutcome desiredOutcome)
+        private static object getPlayerLock = new object();
+        private static IBehavior getPlayer(Player role, IBehavior player1, IBehavior player2, int simulationNum, bool alternate)
         {
-            GameOutcome result = context.simulate(behavior1, behavior2);
-            if (result == desiredOutcome) {
-                return 1.0;
-            } else if (result == GameOutcome.TIE) {
-                return 0.5;
-            } else {
-                return 0.0;
+            lock (getPlayerLock) {
+                if (role == Player.ONE) {
+                    if (!alternate || simulationNum % 2 == 0) {
+                        return player1;
+                    } else {
+                        return player2;
+                    }
+                } else if (role == Player.TWO) {
+                    if (!alternate || simulationNum % 2 == 1) {
+                        return player2;
+                    } else {
+                        return player1;
+                    }
+                } else {
+                    throw new ArgumentException("Role should either be Player.ONE or Player.TWO");
+                }
             }
         }
     }

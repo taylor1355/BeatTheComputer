@@ -195,7 +195,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "MCTSSettings";
-            this.Text = "Settings";
+            this.Text = "AI Settings";
             this.Load += new System.EventHandler(this.MCTSSettings_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

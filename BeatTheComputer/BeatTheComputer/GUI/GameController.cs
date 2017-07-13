@@ -1,73 +1,144 @@
 ﻿using BeatTheComputer.AI;
-using BeatTheComputer.Shared;
+using BeatTheComputer.Core;
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BeatTheComputer.GUI
 {
     public class GameController
     {
-        public delegate void UpdateView(IGameContext context);
+        private List<GameSnapshot> history;
+        private int current;
+        private GameSnapshot next;
 
-        IGameContext context;
-        IBehavior player1;
-        IBehavior player2;
-        UpdateView updateViewMethod;
+        public delegate void UpdateView();
+        private UpdateView updateViewMethod;
 
-        Player turn;
-        IAction lastAction;
-        CancellationTokenSource interruptSource;
+        private Player turn;
+        private bool paused;
+        private IAction pendingAction;
+        private CancellationTokenSource interruptSource;
 
         public GameController(IGameContext context, IBehavior player1, IBehavior player2)
         {
-            this.context = context;
-            this.player1 = player1;
-            this.player2 = player2;
+            history = new List<GameSnapshot>();
+            history.Add(new GameSnapshot(context, player1, player2, null));
+            current = 0;
+            next = null;
+
             updateViewMethod = null;
 
             turn = Player.ONE;
-            lastAction = null;
+            paused = false;
             interruptSource = new CancellationTokenSource();
         }
 
         public void stop()
         {
             turn = Player.NONE;
-            context = null;
-            player1 = null;
-            player2 = null;
+            history = null;
             updateViewMethod = null;
-            lastAction = null;
             interruptSource.Cancel();
         }
 
-        private void executeAction(IAction action)
+        public void togglePause()
         {
-            if (turn != Player.NONE) {
-                turn = Player.NONE;
-                context.applyAction(action);
-                lastAction = action;
-                updateViewMethod(context);
-                if (!context.GameDecided) {
-                    turn = context.ActivePlayer;
+            paused = !paused;
+            if (!paused) {
+                if (pendingAction != null) {
+                    tryExecuteAction(pendingAction);
+                    pendingAction = null;
+                }
+
+                updateViewMethod();
+                if (!history[current].Context.GameDecided) {
+                    turn = history[current].Context.ActivePlayer;
                     tryComputerTurn();
                 }
             }
         }
 
+        private void tryExecuteAction(IAction action)
+        {
+            if (turn != Player.NONE && !interruptSource.IsCancellationRequested && action != null && action.isValid(history[current].Context) && !paused) {
+                turn = Player.NONE;
+                history.RemoveRange(current + 1, history.Count - (current + 1));
+                history.Add(next);
+                current++;
+                history[current].Context.applyAction(action);
+                history[current].LastAction = action;
+                updateViewMethod();
+                if (!history[current].Context.GameDecided) {
+                    turn = history[current].Context.ActivePlayer;
+                    tryComputerTurn();
+                }
+            } else if (paused) {
+                pendingAction = action;
+            }
+        }
+
         public async void tryComputerTurn()
         {
-            if (!isHumansTurn() && turn != Player.NONE) {
-                executeAction(await Task.Run(() => behaviorOf(turn).requestAction(context, lastAction, interruptSource.Token)));
+            if (!isHumansTurn() && turn != Player.NONE && !paused) {
+                next = history[current].clone();
+                tryExecuteAction(await Task.Run(() => behaviorOf(turn, next).requestAction(next.Context, next.LastAction, interruptSource.Token)));
             }
         }
 
         public void tryHumanTurn(IAction action)
         {
-            if (isHumansTurn() && action.isValid(context)) {
-                executeAction(action);
+            if (isHumansTurn() && action.isValid(history[current].Context) && !paused) {
+                next = history[current].clone();
+                tryExecuteAction(action);
             }
+        }
+
+        public void undo()
+        {
+            if (canUndo()) {
+                turn = Player.NONE;
+                interruptSource.Cancel();
+                pendingAction = null;
+                current--;
+                turn = history[current].Context.ActivePlayer;
+                interruptSource = new CancellationTokenSource();
+                updateViewMethod();
+                tryComputerTurn();
+            } else {
+                throw new InvalidOperationException("Can't undo");
+            }
+        }
+
+        public bool canUndo()
+        {
+            return current > 0;
+        }
+
+        public void redo()
+        {
+            if (canRedo()) {
+                turn = Player.NONE;
+                interruptSource.Cancel();
+                pendingAction = null;
+                current++;
+                if (!history[current].Context.GameDecided) {
+                    turn = history[current].Context.ActivePlayer;
+                }
+                interruptSource = new CancellationTokenSource();
+                updateViewMethod();
+                tryComputerTurn();
+                
+            } else {
+                throw new InvalidOperationException("Can't redo");
+            }
+        }
+
+        public bool canRedo()
+        {
+            return current < history.Count - 1;
         }
 
         public void setUpdateViewMethod(UpdateView updateViewMethod)
@@ -77,29 +148,33 @@ namespace BeatTheComputer.GUI
 
         private bool isHuman(IBehavior player) { return player != null && player.GetType() == typeof(DummyBehavior); }
 
-        public bool isHumansTurn() { return isHuman(behaviorOf(turn)); }
+        public bool isHumansTurn() { return isHuman(behaviorOf(turn, history[current])); }
 
-        private IBehavior behaviorOf(Player player)
+        private IBehavior behaviorOf(Player player, GameSnapshot game)
         {
             if (player == Player.ONE) {
-                return player1;
+                return game.Player1;
             } else if (player == Player.TWO) {
-                return player2;
+                return game.Player2;
             } else {
                 return null;
             }
         }
 
         public IGameContext Context {
-            get { return context; }
+            get { return history[current].Context; }
         }
 
         public IAction LastAction {
-            get { return lastAction; }
+            get { return history[current].LastAction; }
         }
 
         public Player Turn {
             get { return turn; }
+        }
+
+        public bool Paused {
+            get { return paused; }
         }
     }
 }
