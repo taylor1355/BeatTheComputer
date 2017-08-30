@@ -6,6 +6,7 @@ namespace BeatTheComputer.GUI
     {
         public ToolStripMenuItem FileMenuItem { get; private set; }
         public ToolStripMenuItem SaveGameMenuItem { get; private set; }
+        public ToolStripMenuItem LoadGameMenuItem { get; private set; }
         public ToolStripMenuItem ExitMenuItem { get; private set; }
 
         //public ToolStripMenuItem ViewMenuItem { get; private set; }
@@ -27,7 +28,8 @@ namespace BeatTheComputer.GUI
 
             // Initializations
             FileMenuItem = new ToolStripMenuItem("File");
-            SaveGameMenuItem = new ToolStripMenuItem("Save");
+            SaveGameMenuItem = new ToolStripMenuItem("Save Game");
+            LoadGameMenuItem = new ToolStripMenuItem("Load Game");
             ExitMenuItem = new ToolStripMenuItem("Exit");
 
             EditMenuItem = new ToolStripMenuItem("Edit");
@@ -43,6 +45,7 @@ namespace BeatTheComputer.GUI
             Items.Add(EditMenuItem);
 
             FileMenuItem.DropDownItems.Add(SaveGameMenuItem);
+            FileMenuItem.DropDownItems.Add(LoadGameMenuItem);
             FileMenuItem.DropDownItems.Add(ExitMenuItem);
 
             EditMenuItem.DropDownItems.Add(UndoMenuItem);

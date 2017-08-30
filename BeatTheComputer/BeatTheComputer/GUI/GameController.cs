@@ -136,15 +136,11 @@ namespace BeatTheComputer.GUI
                 interruptSource.Cancel();
                 pendingAction = null;
                 current++;
-<<<<<<< HEAD
-                turn = history[current].Context.ActivePlayer;
-                player1 = player1Template.clone();
-                player2 = player2Template.clone();
-=======
                 if (!history[current].Context.GameDecided) {
                     turn = history[current].Context.ActivePlayer;
                 }
->>>>>>> 7c810e98b5575a05bdb74d5ab854c099a52041cd
+                player1 = player1Template.clone();
+                player2 = player2Template.clone();
                 interruptSource = new CancellationTokenSource();
                 updateViewMethod();
                 tryComputerTurn();
