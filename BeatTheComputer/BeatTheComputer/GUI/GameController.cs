@@ -71,8 +71,8 @@ namespace BeatTheComputer.GUI
                 history[current].Context.applyAction(action);
                 history[current].LastAction = action;
                 updateViewMethod();
+                turn = history[current].Context.ActivePlayer;
                 if (!history[current].Context.GameDecided) {
-                    turn = history[current].Context.ActivePlayer;
                     tryComputerTurn();
                 }
             } else if (paused) {
@@ -124,9 +124,7 @@ namespace BeatTheComputer.GUI
                 interruptSource.Cancel();
                 pendingAction = null;
                 current++;
-                if (!history[current].Context.GameDecided) {
-                    turn = history[current].Context.ActivePlayer;
-                }
+                turn = history[current].Context.ActivePlayer;
                 interruptSource = new CancellationTokenSource();
                 updateViewMethod();
                 tryComputerTurn();
