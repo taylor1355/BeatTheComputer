@@ -63,10 +63,6 @@ namespace BeatTheComputer.ConnectFour
                 if (moves >= 7) {
                     winner = board.currentWinner();
                 }
-
-                if (GameDecided) {
-                    activePlayer = Player.NONE;
-                }
             }
 
             return this;

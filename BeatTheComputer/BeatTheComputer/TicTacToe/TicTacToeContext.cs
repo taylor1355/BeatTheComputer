@@ -51,10 +51,6 @@ namespace BeatTheComputer.TicTacToe
                 if (moves >= 5) {
                     winner = getWinner();
                 }
-
-                if (GameDecided) {
-                    activePlayer = Player.NONE;
-                }
             }
 
             return this;

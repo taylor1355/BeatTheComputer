@@ -69,9 +69,6 @@ namespace BeatTheComputer.Checkers
                 moves++;
 
                 winner = board.currentWinner(activePlayer);
-                if (GameDecided) {
-                    activePlayer = Player.NONE;
-                }
             }
 
             return this;
