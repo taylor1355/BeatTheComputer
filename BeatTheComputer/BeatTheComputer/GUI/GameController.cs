@@ -14,6 +14,11 @@ namespace BeatTheComputer.GUI
         private int current;
         private GameSnapshot next;
 
+        private IBehavior player1;
+        private IBehavior player2;
+        private IBehavior player1Template;
+        private IBehavior player2Template;
+
         public delegate void UpdateView();
         private UpdateView updateViewMethod;
 
@@ -25,9 +30,14 @@ namespace BeatTheComputer.GUI
         public GameController(IGameContext context, IBehavior player1, IBehavior player2)
         {
             history = new List<GameSnapshot>();
-            history.Add(new GameSnapshot(context, player1, player2, null));
+            history.Add(new GameSnapshot(context, null));
             current = 0;
             next = null;
+
+            this.player1 = player1;
+            this.player2 = player2;
+            player1Template = player1.clone();
+            player2Template = player2.clone();
 
             updateViewMethod = null;
 
@@ -84,7 +94,16 @@ namespace BeatTheComputer.GUI
         {
             if (!isHumansTurn() && turn != Player.NONE && !paused) {
                 next = history[current].clone();
-                tryExecuteAction(await Task.Run(() => behaviorOf(turn, next).requestAction(next.Context, next.LastAction, interruptSource.Token)));
+                IAction action = await Task.Run(() => {
+                    try {
+                        return behaviorOf(turn, next).requestAction(next.Context, next.LastAction, interruptSource.Token);
+                    } catch (OperationCanceledException) {
+                        return null;
+                    }
+                });
+                if (action != null) {
+                    tryExecuteAction(action);
+                }
             }
         }
 
@@ -104,6 +123,8 @@ namespace BeatTheComputer.GUI
                 pendingAction = null;
                 current--;
                 turn = history[current].Context.ActivePlayer;
+                player1 = player1Template.clone();
+                player2 = player2Template.clone();
                 interruptSource = new CancellationTokenSource();
                 updateViewMethod();
                 tryComputerTurn();
@@ -127,6 +148,8 @@ namespace BeatTheComputer.GUI
                 if (!history[current].Context.GameDecided) {
                     turn = history[current].Context.ActivePlayer;
                 }
+                player1 = player1Template.clone();
+                player2 = player2Template.clone();
                 interruptSource = new CancellationTokenSource();
                 updateViewMethod();
                 tryComputerTurn();
@@ -153,9 +176,9 @@ namespace BeatTheComputer.GUI
         private IBehavior behaviorOf(Player player, GameSnapshot game)
         {
             if (player == Player.ONE) {
-                return game.Player1;
+                return player1;
             } else if (player == Player.TWO) {
-                return game.Player2;
+                return player2;
             } else {
                 return null;
             }

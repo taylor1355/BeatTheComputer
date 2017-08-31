@@ -49,7 +49,8 @@ namespace BeatTheComputer.AI.MCTS
             while (root.Visits < 1 || (timer.ElapsedMilliseconds < maxTime && root.Visits < maxRollouts && !interrupt.IsCancellationRequested)) {
                 root.step(rootContext, threads);
             };
-            if (interrupt.IsCancellationRequested) return null;
+            interrupt.ThrowIfCancellationRequested();
+
             return root.getActionScores();
         }
 
