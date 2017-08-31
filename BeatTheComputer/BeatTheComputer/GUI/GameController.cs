@@ -94,7 +94,16 @@ namespace BeatTheComputer.GUI
         {
             if (!isHumansTurn() && turn != Player.NONE && !paused) {
                 next = history[current].clone();
-                tryExecuteAction(await Task.Run(() => behaviorOf(turn, next).requestAction(next.Context, next.LastAction, interruptSource.Token)));
+                IAction action = await Task.Run(() => {
+                    try {
+                        return behaviorOf(turn, next).requestAction(next.Context, next.LastAction, interruptSource.Token);
+                    } catch (OperationCanceledException) {
+                        return null;
+                    }
+                });
+                if (action != null) {
+                    tryExecuteAction(action);
+                }
             }
         }
 

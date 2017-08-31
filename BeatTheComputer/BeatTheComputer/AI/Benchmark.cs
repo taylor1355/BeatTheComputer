@@ -15,11 +15,15 @@ namespace BeatTheComputer.AI
                 Parallel.For(0, simulations, (i, loopState) => {
                     IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
                     IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
-                    GameOutcome result = context.simulate(player1, player2, interrupt);
-                    if (interrupt.IsCancellationRequested) {
+                    try {
+                        GameOutcome result = context.simulate(player1, player2, interrupt);
+                        if (interrupt.IsCancellationRequested) {
+                            loopState.Stop();
+                        } else {
+                            callback.Invoke(result);
+                        }
+                    } catch (OperationCanceledException) {
                         loopState.Stop();
-                    } else {
-                        callback.Invoke(result);
                     }
                     
                 });
@@ -27,11 +31,15 @@ namespace BeatTheComputer.AI
                 for (int i = 0; i < simulations; i++) {
                     IBehavior player1 = getPlayer(Player.ONE, behavior1, behavior2, i, alternate).clone();
                     IBehavior player2 = getPlayer(Player.TWO, behavior1, behavior2, i, alternate).clone();
-                    GameOutcome result = context.simulate(player1, player2, interrupt);
-                    if (interrupt.IsCancellationRequested) {
+                    try {
+                        GameOutcome result = context.simulate(player1, player2, interrupt);
+                        if (interrupt.IsCancellationRequested) {
+                            break;
+                        }
+                        callback.Invoke(result);
+                    } catch (OperationCanceledException) {
                         break;
                     }
-                    callback.Invoke(result);
                 }
             }
         }
