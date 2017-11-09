@@ -9,18 +9,38 @@ namespace BeatTheComputer.TicTacToe
     class TicTacToeContext : GameContext
     {
         private Player[,] board;
+        private int inARow;
 
-        public TicTacToeContext()
+        public TicTacToeContext(int rows, int cols, int inARow)
         {
-            board = new Player[3, 3];
-            for (int row = 0; row < board.GetLength(0); row++) {
-                for (int col = 0; col < board.GetLength(1); col++) {
+            validateArguments(rows, cols, inARow);
+
+            board = new Player[rows, cols];
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
                     board[row, col] = Player.NONE;
                 }
             }
+            this.inARow = inARow;
             activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
+        }
+
+        private void validateArguments(int rows, int cols, int inARow)
+        {
+            if (rows < 1) {
+                throw new ArgumentException("Must have at least 1 row", "rows");
+            }
+            if (cols < 1) {
+                throw new ArgumentException("Must have at least 1 column", "cols");
+            }
+            if (inARow < 1) {
+                throw new ArgumentException("Must need at least 1 in a row to win", "inARow");
+            }
+            if (inARow > Math.Max(rows, cols)) {
+                throw new ArgumentException("X in a row to win cannot exceed both rows and columns", "inARow");
+            }
         }
 
         public override IList<IAction> getValidActions()
@@ -48,35 +68,33 @@ namespace BeatTheComputer.TicTacToe
                 setPlayer(tttAction.Position, tttAction.Player);
                 activePlayer = activePlayer.Opponent;
                 moves++;
-                if (moves >= 5) {
-                    winner = getWinner();
+                if (moves >= 2 * inARow - 1) {
+                    winner = getWinner(tttAction.Position);
                 }
             }
 
             return this;
         }
 
-        private Player getWinner()
+        private Player getWinner(Position changed)
         {
-            for (int i = 0; i < board.GetLength(0); i++) {
-                if (BoardUtils.rowCount(board, Player.ONE, i) == Rows) {
-                    return Player.ONE;
-                } else if (BoardUtils.rowCount(board, Player.TWO, i) == Rows) {
-                    return Player.TWO;
+            foreach (Position dir in Position.POSITIVE_DIRECTIONS) {
+                int count = 1;
+
+                Position curr = changed + dir;
+                while (curr.inBounds(Rows, Cols) && playerAt(curr) == playerAt(changed)) {
+                    count++;
+                    curr += dir;
                 }
 
-                if (BoardUtils.colCount(board, Player.ONE, i) == Rows) {
-                    return Player.ONE;
-                } else if (BoardUtils.colCount(board, Player.TWO, i) == Rows) {
-                    return Player.TWO;
+                curr = changed - dir;
+                while (curr.inBounds(Rows, Cols) && playerAt(curr) == playerAt(changed)) {
+                    count++;
+                    curr -= dir;
                 }
 
-                if (i <= 1) {
-                    if (BoardUtils.diagonalCount(board, Player.ONE, i) == Rows) {
-                        return Player.ONE;
-                    } else if (BoardUtils.diagonalCount(board, Player.TWO, i) == Rows) {
-                        return Player.TWO;
-                    }
+                if (count >= inARow) {
+                    return playerAt(changed);
                 }
             }
             return Player.NONE;
@@ -84,7 +102,7 @@ namespace BeatTheComputer.TicTacToe
 
         public override double heuristicEval()
         {
-            const double WEIGHT_SUM = 12;
+            /*const double WEIGHT_SUM = 12;
             double eval = 0.5;
             for (int row = 0; row < Rows; row++) {
                 for (int col = 0; col < Cols; col++) {
@@ -95,16 +113,17 @@ namespace BeatTheComputer.TicTacToe
                     }
                 }
             }
-            return eval;
+            return eval;*/
+            throw new NotImplementedException();
         }
 
-        public double squareWeight(int row, int col)
+        /*public double squareWeight(int row, int col)
         {
             double weight = 0;
             if (row + col == 2) weight++;
             if (row == col) weight++;
             return weight;
-        }
+        }*/
 
         public override bool GameDecided { get { return winner != Player.NONE || moves >= board.Length; } }
 
@@ -125,8 +144,8 @@ namespace BeatTheComputer.TicTacToe
                 return false;
             }
 
-            for (int row = 0; row < board.GetLength(0); row++) {
-                for (int col = 0; col < board.GetLength(1); col++) {
+            for (int row = 0; row < Rows; row++) {
+                for (int col = 0; col < Cols; col++) {
                     if (board[row, col] != other.board[row, col]) return false;
                 }
             }
@@ -141,7 +160,7 @@ namespace BeatTheComputer.TicTacToe
 
         public override IGameContext clone()
         {
-            TicTacToeContext clone = new TicTacToeContext();
+            TicTacToeContext clone = new TicTacToeContext(Rows, Cols, inARow);
             clone.board = (Player[,]) board.Clone();
             clone.activePlayer = activePlayer;
             clone.winner = winner;
@@ -155,6 +174,10 @@ namespace BeatTheComputer.TicTacToe
 
         public int Cols {
             get { return board.GetLength(1); }
+        }
+
+        public int InARow {
+            get { return inARow; }
         }
     }
 }

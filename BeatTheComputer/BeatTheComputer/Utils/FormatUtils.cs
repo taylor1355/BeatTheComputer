@@ -17,7 +17,7 @@ namespace BeatTheComputer.Utils
             } else if (time.TotalSeconds < 60) {
                 return time.TotalSeconds.ToString("0.0") + " s";
             } else if (time.TotalMinutes < 60) {
-                return time.Minutes + " m : " + time.Seconds.ToString("00") + "s";
+                return time.Minutes + " m : " + time.Seconds.ToString("00") + " s";
             } else {
                 return time.Hours.ToString("N0") + " hr : " + time.Minutes.ToString("00") + " m : " + time.Seconds.ToString("00") + " s";
             }
