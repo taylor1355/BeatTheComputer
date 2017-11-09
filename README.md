@@ -1,5 +1,5 @@
 # BeatTheComputer
-A general game playing application with AI players that can play the included games against a human or other AIs
+A general game playing application with AI players that can play the included games against a human or another AI
 
 Games implemented: Tic Tac Toe, Connect Four, and Checkers
 
