@@ -38,6 +38,7 @@ namespace BeatTheComputer.GUI
             gameToViewTypes.Add(typeof(CheckersContext), typeof(CheckersView));
 
             gameToSettingTypes = new Dictionary<Type, Type>();
+            gameToSettingTypes.Add(typeof(TicTacToeContext), typeof(TicTacToeSettings));
             gameToSettingTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourSettings));
             gameToSettingTypes.Add(typeof(CheckersContext), typeof(CheckersSettings));
 
@@ -158,7 +159,7 @@ namespace BeatTheComputer.GUI
         private object[] defaultGamesList()
         {
             List<IGameContext> gamesList = new List<IGameContext>();
-            gamesList.Add(new TicTacToeContext());
+            gamesList.Add(new TicTacToeContext(3, 3, 3));
             gamesList.Add(new ConnectFourContext(6, 7));
             gamesList.Add(new CheckersContext(8, 8, 3, 150));
             return gamesList.ToArray();
