@@ -3,6 +3,7 @@ using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
 using BeatTheComputer.AI.Minimax;
 using BeatTheComputer.TicTacToe;
+using BeatTheComputer.StratTicTacToe;
 using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
@@ -34,6 +35,7 @@ namespace BeatTheComputer.GUI
 
             gameToViewTypes = new Dictionary<Type, Type>();
             gameToViewTypes.Add(typeof(TicTacToeContext), typeof(TicTacToeView));
+            gameToViewTypes.Add(typeof(StratContext), typeof(StratView));
             gameToViewTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourView));
             gameToViewTypes.Add(typeof(CheckersContext), typeof(CheckersView));
 
@@ -160,6 +162,7 @@ namespace BeatTheComputer.GUI
         {
             List<IGameContext> gamesList = new List<IGameContext>();
             gamesList.Add(new TicTacToeContext(3, 3, 3));
+            gamesList.Add(new StratContext());
             gamesList.Add(new ConnectFourContext(6, 7));
             gamesList.Add(new CheckersContext(8, 8, 3, 150));
             return gamesList.ToArray();
