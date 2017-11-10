@@ -102,12 +102,37 @@ namespace BeatTheComputer.GUI
             p2WinsLbl.Text = "Player 2 Wins: " + FormatUtils.humanReadableNumber(p2Wins);
             tiesLbl.Text = "Ties: " + FormatUtils.humanReadableNumber(ties);
 
-            progressBar.Value = completedSimulations;
+            SetProgressNoAnimation(progressBar, completedSimulations);
 
             timeElapsedLbl.Text = "Time Elapsed: " + FormatUtils.humanReadableTime(stopwatch.Elapsed);
 
             TimeSpan timePerSimulation = TimeSpan.FromTicks(stopwatch.Elapsed.Ticks / Math.Min(completedSimulations + 1, totalSimulations));
             simulationTimeLbl.Text = "Time Per Simulation: " + FormatUtils.humanReadableTime(timePerSimulation);
+
+            if (completedSimulations == totalSimulations) {
+                cancelBtn.Text = "Close";
+            }
+        }
+
+        // credit to https://derekwill.com/2014/06/24/combating-the-lag-of-the-winforms-progressbar/
+        /// <summary>
+        /// Sets the progress bar value, without using 'Windows Aero' animation.
+        /// This is to work around a known WinForms issue where the progress bar 
+        /// is slow to update. 
+        /// </summary>
+        public static void SetProgressNoAnimation(ProgressBar pb, int value)
+        {
+            // To get around the progressive animation, we need to move the 
+            // progress bar backwards.
+            if (value == pb.Maximum) {
+                // Special case as value can't be set greater than Maximum.
+                pb.Maximum = value + 1;     // Temporarily Increase Maximum
+                pb.Value = value + 1;       // Move past
+                pb.Maximum = value;         // Reset maximum
+            } else {
+                pb.Value = value + 1;       // Move past
+            }
+            pb.Value = value;               // Move to correct value
         }
     }
 }

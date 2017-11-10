@@ -66,18 +66,23 @@ namespace BeatTheComputer.GUI
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player1 = (IBehavior) p1List.SelectedItem;
+            p1Settings.Enabled = behaviorToSettingTypes.ContainsKey(player1.GetType());
+            runSimulations.Enabled = !(player1 is DummyBehavior || player2 is DummyBehavior);
             updateSimSetup();
         }
 
         private void p2List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player2 = (IBehavior) p2List.SelectedItem;
+            p2Settings.Enabled = behaviorToSettingTypes.ContainsKey(player2.GetType());
+            runSimulations.Enabled = !(player1 is DummyBehavior || player2 is DummyBehavior);
             updateSimSetup();
         }
 
         private void gameList_SelectedIndexChanged(object sender, EventArgs e)
         {
             game = (IGameContext) gameList.SelectedItem;
+            gameSettings.Enabled = gameToSettingTypes.ContainsKey(game.GetType());
             updateSimSetup();
         }
 
