@@ -3,6 +3,7 @@ using BeatTheComputer.AI;
 using BeatTheComputer.AI.MCTS;
 using BeatTheComputer.AI.Minimax;
 using BeatTheComputer.TicTacToe;
+using BeatTheComputer.StratTicTacToe;
 using BeatTheComputer.ConnectFour;
 using BeatTheComputer.Checkers;
 
@@ -34,6 +35,7 @@ namespace BeatTheComputer.GUI
 
             gameToViewTypes = new Dictionary<Type, Type>();
             gameToViewTypes.Add(typeof(TicTacToeContext), typeof(TicTacToeView));
+            gameToViewTypes.Add(typeof(StratContext), typeof(StratView));
             gameToViewTypes.Add(typeof(ConnectFourContext), typeof(ConnectFourView));
             gameToViewTypes.Add(typeof(CheckersContext), typeof(CheckersView));
 
@@ -64,18 +66,23 @@ namespace BeatTheComputer.GUI
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player1 = (IBehavior) p1List.SelectedItem;
+            p1Settings.Enabled = behaviorToSettingTypes.ContainsKey(player1.GetType());
+            runSimulations.Enabled = !(player1 is DummyBehavior || player2 is DummyBehavior);
             updateSimSetup();
         }
 
         private void p2List_SelectedIndexChanged(object sender, EventArgs e)
         {
             player2 = (IBehavior) p2List.SelectedItem;
+            p2Settings.Enabled = behaviorToSettingTypes.ContainsKey(player2.GetType());
+            runSimulations.Enabled = !(player1 is DummyBehavior || player2 is DummyBehavior);
             updateSimSetup();
         }
 
         private void gameList_SelectedIndexChanged(object sender, EventArgs e)
         {
             game = (IGameContext) gameList.SelectedItem;
+            gameSettings.Enabled = gameToSettingTypes.ContainsKey(game.GetType());
             updateSimSetup();
         }
 
@@ -160,6 +167,7 @@ namespace BeatTheComputer.GUI
         {
             List<IGameContext> gamesList = new List<IGameContext>();
             gamesList.Add(new TicTacToeContext(3, 3, 3));
+            gamesList.Add(new StratContext());
             gamesList.Add(new ConnectFourContext(6, 7));
             gamesList.Add(new CheckersContext(8, 8, 3, 150));
             return gamesList.ToArray();

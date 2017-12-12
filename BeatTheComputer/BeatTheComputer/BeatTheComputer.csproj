@@ -121,6 +121,9 @@
     <Compile Include="GUI\TicTacToeSettings.Designer.cs">
       <DependentUpon>TicTacToeSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="StratTicTacToe\StratAction.cs" />
+    <Compile Include="StratTicTacToe\StratContext.cs" />
+    <Compile Include="StratTicTacToe\StratView.cs" />
     <Compile Include="TicTacToe\TicTacToeView.cs" />
     <Compile Include="Utils\BitUtils.cs" />
     <Compile Include="Utils\FormatUtils.cs" />
