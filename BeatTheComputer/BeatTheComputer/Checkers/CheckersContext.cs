@@ -109,6 +109,27 @@ namespace BeatTheComputer.Checkers
             //return 1.0 + Math.Ceiling(Math.Max(rowDist, colDist)) / Math.Ceiling(Math.Max(Rows / 2.0, Cols / 2.0));
         }
 
+        public override double[] featurize()
+        {
+            double[] features = new double[board.Rows * board.Cols];
+            for (int row = 0; row < board.Rows; row++) {
+                for (int col = 0; col < board.Cols; col++) {
+                    double value = 0;
+                    if (board[row, col].Player != Player.NONE) {
+                        value = 0.5;
+                    }
+                    if (board[row, col].Promoted) {
+                        value *= 2;
+                    }
+                    if (board[row, col].Player == Player.TWO) {
+                        value *= -1;
+                    }
+                    features[row * board.Cols + col] = value;
+                }
+            }
+            return features;
+        }
+
         public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }
 
         public override bool equalTo(object obj)

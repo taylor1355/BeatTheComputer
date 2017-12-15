@@ -171,6 +171,27 @@ namespace BeatTheComputer.StratTicTacToe
             throw new NotImplementedException();
         }
 
+        public override double[] featurize()
+        {
+            double[] features = new double[Rows * Cols * Rows * Cols];
+            for (int superRow = 0; superRow < Rows; superRow++) {
+                for (int superCol = 0; superCol < Cols; superCol++) {
+                    for (int row = 0; row < Rows; row++) {
+                        for (int col = 0; col < Cols; col++) {
+                            double value = 0;
+                            if (wins[superRow, superCol] == Player.ONE || board[superRow, superCol][row, col] == Player.ONE) {
+                                value = 1;
+                            } else if (wins[superRow, superCol] == Player.TWO || board[superRow, superCol][row, col] == Player.TWO) {
+                                value = -1;
+                            }
+                            features[superRow * Cols * Rows * Cols + superCol * Rows * Cols + row * Cols + col] = value;
+                        }
+                    }
+                }
+            }
+            return features;
+        }
+
         public override bool GameDecided { get { return winner != Player.NONE || getValidActions().Count == 0; } }
 
         public bool didTie()

@@ -44,6 +44,8 @@ namespace BeatTheComputer.Core
 
         public abstract double heuristicEval();
 
+        public abstract double[] featurize();
+
         public abstract bool GameDecided { get; }
 
         public GameOutcome GameOutcome {

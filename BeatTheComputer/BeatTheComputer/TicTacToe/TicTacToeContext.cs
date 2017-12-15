@@ -125,6 +125,23 @@ namespace BeatTheComputer.TicTacToe
             return weight;
         }*/
 
+        public override double[] featurize()
+        {
+            double[] features = new double[Rows * Cols];
+            for (int row = 0; row < Rows; row++) {
+                for (int col = 0; col < Cols; col++) {
+                    double value = 0;
+                    if (board[row, col] == Player.ONE) {
+                        value = 1;
+                    } else if (board[row, col] == Player.TWO) {
+                        value = -1;
+                    }
+                    features[row * Cols + col] = value;
+                }
+            }
+            return features;
+        }
+
         public override bool GameDecided { get { return winner != Player.NONE || moves >= board.Length; } }
 
         private void setPlayer(Position pos, Player player)
