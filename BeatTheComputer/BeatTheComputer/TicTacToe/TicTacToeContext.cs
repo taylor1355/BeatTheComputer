@@ -9,11 +9,11 @@ namespace BeatTheComputer.TicTacToe
     class TicTacToeContext : GameContext
     {
         private Player[,] board;
-        private int inARow;
+        private TicTacToeSettings settings;
 
         public TicTacToeContext(int rows, int cols, int inARow)
         {
-            validateArguments(rows, cols, inARow);
+            settings = new TicTacToeSettings(rows, cols, inARow);
 
             board = new Player[rows, cols];
             for (int row = 0; row < rows; row++) {
@@ -21,27 +21,12 @@ namespace BeatTheComputer.TicTacToe
                     board[row, col] = Player.NONE;
                 }
             }
-            this.inARow = inARow;
             activePlayer = Player.ONE;
             winner = Player.NONE;
             moves = 0;
         }
 
-        private void validateArguments(int rows, int cols, int inARow)
-        {
-            if (rows < 1) {
-                throw new ArgumentException("Must have at least 1 row", "rows");
-            }
-            if (cols < 1) {
-                throw new ArgumentException("Must have at least 1 column", "cols");
-            }
-            if (inARow < 1) {
-                throw new ArgumentException("Must need at least 1 in a row to win", "inARow");
-            }
-            if (inARow > Math.Max(rows, cols)) {
-                throw new ArgumentException("X in a row to win cannot exceed both rows and columns", "inARow");
-            }
-        }
+        public TicTacToeContext(TicTacToeSettings settings) : this(settings.Rows, settings.Cols, settings.InARow) { }
 
         public override IList<IAction> getValidActions()
         {
@@ -68,7 +53,7 @@ namespace BeatTheComputer.TicTacToe
                 setPlayer(tttAction.Position, tttAction.Player);
                 activePlayer = activePlayer.Opponent;
                 moves++;
-                if (moves >= 2 * inARow - 1) {
+                if (moves >= 2 * settings.InARow - 1) {
                     winner = getWinner(tttAction.Position);
                 }
             }
@@ -93,7 +78,7 @@ namespace BeatTheComputer.TicTacToe
                     curr -= dir;
                 }
 
-                if (count >= inARow) {
+                if (count >= settings.InARow) {
                     return playerAt(changed);
                 }
             }
@@ -177,7 +162,7 @@ namespace BeatTheComputer.TicTacToe
 
         public override IGameContext clone()
         {
-            TicTacToeContext clone = new TicTacToeContext(Rows, Cols, inARow);
+            TicTacToeContext clone = new TicTacToeContext(settings);
             clone.board = (Player[,]) board.Clone();
             clone.activePlayer = activePlayer;
             clone.winner = winner;
@@ -194,7 +179,7 @@ namespace BeatTheComputer.TicTacToe
         }
 
         public int InARow {
-            get { return inARow; }
+            get { return settings.InARow; }
         }
     }
 }

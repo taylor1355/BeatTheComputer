@@ -8,10 +8,11 @@ namespace BeatTheComputer.ConnectFour
     class ConnectFourContext : GameContext
     {
         private ConnectFourBoard board;
+        private ConnectFourSettings settings;
 
         public ConnectFourContext(int rows, int cols)
         {
-            validateArguments(rows, cols);
+            settings = new ConnectFourSettings(rows, cols);
 
             if (ConnectFourBitboard.fits(rows, cols)) {
                 board = new ConnectFourBitboard(rows, cols);
@@ -24,17 +25,9 @@ namespace BeatTheComputer.ConnectFour
             moves = 0;
         }
 
-        private ConnectFourContext() { }
+        public ConnectFourContext(ConnectFourSettings settings) : this(settings.Rows, settings.Cols) { }
 
-        private void validateArguments(int rows, int cols)
-        {
-            if (rows < 1) {
-                throw new ArgumentException("Must have at least 1 row", "rows");
-            }
-            if (cols < 1) {
-                throw new ArgumentException("Must have at least 1 column", "cols");
-            }
-        }
+        private ConnectFourContext() { }
 
         public override IList<IAction> getValidActions()
         {

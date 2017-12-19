@@ -100,6 +100,7 @@
             this.Controls.Add(this.rowsField);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
+            this.MaximizeBox = false;
             this.Name = "ConnectFourSettings";
             this.Text = "Game Settings";
             this.Load += new System.EventHandler(this.ConnectFourSettings_Load);

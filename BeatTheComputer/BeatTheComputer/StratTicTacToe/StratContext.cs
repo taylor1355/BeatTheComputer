@@ -1,5 +1,4 @@
-﻿
-using BeatTheComputer.Core;
+﻿using BeatTheComputer.Core;
 using BeatTheComputer.Utils;
 
 using System;
@@ -15,8 +14,12 @@ namespace BeatTheComputer.StratTicTacToe
         private int prevRowPlayed;
         private int prevColPlayed;
 
+        private StratSettings settings;
+
         public StratContext()
         {
+            settings = new StratSettings();
+
             int rows = 3;
             int cols = 3;
             moves = 0;
@@ -38,8 +41,9 @@ namespace BeatTheComputer.StratTicTacToe
             }
             activePlayer = Player.ONE;
             winner = Player.NONE;
-            //moves = 0;
         }
+
+        public StratContext(StratSettings settings) : this() { }
 
         public override IList<IAction> getValidActions()
         {

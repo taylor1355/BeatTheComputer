@@ -8,17 +8,12 @@ namespace BeatTheComputer.Checkers
 {
     class CheckersContext : GameContext
     {
-        private int pieceRows;
-        private int moveLimit;
-
         private CheckersBoard board;
+        private CheckersSettings settings;
 
         public CheckersContext(int rows, int cols, int pieceRows, int moveLimit)
         {
-            validateArguments(rows, cols, pieceRows, moveLimit);
-
-            this.pieceRows = pieceRows;
-            this.moveLimit = moveLimit;
+            settings = new CheckersSettings(rows, cols, pieceRows, moveLimit);
 
             if (CheckersBitboard.fits(rows, cols)) {
                 board = new CheckersBitboard(rows, cols, pieceRows);
@@ -32,23 +27,6 @@ namespace BeatTheComputer.Checkers
         }
 
         private CheckersContext() { }
-
-        private void validateArguments(int rows, int cols, int pieceRows, int moveLimit)
-        {
-            int minRows = Math.Max(3, 2 * pieceRows + 1);
-            if (rows < minRows) {
-                throw new ArgumentException("Must have at least " + minRows.ToString() + " rows", "rows");
-            }
-            if (cols < 2) {
-                throw new ArgumentException("Must have at least 2 columns", "cols");
-            }
-            if (pieceRows < 1) {
-                throw new ArgumentException("Must have at least 1 row of pieces", "pieceRows");
-            }
-            if (moveLimit < 1) {
-                throw new ArgumentException("Move limit must be at least 1", "moveLimit");
-            }
-        }
 
         public override IList<IAction> getValidActions()
         {
@@ -130,12 +108,12 @@ namespace BeatTheComputer.Checkers
             return features;
         }
 
-        public override bool GameDecided { get { return winner != Player.NONE || moves >= moveLimit; } }
+        public override bool GameDecided { get { return winner != Player.NONE || moves >= settings.MoveLimit; } }
 
         public override bool equalTo(object obj)
         {
             CheckersContext other = obj as CheckersContext;
-            return other != null && moves == other.moves && moveLimit == other.moveLimit && board.equalTo(other.board);
+            return other != null && moves == other.moves && settings.MoveLimit == other.MoveLimit && board.equalTo(other.board);
         }
 
         public override string ToString()
@@ -146,7 +124,7 @@ namespace BeatTheComputer.Checkers
         public override IGameContext clone()
         {
             CheckersContext clone = new CheckersContext();
-            clone.moveLimit = moveLimit;
+            clone.settings = settings;
             clone.board = board.clone();
 
             clone.activePlayer = activePlayer;
@@ -161,11 +139,11 @@ namespace BeatTheComputer.Checkers
         }
 
         public int PieceRows {
-            get { return pieceRows; }
+            get { return settings.PieceRows; }
         }
 
         public int MoveLimit {
-            get { return moveLimit; }
+            get { return settings.MoveLimit; }
         }
     }
 }

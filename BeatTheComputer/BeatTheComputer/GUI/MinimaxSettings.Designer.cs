@@ -150,6 +150,7 @@
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.apply);
             this.Controls.Add(this.groupBox1);
+            this.MaximizeBox = false;
             this.Name = "MinimaxSettings";
             this.Text = "AI Settings";
             this.Load += new System.EventHandler(this.MinimaxSettings_Load);

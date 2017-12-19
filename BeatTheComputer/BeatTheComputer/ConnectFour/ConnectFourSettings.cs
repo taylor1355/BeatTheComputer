@@ -1,20 +1,26 @@
 ﻿using BeatTheComputer.Core;
-using BeatTheComputer.AI;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BeatTheComputer.ConnectFour
 {
     class ConnectFourSettings : GameSettings
     {
-        public int Rows { get; set; }
-        public int Cols { get; set; }
+        public int Rows { get; private set; }
+        public int Cols { get; private set; }
 
-        public ConnectFourSettings(Type gameType) : base(gameType) { }
+        public ConnectFourSettings(int rows, int cols) : base(typeof(ConnectFourContext))
+        {
+            if (rows < 1) {
+                throw new ArgumentException("Must have at least 1 row", "rows");
+            }
+            if (cols < 1) {
+                throw new ArgumentException("Must have at least 1 column", "cols");
+            }
+
+            Rows = rows;
+            Cols = cols;
+        }
 
         public override bool equalTo(object obj)
         {

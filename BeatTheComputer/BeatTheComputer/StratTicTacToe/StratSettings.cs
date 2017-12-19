@@ -1,17 +1,10 @@
 ﻿using BeatTheComputer.Core;
-using BeatTheComputer.AI;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BeatTheComputer.StratTicTacToe
 {
     class StratSettings : GameSettings
     {
-        public StratSettings(Type gameType) : base(gameType) { }
+        public StratSettings() : base(typeof(StratContext)) { }
 
         public override bool equalTo(object obj)
         {
