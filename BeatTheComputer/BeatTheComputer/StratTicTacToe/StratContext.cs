@@ -17,8 +17,9 @@ namespace BeatTheComputer.StratTicTacToe
 
         public StratContext()
         {
-            int rows = 3; moves = 0;
+            int rows = 3;
             int cols = 3;
+            moves = 0;
             prevRowPlayed = -1;
             prevColPlayed = -1;
             wins = new Player[rows, cols];

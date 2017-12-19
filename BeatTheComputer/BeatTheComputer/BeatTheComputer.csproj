@@ -52,25 +52,30 @@
     <Compile Include="AI\Behavior.cs" />
     <Compile Include="AI\Benchmark.cs" />
     <Compile Include="AI\DummyBehavior.cs" />
+    <Compile Include="AI\IHeuristic.cs" />
     <Compile Include="AI\MCTS\MCTS.cs" />
     <Compile Include="AI\MCTS\MCTSNode.cs" />
     <Compile Include="AI\MCTS\MCTSTree.cs" />
     <Compile Include="AI\Minimax\Minimax.cs" />
     <Compile Include="AI\Minimax\MinimaxNode.cs" />
     <Compile Include="AI\Minimax\MinimaxTree.cs" />
+    <Compile Include="AI\NNHeuristic.cs" />
     <Compile Include="AI\PlayRandom.cs" />
     <Compile Include="AI\PlayMostlyRandom.cs" />
     <Compile Include="Checkers\CheckersAction.cs" />
     <Compile Include="Checkers\CheckersBitboard.cs" />
     <Compile Include="Checkers\CheckersBoard.cs" />
     <Compile Include="Checkers\CheckersContext.cs" />
+    <Compile Include="Checkers\CheckersSettings.cs" />
     <Compile Include="Checkers\CheckersView.cs" />
     <Compile Include="Checkers\CheckersScalableBoard.cs" />
     <Compile Include="Checkers\CheckersPiece.cs" />
     <Compile Include="ConnectFour\ConnectFourBitboard.cs" />
     <Compile Include="ConnectFour\ConnectFourBoard.cs" />
     <Compile Include="ConnectFour\ConnectFourScalableBoard.cs" />
+    <Compile Include="ConnectFour\ConnectFourSettings.cs" />
     <Compile Include="ConnectFour\ConnectFourView.cs" />
+    <Compile Include="Core\GameSettings.cs" />
     <Compile Include="Core\GameSnapshot.cs" />
     <Compile Include="GUI\CheckersSettings.cs">
       <SubType>Form</SubType>
@@ -123,7 +128,9 @@
     </Compile>
     <Compile Include="StratTicTacToe\StratAction.cs" />
     <Compile Include="StratTicTacToe\StratContext.cs" />
+    <Compile Include="StratTicTacToe\StratSettings.cs" />
     <Compile Include="StratTicTacToe\StratView.cs" />
+    <Compile Include="TicTacToe\TicTacToeSettings.cs" />
     <Compile Include="TicTacToe\TicTacToeView.cs" />
     <Compile Include="Utils\BitUtils.cs" />
     <Compile Include="Utils\FormatUtils.cs" />
