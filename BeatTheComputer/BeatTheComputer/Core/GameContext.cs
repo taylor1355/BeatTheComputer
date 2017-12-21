@@ -18,11 +18,34 @@ namespace BeatTheComputer.Core
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2)
         {
-            return simulate(behavior1, behavior2, CancellationToken.None);
+            List<IGameContext> dummyHistory = null;
+            return simulateHelper(behavior1, behavior2, out dummyHistory, false, CancellationToken.None);
+        }
+
+        public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> history)
+        {
+            return simulateHelper(behavior1, behavior2, out history, true, CancellationToken.None);
         }
 
         public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, CancellationToken interrupt)
         {
+            List<IGameContext> dummyHistory = null;
+            return simulateHelper(behavior1, behavior2, out dummyHistory, false, interrupt);
+        }
+
+        public GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> history, CancellationToken interrupt)
+        {
+            return simulateHelper(behavior1, behavior2, out history, true, interrupt);
+        }
+
+        private GameOutcome simulateHelper(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> history, bool saveHistory, CancellationToken interrupt)
+        {
+            if (saveHistory) {
+                history = new List<IGameContext>(new IGameContext[] { clone() });
+            } else {
+                history = null;
+            }
+
             if (GameDecided) {
                 return GameOutcome;
             }
@@ -37,6 +60,10 @@ namespace BeatTheComputer.Core
                     lastAction = behavior2.requestAction(simulation, lastAction, interrupt);
                 }
                 simulation.applyAction(lastAction);
+
+                if (saveHistory) {
+                    history.Add(simulation.clone());
+                }
             } while (!simulation.GameDecided && !interrupt.IsCancellationRequested);
 
             return simulation.GameOutcome;

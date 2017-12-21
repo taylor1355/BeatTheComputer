@@ -256,6 +256,8 @@ namespace BeatTheComputer.StratTicTacToe
         {
             StratContext clone = new StratContext();
 
+            clone.settings = settings;
+
             clone.board = new Player[Rows, Cols][,];
             for (int superRow = 0; superRow < Rows; superRow++) {
                 for (int superCol = 0; superCol < Cols; superCol++) {

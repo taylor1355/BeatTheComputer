@@ -70,6 +70,13 @@ namespace BeatTheComputer.AI.MCTS
             return bestAction;
         }
 
+        public double evaluateContext(IGameContext context, CancellationToken interrupt)
+        {
+            MCTSTree tempTree = new MCTSTree(context.clone(), rolloutBehavior.clone(), exploreFactor, tryToWin);
+            tempTree.run(threads, timeLimit, rolloutLimit, context, null, null, interrupt);
+            return tempTree.Root.scoreOf(Player.ONE);
+        }
+
         public override string ToString()
         {
             return "Monte Carlo Tree Search";

@@ -11,7 +11,9 @@ namespace BeatTheComputer.Core
         IList<IAction> getValidActions();
         IGameContext applyAction(IAction action);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2);
+        GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> gameHistory);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, CancellationToken interrupt);
+        GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> gameHistory, CancellationToken interrupt);
 
         // a heuristic between [0, 1] that should approach 1 the better player 1 is doing and 0 the better player 2 is doing
         double heuristicEval();

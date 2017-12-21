@@ -30,6 +30,16 @@ namespace BeatTheComputer.TicTacToe
             InARow = inARow;
         }
 
+        public override IGameContext newContext()
+        {
+            return new TicTacToeContext(this);
+        }
+
+        public override string guid()
+        {
+            return "TicTacToe_r" + Rows + "c" + Cols + "i" + InARow;
+        }
+
         public override bool equalTo(object obj)
         {
             TicTacToeSettings other = obj as TicTacToeSettings;

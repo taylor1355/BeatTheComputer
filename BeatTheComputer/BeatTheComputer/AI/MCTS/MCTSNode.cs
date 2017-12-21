@@ -189,7 +189,7 @@ namespace BeatTheComputer.AI.MCTS
         private IAction actionOfChild(MCTSNode child)
         {
             foreach(KeyValuePair<IAction, MCTSNode> entry in children) {
-                //compare with == here because nodes are only equal if they're the same instance
+                // compare with == here because nodes are only equal if they're the same instance
                 if (entry.Value == child) {
                     return entry.Key;
                 }
@@ -223,13 +223,18 @@ namespace BeatTheComputer.AI.MCTS
             }
         }
 
+        public double scoreOf(Player player)
+        {
+            return wins(player) / (visits + epsilon);
+        }
+
         public MCTSNode clone()
         {
             return new MCTSNode(this);
         }
 
         public double Score {
-            get { return wins(activePlayer.Opponent) / (visits + epsilon); }
+            get { return scoreOf(activePlayer.Opponent); }
         }
 
         public int Visits {

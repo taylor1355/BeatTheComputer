@@ -104,6 +104,7 @@ namespace BeatTheComputer.ConnectFour
         public override IGameContext clone()
         {
             ConnectFourContext clone = new ConnectFourContext();
+            clone.settings = settings;
             clone.board = board.clone();
             clone.activePlayer = activePlayer;
             clone.winner = winner;

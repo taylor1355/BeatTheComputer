@@ -16,6 +16,10 @@ namespace BeatTheComputer.Core
             GameType = gameType;
         }
 
+        public abstract IGameContext newContext();
+
+        public abstract string guid();
+
         public bool Equals(GameSettings context) { return equalTo(context); }
         public override bool Equals(object obj) { return equalTo(obj); }
         public abstract bool equalTo(object obj);

@@ -163,6 +163,7 @@ namespace BeatTheComputer.TicTacToe
         public override IGameContext clone()
         {
             TicTacToeContext clone = new TicTacToeContext(settings);
+            clone.settings = settings;
             clone.board = (Player[,]) board.Clone();
             clone.activePlayer = activePlayer;
             clone.winner = winner;

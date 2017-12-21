@@ -26,6 +26,8 @@ namespace BeatTheComputer.Checkers
             moves = 0;
         }
 
+        public CheckersContext(CheckersSettings settings) : this(settings.Rows, settings.Cols, settings.PieceRows, settings.MoveLimit) { }
+
         private CheckersContext() { }
 
         public override IList<IAction> getValidActions()

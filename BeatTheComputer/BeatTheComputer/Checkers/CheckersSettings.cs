@@ -33,6 +33,16 @@ namespace BeatTheComputer.Checkers
             MoveLimit = moveLimit;
         }
 
+        public override IGameContext newContext()
+        {
+            return new CheckersContext(this);
+        }
+
+        public override string guid()
+        {
+            return "Checkers_" + "r" + Rows + "c" + Cols + "p" + PieceRows + "m" + MoveLimit;
+        }
+
         public override bool equalTo(object obj)
         {
             CheckersSettings other = obj as CheckersSettings;

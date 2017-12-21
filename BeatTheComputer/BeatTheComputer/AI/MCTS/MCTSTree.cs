@@ -40,7 +40,7 @@ namespace BeatTheComputer.AI.MCTS
 
                 generateRootChildrenIfLeaf();
                 advanceRoot(opponentAction);
-
+                
                 if (!rootContext.Equals(context)) {
                     throw new InvalidOperationException("Game states passed to MCTS out of order");
                 }
@@ -74,6 +74,10 @@ namespace BeatTheComputer.AI.MCTS
         public MCTSTree clone()
         {
             return new MCTSTree(this);
+        }
+
+        public MCTSNode Root {
+            get { return root; }
         }
     }
 }

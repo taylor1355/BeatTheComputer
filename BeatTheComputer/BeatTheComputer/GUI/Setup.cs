@@ -11,6 +11,9 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+// TEMP
+using System.IO;
+
 namespace BeatTheComputer.GUI
 {
     public partial class Setup : Form
@@ -61,6 +64,12 @@ namespace BeatTheComputer.GUI
 
             gameList.Items.AddRange(defaultGamesList());
             gameList.SelectedIndex = gameList.Items.Count - 1;
+
+            // TEMP
+            GameSettings gameSettings = new ConnectFour.ConnectFourSettings(6, 7);
+            NNHeuristic heuristic = new NNHeuristic(gameSettings, true);
+            MCTS evaluator = new MCTS(new PlayRandom(), 1, 10000, int.MaxValue, 1.41, true);
+            heuristic.createExamples(1000, evaluator);
         }
 
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)

@@ -52,8 +52,10 @@
     <Compile Include="AI\Behavior.cs" />
     <Compile Include="AI\Benchmark.cs" />
     <Compile Include="AI\DummyBehavior.cs" />
+    <Compile Include="AI\FeatureArrayComparer.cs" />
     <Compile Include="AI\IHeuristic.cs" />
     <Compile Include="AI\MCTS\MCTS.cs" />
+    <Compile Include="AI\MCTS\MCTSExampleGenerator.cs" />
     <Compile Include="AI\MCTS\MCTSNode.cs" />
     <Compile Include="AI\MCTS\MCTSTree.cs" />
     <Compile Include="AI\Minimax\Minimax.cs" />

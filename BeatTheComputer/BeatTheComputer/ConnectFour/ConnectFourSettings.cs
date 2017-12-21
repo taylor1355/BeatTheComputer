@@ -22,6 +22,16 @@ namespace BeatTheComputer.ConnectFour
             Cols = cols;
         }
 
+        public override IGameContext newContext()
+        {
+            return new ConnectFourContext(this);
+        }
+
+        public override string guid()
+        {
+            return "ConnectFour_" + "r" + Rows + "c" + Cols;
+        }
+
         public override bool equalTo(object obj)
         {
             ConnectFourSettings other = obj as ConnectFourSettings;
