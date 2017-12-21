@@ -61,12 +61,6 @@ namespace BeatTheComputer.ConnectFour
             return this;
         }
 
-        //TODO
-        public override double heuristicEval() 
-        {
-            throw new NotImplementedException();
-        }
-
         public override double[] featurize()
         {
             double[] features = new double[board.Rows * board.Cols];

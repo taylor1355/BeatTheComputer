@@ -69,8 +69,6 @@ namespace BeatTheComputer.Core
             return simulation.GameOutcome;
         }
 
-        public abstract double heuristicEval();
-
         public abstract double[] featurize();
 
         public abstract bool GameDecided { get; }

@@ -15,9 +15,6 @@ namespace BeatTheComputer.Core
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, CancellationToken interrupt);
         GameOutcome simulate(IBehavior behavior1, IBehavior behavior2, out List<IGameContext> gameHistory, CancellationToken interrupt);
 
-        // a heuristic between [0, 1] that should approach 1 the better player 1 is doing and 0 the better player 2 is doing
-        double heuristicEval();
-
         // give game state as an array of numbers between [-1, 1]
         double[] featurize();
 

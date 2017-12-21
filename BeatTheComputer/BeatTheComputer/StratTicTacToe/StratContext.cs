@@ -171,11 +171,6 @@ namespace BeatTheComputer.StratTicTacToe
             }
         }
 
-        public override double heuristicEval()
-        {
-            throw new NotImplementedException();
-        }
-
         public override double[] featurize()
         {
             double[] features = new double[Rows * Cols * Rows * Cols];

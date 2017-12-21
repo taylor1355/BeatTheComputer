@@ -85,31 +85,6 @@ namespace BeatTheComputer.TicTacToe
             return Player.NONE;
         }
 
-        public override double heuristicEval()
-        {
-            /*const double WEIGHT_SUM = 12;
-            double eval = 0.5;
-            for (int row = 0; row < Rows; row++) {
-                for (int col = 0; col < Cols; col++) {
-                    if (board[row, col] == Player.ONE) {
-                        eval += squareWeight(row, col) / WEIGHT_SUM;
-                    } else if (board[row, col] == Player.TWO) {
-                        eval -= squareWeight(row, col) / WEIGHT_SUM;
-                    }
-                }
-            }
-            return eval;*/
-            throw new NotImplementedException();
-        }
-
-        /*public double squareWeight(int row, int col)
-        {
-            double weight = 0;
-            if (row + col == 2) weight++;
-            if (row == col) weight++;
-            return weight;
-        }*/
-
         public override double[] featurize()
         {
             double[] features = new double[Rows * Cols];

@@ -1,5 +1,4 @@
 ﻿using BeatTheComputer.Core;
-using BeatTheComputer.Utils;
 
 using System;
 using System.Collections.Generic;
@@ -52,41 +51,6 @@ namespace BeatTheComputer.Checkers
             }
 
             return this;
-        }
-
-        public override double heuristicEval()
-        {
-            throw new NotImplementedException();
-
-            /*const double PROMOTE_BONUS = 4.0;
-
-            double MAX_EVAL = Math.Max(p1Pieces.Count, p2Pieces.Count) * 2.0 * PROMOTE_BONUS;
-            double eval = 0.5;
-
-            foreach (KeyValuePair<Position, Piece> entry in p1Pieces) {
-                eval += (middleDist(entry.Key) * ((entry.Value.Promoted) ? 1 : PROMOTE_BONUS)) / (2.0 * MAX_EVAL);
-            }
-
-            foreach (KeyValuePair<Position, Piece> entry in p2Pieces) {
-                eval += (middleDist(entry.Key) * ((entry.Value.Promoted) ? -1 : -PROMOTE_BONUS)) / (2.0 * MAX_EVAL);
-            }
-
-            return eval;*/
-        }
-
-        /*creates a weighting based on proximity to the edge of the board like the following:
-                3  3  3  3  3
-                3  2  2  2  3
-                3  2  1  2  3
-                3  2  2  2  3
-                3  3  3  3  3
-            */
-        private double middleDist(Position pos)
-        {
-            throw new NotImplementedException();
-            //double rowDist = Math.Abs(Math.Abs(pos.Row - ((Rows - 1)) / 2.0));
-            //double colDist = Math.Abs(Math.Abs(pos.Col - ((Cols - 1)) / 2.0));
-            //return 1.0 + Math.Ceiling(Math.Max(rowDist, colDist)) / Math.Ceiling(Math.Max(Rows / 2.0, Cols / 2.0));
         }
 
         public override double[] featurize()
