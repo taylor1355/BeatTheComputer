@@ -62,7 +62,7 @@ def get_features(line):
     
 def get_label(line):
     label_start = line.index(":") + 1
-    return float(line[label_start:]) * 2 - 1
+    return float(line[label_start:])
 
 if __name__ == "__main__":
     main()
