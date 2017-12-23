@@ -35,21 +35,23 @@ def main():
         model = load_model(MODEL_FILE_NAME)
     else:
         print("Created new model")
-        model = create_model()
+        model = create_model(num_features)
     
-    for i in range(100):
-        model.fit(train_x, train_y, epochs=10)
+    for i in range(1000):
+        model.fit(train_x, train_y, epochs=25)
         test_loss, test_acc = model.evaluate(test_x, test_y)
         print("Testing Set: - loss: " + str(test_loss) + " - acc: " + str(test_acc))
         model.save(MODEL_FILE_NAME)
         print()
     
-def create_model():
+def create_model(num_features):
     model = Sequential()
-    model.add(Dense(2 * num_features, input_dim=num_features, activation='relu'))
-    model.add(Dense(2 * num_features, activation='relu'))
-    model.add(Dense(2 * num_features, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(num_features, input_dim=num_features, activation='relu'))
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(1, activation='relu'))
     model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
     return model
         
