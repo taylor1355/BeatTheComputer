@@ -60,15 +60,18 @@ namespace BeatTheComputer.AI.MCTS
             File.Delete(backupFile);
         }
 
-        public void mergeExamples(string exampleFile1, string exampleFile2, string outputFile)
+        public void mergeExamples(string outputFile, params string[] exampleFiles)
         {
-            Dictionary<double[], Tuple<int, double>> examples1 = readExamples(exampleFile1);
-            Dictionary<double[], Tuple<int, double>> examples2 = readExamples(exampleFile2);
-            foreach (KeyValuePair<double[], Tuple<int, double>> example in examples2) {
-                addExample(ref examples1, example.Key, example.Value.Item2);
+            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>();
+
+            foreach (string exampleFile in exampleFiles) {
+                Dictionary<double[], Tuple<int, double>> examplesToMerge = readExamples(exampleFile);
+                foreach (KeyValuePair<double[], Tuple<int, double>> example in examplesToMerge) {
+                    addExample(ref examples, example.Key, example.Value.Item2);
+                }
             }
 
-            writeExamples(examples1, outputFile);
+            writeExamples(examples, outputFile);
         }
 
         private void writeExamples(Dictionary<double[], Tuple<int, double>> examples, string exampleFile)

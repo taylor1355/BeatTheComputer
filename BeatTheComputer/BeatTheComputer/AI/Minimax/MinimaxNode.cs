@@ -60,7 +60,7 @@ namespace BeatTheComputer.AI.Minimax
                         }
                     }
                 } else {
-                    p1Score = context.heuristicEval();
+                    //p1Score = context.heuristicEval();
                 }
             }
             return Score;
