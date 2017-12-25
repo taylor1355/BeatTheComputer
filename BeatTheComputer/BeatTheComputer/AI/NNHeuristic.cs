@@ -2,11 +2,7 @@
 using BeatTheComputer.AI.MCTS;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BeatTheComputer.AI
 {
@@ -44,7 +40,7 @@ namespace BeatTheComputer.AI
             Directory.CreateDirectory(directory);
 
             MCTSExampleGenerator exampleGen = new MCTSExampleGenerator(evaluator, settings);
-            exampleGen.generateExamples(numExamples, directory + "\\examples.txt", true);
+            exampleGen.generateExamples(numExamples, directory, true);
         }
 
         public double evaluate(IGameContext context)

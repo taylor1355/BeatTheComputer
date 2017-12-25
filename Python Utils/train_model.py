@@ -30,20 +30,32 @@ def main():
     test_y = np.array([y[i] for i in indices[0:num_testing]])
         
     model = None
+    best_test_loss = None
     if os.path.isfile(MODEL_FILE_NAME):
-        print("Loaded existing model")
         model = load_model(MODEL_FILE_NAME)
+        print("Loaded existing model")
+        best_test_loss = model.evaluate(test_x, test_y)
     else:
-        print("Created new model")
         model = create_model(num_features)
+        print("Created new model")
     
     for i in range(1000):
-        model.fit(train_x, train_y, epochs=25)
-        test_loss, test_acc = model.evaluate(test_x, test_y)
-        print("Testing Set: - loss: " + str(test_loss) + " - acc: " + str(test_acc))
-        model.save(MODEL_FILE_NAME)
+        model.fit(train_x, train_y, epochs=2)
+        test_loss = model.evaluate(test_x, test_y)
+        print("Testing Set Loss: " + str(test_loss))
+        print("Best Testing Set Loss: " + str(best_test_loss))
+        if best_test_loss is None or test_loss < best_test_loss:
+            print("Model exceeds previous best, saving...")
+            model.save(MODEL_FILE_NAME)
+            best_test_loss = test_loss
+            print("Successfully saved")
+            
+            random_indices = np.random.choice(len(test_x), 10)
+            for index in random_indices:
+                y_prediction = model.predict(np.reshape(test_x[index], (-1, num_features)))[0]
+                print(str(test_x[index]) + " predicted = " + str(y_prediction) + ", actual = " + str(test_y[index]))
         print()
-    
+
 def create_model(num_features):
     model = Sequential()
     model.add(Dense(num_features, input_dim=num_features, activation='relu'))
@@ -51,13 +63,15 @@ def create_model(num_features):
     model.add(Dense(num_features, activation='relu'))
     model.add(Dense(num_features, activation='relu'))
     model.add(Dense(num_features, activation='relu'))
-    model.add(Dense(1, activation='relu'))
-    model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(num_features, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(loss='mean_squared_error', optimizer='adam')
     return model
         
 def get_features(line):
-    features_start, features_end = line.index("["), line.index("]")
-    features = line[features_start + 1 : features_end]
+    features_start, features_end = line.index("[") + 1, line.index("]")
+    features = line[features_start : features_end]
     return np.fromstring(features, sep=",")
     
 def get_label(line):

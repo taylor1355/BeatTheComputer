@@ -23,9 +23,10 @@ namespace BeatTheComputer.AI.MCTS
         }
 
         // save mappings from sets of game features to mcts evaluations to a file
-        public void generateExamples(int numExamples, string exampleFile, bool append)
+        public void generateExamples(int numExamples, string exampleDir, bool append)
         {
             Dictionary<double[], Tuple<int, double>> examples;
+            string exampleFile = exampleDir + "\\examples.txt";
 
             if (append && File.Exists(exampleFile)) {
                 examples = readExamples(exampleFile);
@@ -33,8 +34,38 @@ namespace BeatTheComputer.AI.MCTS
                 examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
             }
 
-            // each batch should take ~60 seconds
-            int batchSize = Math.Max(1, 60000 / (int) evaluator.TimeLimit);
+            Thread[] threads = new Thread[Environment.ProcessorCount];
+
+            string[] exampleFiles = new string[threads.Length + 1];
+            exampleFiles[0] = exampleDir + "\\examples0.txt";
+            if (examples.Count > 0) {
+                writeExamples(examples, exampleFiles[0]);
+            }
+                
+            for (int i = 0; i < threads.Length; i++) {
+                int subNumExamples = numExamples / threads.Length;
+                if (i == threads.Length - 1) {
+                    subNumExamples = numExamples - (threads.Length - 1) * numExamples / threads.Length;
+                }
+                exampleFiles[i + 1] = exampleDir + "\\examples" + (i + 1).ToString() + ".txt";
+                int index = i;
+                threads[i] = new Thread(() => generateExamplesSingleThreaded(subNumExamples, exampleFiles[index + 1]));
+                threads[i].Start();    
+            }
+
+            foreach (Thread thread in threads) {
+                thread.Join();
+            }
+
+            mergeExamples(exampleFile, exampleFiles);
+        }
+
+        private void generateExamplesSingleThreaded(int numExamples, string exampleFile)
+        {
+            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
+
+            // each batch should take ~120 seconds
+            int batchSize = Math.Max(1, 120000 / (int) evaluator.TimeLimit);
             string backupFile = exampleFile + "_backup.txt";
 
             int examplesAdded = 0;
@@ -62,7 +93,7 @@ namespace BeatTheComputer.AI.MCTS
 
         public void mergeExamples(string outputFile, params string[] exampleFiles)
         {
-            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>();
+            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(new FeatureArrayComparer());
 
             foreach (string exampleFile in exampleFiles) {
                 Dictionary<double[], Tuple<int, double>> examplesToMerge = readExamples(exampleFile);

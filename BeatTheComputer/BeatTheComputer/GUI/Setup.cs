@@ -69,10 +69,9 @@ namespace BeatTheComputer.GUI
             GameSettings gameSettings = new ConnectFour.ConnectFourSettings(6, 7);
             NNHeuristic heuristic = new NNHeuristic(gameSettings, true);
             MCTS evaluator = new MCTS(new PlayRandom(), 1, 10000, int.MaxValue, 1.41, true);
-            //heuristic.createExamples(100000, evaluator);
-
-            MCTSExampleGenerator exGen = new MCTSExampleGenerator(evaluator, gameSettings);
-            exGen.mergeExamples("examples.txt", "examples1.txt", "examples2.txt", "examples3.txt", "examples4.txt");
+            heuristic.createExamples(100000, evaluator);
+            //MCTSExampleGenerator exGen = new MCTSExampleGenerator(evaluator, gameSettings);
+            //exGen.mergeExamples("examples.txt", "examples1.txt", "examples2.txt", "examples3.txt", "examples4.txt");
         }
 
         private void p1List_SelectedIndexChanged(object sender, EventArgs e)
