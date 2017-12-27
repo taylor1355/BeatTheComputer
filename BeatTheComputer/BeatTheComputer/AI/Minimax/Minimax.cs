@@ -9,6 +9,7 @@ namespace BeatTheComputer.AI.Minimax
 {
     class Minimax : Behavior
     {
+        private IHeuristic heuristic;
         private double timeLimit;
         private int iterationLimit;
         private bool tryToWin;
@@ -18,8 +19,9 @@ namespace BeatTheComputer.AI.Minimax
         private MinimaxTree tree;
         private IAction myLastAction;
 
-        public Minimax(double timeLimit, int iterationLimit, bool tryToWin)
+        public Minimax(IHeuristic heuristic, double timeLimit, int iterationLimit, bool tryToWin)
         {
+            this.heuristic = heuristic;
             this.timeLimit = timeLimit;
             this.iterationLimit = iterationLimit;
             this.tryToWin = tryToWin;
@@ -32,7 +34,7 @@ namespace BeatTheComputer.AI.Minimax
         public override IAction requestAction(IGameContext context, IAction opponentAction, CancellationToken interrupt)
         {
             if (tree == null) {
-                tree = new MinimaxTree(context.clone(), tryToWin);
+                tree = new MinimaxTree(heuristic.clone(), context.clone(), tryToWin);
             }
 
             Dictionary<IAction, double> actionScores = tree.run(timeLimit, iterationLimit, context.clone(), myLastAction, opponentAction, interrupt);
@@ -59,7 +61,7 @@ namespace BeatTheComputer.AI.Minimax
         //does not save game tree
         public override IBehavior clone()
         {
-            return new Minimax(timeLimit, iterationLimit, tryToWin);
+            return new Minimax(heuristic.clone(), timeLimit, iterationLimit, tryToWin);
         }
 
         public double TimeLimit {

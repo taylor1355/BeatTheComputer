@@ -7,6 +7,7 @@ namespace BeatTheComputer.AI.Minimax
 {
     class MinimaxNode
     {
+        private IHeuristic heuristic;
         private bool tryToWin;
         private int move;
         private Player activePlayer;
@@ -14,8 +15,9 @@ namespace BeatTheComputer.AI.Minimax
         private GameOutcome outcome;
         private Dictionary<IAction, MinimaxNode> children;
 
-        public MinimaxNode(IGameContext context, bool tryToWin)
+        public MinimaxNode(IHeuristic heuristic, IGameContext context, bool tryToWin)
         {
+            this.heuristic = heuristic;
             move = context.Moves;
             this.tryToWin = tryToWin;
 
@@ -60,7 +62,7 @@ namespace BeatTheComputer.AI.Minimax
                         }
                     }
                 } else {
-                    //p1Score = context.heuristicEval();
+                    p1Score = heuristic.evaluate(context);
                 }
             }
             return Score;
@@ -74,7 +76,7 @@ namespace BeatTheComputer.AI.Minimax
                 foreach (IAction action in validActions) {
                     IGameContext successor = context.clone();
                     successor.applyAction(action);
-                    children.Add(action, new MinimaxNode(successor, tryToWin));
+                    children.Add(action, new MinimaxNode(heuristic, successor, tryToWin));
                 }
             }
         }

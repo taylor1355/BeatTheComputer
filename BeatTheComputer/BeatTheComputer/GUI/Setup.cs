@@ -168,7 +168,7 @@ namespace BeatTheComputer.GUI
             List<IBehavior> behaviorsList = new List<IBehavior>();
             behaviorsList.Add(new DummyBehavior());
             behaviorsList.Add(new MCTS(new PlayRandom(new Random(rand.Next())), 1, 7500, int.MaxValue, 1.41, true));
-            behaviorsList.Add(new Minimax(7500, 1000, true));
+            behaviorsList.Add(new Minimax(null, 7500, 1000, true)); //TODO: don't pass null as heuristic argument
             behaviorsList.Add(new PlayRandom(new Random(rand.Next())));
             behaviorsList.Add(new PlayMostlyRandom(new Random(rand.Next())));
             return behaviorsList.ToArray();

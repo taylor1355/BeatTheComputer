@@ -12,9 +12,9 @@ namespace BeatTheComputer.AI.Minimax
         private MinimaxNode root;
         private IGameContext rootContext;
 
-        public MinimaxTree(IGameContext rootContext, bool tryToWin)
+        public MinimaxTree(IHeuristic heuristic, IGameContext rootContext, bool tryToWin)
         {
-            root = new MinimaxNode(rootContext.clone(), tryToWin);
+            root = new MinimaxNode(heuristic, rootContext.clone(), tryToWin);
             this.rootContext = rootContext;
         }
 
