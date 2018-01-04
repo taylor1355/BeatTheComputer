@@ -27,7 +27,7 @@ namespace BeatTheComputer.AI.MCTS
         // save mappings from sets of game features to mcts evaluations to a file
         public void generateExamples(int numExamples, string exampleDir, bool append)
         {
-            Dictionary<double[], Tuple<int, double>> examples;
+            Dictionary<double[], double> examples;
             string exampleFile = exampleDir + "\\examples" + EXAMPLE_FILE_EXTENSION;
 
             string[] existingExampleFiles = Directory.GetFiles(exampleDir, "*" + EXAMPLE_FILE_EXTENSION);
@@ -40,7 +40,7 @@ namespace BeatTheComputer.AI.MCTS
                 }
                 examples = readExamples(exampleFile);
             } else {
-                examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
+                examples = new Dictionary<double[], double>(numExamples, new FeatureArrayComparer());
             }
 
             Thread[] threads = new Thread[Environment.ProcessorCount / 2];
@@ -73,9 +73,9 @@ namespace BeatTheComputer.AI.MCTS
 
         private void generateExamplesSingleThreaded(int numExamples, string exampleFile)
         {
-            // TODO: change to not accept any duplicates
+            // TODO: take in initial examples to reduce duplicated effort
 
-            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
+            Dictionary<double[], double> examples = new Dictionary<double[], double>(numExamples, new FeatureArrayComparer());
 
             // each batch should take ~120 seconds
             int batchSize = Math.Max(1, 120000 / (int) evaluator.TimeLimit);
@@ -86,10 +86,9 @@ namespace BeatTheComputer.AI.MCTS
                 IGameContext randContext = randomContext();
                 double[] features = randContext.featurize();
 
-                Tuple<int, double> currValue = null;
+                double currValue;
                 bool featuresContained = examples.TryGetValue(features, out currValue);
-                int maxDuplicates = 3;
-                if (!featuresContained || currValue.Item1 < maxDuplicates) {
+                if (!featuresContained) {
                     double label = findScore(randContext);
                     addExample(ref examples, features, label);
                     examplesAdded++;
@@ -106,39 +105,39 @@ namespace BeatTheComputer.AI.MCTS
 
         public void mergeExamples(string outputFile, params string[] exampleFiles)
         {
-            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(new FeatureArrayComparer());
+            Dictionary<double[], double> examples = new Dictionary<double[], double>(new FeatureArrayComparer());
 
             foreach (string exampleFile in exampleFiles) {
-                Dictionary<double[], Tuple<int, double>> examplesToMerge = readExamples(exampleFile);
-                foreach (KeyValuePair<double[], Tuple<int, double>> example in examplesToMerge) {
-                    addExample(ref examples, example.Key, example.Value.Item2);
+                Dictionary<double[], double> examplesToMerge = readExamples(exampleFile);
+                foreach (KeyValuePair<double[], double> example in examplesToMerge) {
+                    addExample(ref examples, example.Key, example.Value);
                 }
             }
 
             writeExamples(examples, outputFile);
         }
 
-        private void writeExamples(Dictionary<double[], Tuple<int, double>> examples, string exampleFile)
+        private void writeExamples(Dictionary<double[], double> examples, string exampleFile)
         {
             File.WriteAllText(exampleFile, "");
             using (StreamWriter writer = new StreamWriter(exampleFile)) {
-                foreach (KeyValuePair<double[], Tuple<int, double>> example in examples) {
+                foreach (KeyValuePair<double[], double> example in examples) {
                     string features = "[";
                     foreach (double feature in example.Key) {
                         features += feature.ToString() + ",";
                     }
                     features = features.Remove(features.Length - 1, 1) + "]";
 
-                    string label = example.Value.Item2.ToString();
+                    string label = example.Value.ToString();
 
                     writer.WriteLine(features + ":" + label);
                 }
             }
         }
 
-        private Dictionary<double[], Tuple<int, double>> readExamples(string exampleFile)
+        private Dictionary<double[], double> readExamples(string exampleFile)
         {
-            Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(new FeatureArrayComparer());
+            Dictionary<double[], double> examples = new Dictionary<double[], double>(new FeatureArrayComparer());
 
             if (File.Exists(exampleFile)) {
                 using (StreamReader reader = new StreamReader(exampleFile)) {
@@ -159,16 +158,14 @@ namespace BeatTheComputer.AI.MCTS
             return examples;
         }
 
-        private void addExample(ref Dictionary<double[], Tuple<int, double>> examples, double[] newFeatures, double newLabel)
+        private void addExample(ref Dictionary<double[], double> examples, double[] newFeatures, double newLabel)
         {
-            Tuple<int, double> currValue = null;
-            bool featuresContained = examples.TryGetValue(newFeatures, out currValue);
+            double currLabel;
+            bool featuresContained = examples.TryGetValue(newFeatures, out currLabel);
             if (featuresContained) {
-                int newCount = currValue.Item1 + 1;
-                double runningAvgScore = currValue.Item2 * (newCount - 1) / newCount + newLabel / newCount;
-                examples[newFeatures] = new Tuple<int, double>(newCount, runningAvgScore);
+                examples[newFeatures] = (currLabel + newLabel) / 2;
             } else {
-                examples[newFeatures] = new Tuple<int, double>(1, newLabel);
+                examples[newFeatures] = newLabel;
             }
         }
 
