@@ -50,7 +50,7 @@ namespace BeatTheComputer.GUI
 
             if (errors.Length == 0) {
                 Minimax minimax = (Minimax) minimaxWrapper.Reference;
-                minimaxWrapper.Reference = new Minimax(thinkingTime * 1000, iterationLimit, tryToWin);
+                minimaxWrapper.Reference = new Minimax(null, thinkingTime * 1000, iterationLimit, tryToWin);// TODO: don't pass in null
                 this.Close();
             } else {
                 MessageBox.Show(errors);

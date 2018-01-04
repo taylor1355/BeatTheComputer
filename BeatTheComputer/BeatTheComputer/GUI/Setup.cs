@@ -66,10 +66,11 @@ namespace BeatTheComputer.GUI
             gameList.SelectedIndex = gameList.Items.Count - 1;
 
             // TEMP
-            GameSettings gameSettings = new ConnectFour.ConnectFourSettings(6, 7);
-            NNHeuristic heuristic = new NNHeuristic(gameSettings, true);
-            MCTS evaluator = new MCTS(new PlayRandom(), 1, 10000, int.MaxValue, 1.41, true);
-            heuristic.createExamples(100000, evaluator);
+            //GameSettings gameSettings = new ConnectFour.ConnectFourSettings(6, 7);
+            //GameSettings gameSettings = new TicTacToe.TicTacToeSettings(3, 3, 3);
+            //NNHeuristic heuristic = new NNHeuristic(gameSettings);
+            //MCTS evaluator = new MCTS(new PlayRandom(), 1, 1500, int.MaxValue, 1.41, true);
+            //heuristic.createExamples(100000, evaluator);
             //MCTSExampleGenerator exGen = new MCTSExampleGenerator(evaluator, gameSettings);
             //exGen.mergeExamples("examples.txt", "examples1.txt", "examples2.txt", "examples3.txt", "examples4.txt");
         }

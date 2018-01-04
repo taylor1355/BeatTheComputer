@@ -9,10 +9,12 @@ namespace BeatTheComputer.AI.MCTS
 {
     class MCTSExampleGenerator
     {
-        Random rand;
+        private const string EXAMPLE_FILE_EXTENSION = ".example";
 
-        MCTS evaluator;
-        GameSettings gameSettings;
+        private Random rand;
+
+        private MCTS evaluator;
+        private GameSettings gameSettings;
 
         public MCTSExampleGenerator(MCTS evaluator, GameSettings gameSettings)
         {
@@ -26,18 +28,25 @@ namespace BeatTheComputer.AI.MCTS
         public void generateExamples(int numExamples, string exampleDir, bool append)
         {
             Dictionary<double[], Tuple<int, double>> examples;
-            string exampleFile = exampleDir + "\\examples.txt";
+            string exampleFile = exampleDir + "\\examples" + EXAMPLE_FILE_EXTENSION;
 
-            if (append && File.Exists(exampleFile)) {
+            string[] existingExampleFiles = Directory.GetFiles(exampleDir, "*" + EXAMPLE_FILE_EXTENSION);
+            if (existingExampleFiles.Length > 0 && append) {
+                mergeExamples(exampleFile, existingExampleFiles);
+                foreach (string file in existingExampleFiles) {
+                    if (!file.Equals(exampleFile)) {
+                        File.Delete(file);
+                    }
+                }
                 examples = readExamples(exampleFile);
             } else {
                 examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
             }
 
-            Thread[] threads = new Thread[Environment.ProcessorCount];
+            Thread[] threads = new Thread[Environment.ProcessorCount / 2];
 
             string[] exampleFiles = new string[threads.Length + 1];
-            exampleFiles[0] = exampleDir + "\\examples0.txt";
+            exampleFiles[0] = exampleDir + "\\examples0" + EXAMPLE_FILE_EXTENSION;
             if (examples.Count > 0) {
                 writeExamples(examples, exampleFiles[0]);
             }
@@ -47,7 +56,7 @@ namespace BeatTheComputer.AI.MCTS
                 if (i == threads.Length - 1) {
                     subNumExamples = numExamples - (threads.Length - 1) * numExamples / threads.Length;
                 }
-                exampleFiles[i + 1] = exampleDir + "\\examples" + (i + 1).ToString() + ".txt";
+                exampleFiles[i + 1] = exampleDir + "\\examples" + (i + 1).ToString() + EXAMPLE_FILE_EXTENSION;
                 int index = i;
                 threads[i] = new Thread(() => generateExamplesSingleThreaded(subNumExamples, exampleFiles[index + 1]));
                 threads[i].Start();    
@@ -57,16 +66,20 @@ namespace BeatTheComputer.AI.MCTS
                 thread.Join();
             }
 
+            // TODO: make up for duplicate examples here
+
             mergeExamples(exampleFile, exampleFiles);
         }
 
         private void generateExamplesSingleThreaded(int numExamples, string exampleFile)
         {
+            // TODO: change to not accept any duplicates
+
             Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(numExamples, new FeatureArrayComparer());
 
             // each batch should take ~120 seconds
             int batchSize = Math.Max(1, 120000 / (int) evaluator.TimeLimit);
-            string backupFile = exampleFile + "_backup.txt";
+            string backupFile = exampleFile + "_backup" + EXAMPLE_FILE_EXTENSION;
 
             int examplesAdded = 0;
             while (examplesAdded < numExamples) {
@@ -75,7 +88,7 @@ namespace BeatTheComputer.AI.MCTS
 
                 Tuple<int, double> currValue = null;
                 bool featuresContained = examples.TryGetValue(features, out currValue);
-                int maxDuplicates = 10;
+                int maxDuplicates = 3;
                 if (!featuresContained || currValue.Item1 < maxDuplicates) {
                     double label = findScore(randContext);
                     addExample(ref examples, features, label);
@@ -127,17 +140,19 @@ namespace BeatTheComputer.AI.MCTS
         {
             Dictionary<double[], Tuple<int, double>> examples = new Dictionary<double[], Tuple<int, double>>(new FeatureArrayComparer());
 
-            using (StreamReader reader = new StreamReader(exampleFile)) {
-                string line = reader.ReadLine();
-                while (line != null) {
-                    string strFeatures = line.Split(':')[0];
-                    strFeatures = strFeatures.Substring(1, strFeatures.Length - 2);
-                    double[] features = Array.ConvertAll(strFeatures.Split(','), Double.Parse);
-                    double label = Double.Parse(line.Split(':')[1]);
+            if (File.Exists(exampleFile)) {
+                using (StreamReader reader = new StreamReader(exampleFile)) {
+                    string line = reader.ReadLine();
+                    while (line != null) {
+                        string strFeatures = line.Split(':')[0];
+                        strFeatures = strFeatures.Substring(1, strFeatures.Length - 2);
+                        double[] features = Array.ConvertAll(strFeatures.Split(','), Double.Parse);
+                        double label = Double.Parse(line.Split(':')[1]);
 
-                    addExample(ref examples, features, label);
+                        addExample(ref examples, features, label);
 
-                    line = reader.ReadLine();
+                        line = reader.ReadLine();
+                    }
                 }
             }
 

@@ -7,7 +7,7 @@ import os.path
 
 TRAINING_FRACTION = 0.9
 MODEL_FILE_NAME = "model.h5"
-EXAMPLE_FILE_NAME = "examples.txt"
+EXAMPLE_FILE_NAME = "examples.example"
 
 def main():
     with open(EXAMPLE_FILE_NAME) as example_file:
