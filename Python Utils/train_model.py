@@ -1,12 +1,13 @@
 from keras.models import Sequential, load_model
 from keras.layers import Dense
+import KerasModelToJSON as js
 import numpy as np
 import h5py
 import random
 import os.path
 
 TRAINING_FRACTION = 0.9
-MODEL_FILE_NAME = "model.h5"
+MODEL_FILE_NAME = "model"
 EXAMPLE_FILE_NAME = "examples.example"
 
 def main():
@@ -31,8 +32,8 @@ def main():
         
     model = None
     best_test_loss = None
-    if os.path.isfile(MODEL_FILE_NAME):
-        model = load_model(MODEL_FILE_NAME)
+    if os.path.isfile(MODEL_FILE_NAME + ".h5"):
+        model = load_model(MODEL_FILE_NAME + ".h5")
         print("Loaded existing model")
         best_test_loss = model.evaluate(test_x, test_y)
     else:
@@ -46,7 +47,11 @@ def main():
         print("Best Testing Set Loss: " + str(best_test_loss))
         if best_test_loss is None or test_loss < best_test_loss:
             print("Model exceeds previous best, saving...")
-            model.save(MODEL_FILE_NAME)
+            
+            model.save(MODEL_FILE_NAME + ".h5")
+            json_writer = js.JSONwriter(model, MODEL_FILE_NAME + ".json")
+            json_writer.save()
+            
             best_test_loss = test_loss
             print("Successfully saved")
             

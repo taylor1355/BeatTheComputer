@@ -87,6 +87,8 @@ namespace BeatTheComputer.Core
             }
         }
 
+        public abstract GameSettings Settings { get; }
+
         public Player ActivePlayer { get { return activePlayer; } }
         public Player WinningPlayer { get { return winner; } }
         public int Moves { get { return moves; } }

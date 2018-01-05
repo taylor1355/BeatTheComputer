@@ -192,6 +192,8 @@ namespace BeatTheComputer.StratTicTacToe
             return features;
         }
 
+        public override GameSettings Settings { get { return settings; } }
+
         public override bool GameDecided { get { return winner != Player.NONE || getValidActions().Count == 0; } }
 
         public bool didTie()

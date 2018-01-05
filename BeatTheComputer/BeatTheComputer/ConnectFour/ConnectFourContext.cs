@@ -78,6 +78,8 @@ namespace BeatTheComputer.ConnectFour
             return features;
         }
 
+        public override GameSettings Settings { get { return settings; } }
+
         public override bool GameDecided { get { return winner != Player.NONE || moves == board.Rows * board.Cols; } }
 
         public override bool equalTo(object obj)

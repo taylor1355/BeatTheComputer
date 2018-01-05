@@ -74,6 +74,8 @@ namespace BeatTheComputer.Checkers
             return features;
         }
 
+        public override GameSettings Settings { get { return settings; } }
+
         public override bool GameDecided { get { return winner != Player.NONE || moves >= settings.MoveLimit; } }
 
         public override bool equalTo(object obj)

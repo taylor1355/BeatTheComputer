@@ -102,6 +102,8 @@ namespace BeatTheComputer.TicTacToe
             return features;
         }
 
+        public override GameSettings Settings { get { return settings; } }
+
         public override bool GameDecided { get { return winner != Player.NONE || moves >= board.Length; } }
 
         private void setPlayer(Position pos, Player player)

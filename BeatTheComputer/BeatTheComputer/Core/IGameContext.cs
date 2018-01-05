@@ -18,6 +18,8 @@ namespace BeatTheComputer.Core
         // give game state as an array of numbers between [-1, 1]
         double[] featurize();
 
+        GameSettings Settings { get; }
+
         bool GameDecided { get; }
         GameOutcome GameOutcome { get; }
 

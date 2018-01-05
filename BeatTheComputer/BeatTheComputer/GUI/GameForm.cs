@@ -2,6 +2,10 @@
 using System.Drawing;
 using System.Windows.Forms;
 
+// TEMP
+using BeatTheComputer.AI;
+using System.Diagnostics;
+
 namespace BeatTheComputer.GUI
 {
     public partial class GameForm : Form
@@ -114,6 +118,13 @@ namespace BeatTheComputer.GUI
             menu.RedoMenuItem.Enabled = controller.canRedo();
 
             view.updateGraphics(this);
+
+            // TEMP
+            /*NNHeuristic heuristic = new NNHeuristic(controller.Context.Settings);
+            Stopwatch timer = Stopwatch.StartNew();
+            double eval = heuristic.evaluate(controller.Context);
+            double time = timer.Elapsed.TotalMilliseconds;
+            MessageBox.Show("Eval: " + eval.ToString() + " in " + time.ToString() + " ms");*/
         }
 
         private String togglePauseText()

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BeatTheComputer.Core
 {
-    abstract class GameSettings : IEquatable<GameSettings>
+    public abstract class GameSettings : IEquatable<GameSettings>
     {
         public Type GameType { get; }
 
