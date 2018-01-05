@@ -2,7 +2,7 @@ import KerasModelToJSON as js
 import os.path
 import sys
 
-if len(sys.argv) > 1:
+if len(sys.argv) >= 2:
     h5_file = sys.argv[1]
     valid_file = True
     if not os.path.isfile(h5_file):
@@ -18,4 +18,5 @@ if len(sys.argv) > 1:
         json_file = h5_file.replace(".h5", ".json")
         json_writer = js.JSONwriter(keras_model, json_file)
         json_writer.save()
-    
+else:
+    print("Missing required argument")
